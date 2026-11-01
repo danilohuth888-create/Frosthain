@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
   FROSTHAIN – Test- und Entwicklungsumgebung unter Windows 11 einrichten.
 
