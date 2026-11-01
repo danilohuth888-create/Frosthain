@@ -10,6 +10,7 @@ import net.frosthain.core.registry.DirectoryContentSource;
 import net.frosthain.core.validation.ContentValidator;
 import net.frosthain.core.validation.Diagnostic;
 import net.frosthain.mod.character.CharacterService;
+import net.frosthain.mod.character.QuestService;
 import net.minecraft.resources.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,6 +50,7 @@ public final class FrosthainMod implements ModInitializer {
         }
         content = result.registry();
         CharacterService.register();
+        QuestService.register();
         LOGGER.info("FROSTHAIN geladen: {} Klassen, {} Spezies, {} Talentbäume, {} Quests, {} Dialoge – {} Fehler",
                 content.all(ContentType.CLASSES).size(), content.all(ContentType.SPECIES).size(),
                 content.all(ContentType.TALENT_TREES).size(), content.all(ContentType.QUESTS).size(),

@@ -6,12 +6,16 @@ import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContex
 import net.frosthain.core.ContentId;
 import net.frosthain.core.character.CharacterSheet;
 import net.frosthain.core.character.TalentRef;
+import net.frosthain.core.quest.QuestLog;
 import net.frosthain.core.registry.ContentType;
 import net.frosthain.mod.FrosthainMod;
 import net.frosthain.mod.character.CharacterService;
+import net.frosthain.mod.character.QuestService;
 import net.frosthain.mod.client.ClientCharacter;
+import net.frosthain.mod.client.ClientQuests;
 import net.frosthain.mod.client.screen.CharacterCreationScreen;
 import net.frosthain.mod.client.screen.FrosthainTitleScreen;
+import net.frosthain.mod.client.screen.QuestJournalScreen;
 import net.frosthain.mod.client.screen.TalentTreeScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.server.level.ServerPlayer;
@@ -61,8 +65,13 @@ public final class FrosthainClientGameTest implements FabricClientGameTest {
 
             context.runOnClient(client -> creation(client).submit());
             context.waitFor(client -> ClientCharacter.state().isPresent() && client.gui.screen() == null);
+            // The opening main quest starts with the character; the tracker is collapsed by default.
+            context.waitFor(client -> ClientQuests.log().isActive(AWAKENING));
             context.waitTicks(40);
             context.takeScreenshot("frosthain-07-hud");
+            context.runOnClient(client -> ClientQuests.toggleTracker());
+            context.waitTicks(2);
+            context.takeScreenshot("frosthain-07b-questtracker");
 
             singleplayer.getServer().runOnServer(server -> {
                 CharacterSheet sheet = CharacterService.sheet(server.getPlayerList().getPlayers().getFirst())
@@ -99,8 +108,40 @@ public final class FrosthainClientGameTest implements FabricClientGameTest {
                 }
             });
             context.setScreen(() -> null);
+
+            // Quest journal (J); objectives via the test command until Eldrin and the shrine exist in the world.
+            context.setScreen(QuestJournalScreen::new);
+            context.waitTicks(5);
+            context.takeScreenshot("frosthain-11-questjournal");
+            context.setScreen(() -> null);
+            long experienceBefore = singleplayer.getServer().computeOnServer(server ->
+                    CharacterService.sheet(server.getPlayerList().getPlayers().getFirst()).orElseThrow().experience());
+            singleplayer.getServer().runCommand("execute as @a run frosthain quest ziel awakening talk_eldrin");
+            singleplayer.getServer().runCommand("execute as @a run frosthain quest ziel awakening find_shrine");
+            context.waitFor(client -> ClientQuests.log().isCompleted(AWAKENING) && ClientQuests.log().isActive(FIRST_RUNE));
+            singleplayer.getServer().runOnServer(server -> {
+                ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
+                QuestLog log = QuestService.log(player);
+                if (!log.isCompleted(AWAKENING) || !log.isActive(FIRST_RUNE)) {
+                    throw new AssertionError("Questlog auf dem Server weicht ab: " + log);
+                }
+                long gained = CharacterService.sheet(player).orElseThrow().experience() - experienceBefore;
+                if (gained != 150) {
+                    throw new AssertionError("Questbelohnung falsch: " + gained + " EP statt 150");
+                }
+            });
+            context.waitTicks(10);
+            context.takeScreenshot("frosthain-12-folgequest");
+            context.setScreen(QuestJournalScreen::new);
+            context.runOnClient(client -> ((QuestJournalScreen) client.gui.screen()).show(QuestJournalScreen.Category.DONE));
+            context.waitTicks(5);
+            context.takeScreenshot("frosthain-13-questjournal-abgeschlossen");
+            context.setScreen(() -> null);
         }
     }
+
+    private static final ContentId AWAKENING = ContentId.of("awakening");
+    private static final ContentId FIRST_RUNE = ContentId.of("first_rune");
 
     private static void unlock(ClientGameTestContext context, String node) {
         TalentRef ref = new TalentRef(ContentId.of("general"), node);

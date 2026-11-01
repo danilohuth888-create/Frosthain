@@ -119,6 +119,7 @@ public final class CharacterService {
         switch (result) {
             case CharacterFactory.Result.Created created -> {
                 save(player, created.sheet());
+                QuestService.onCharacterCreated(player);
                 LOGGER.info("Charakter erstellt: {} ({}, {}) für {}", created.sheet().name(), created.sheet().species(),
                         payload.characterClass(), player.getName().getString());
             }
@@ -157,21 +158,37 @@ public final class CharacterService {
     }
 
     private static int grantExperience(ServerPlayer player, int amount, java.util.function.Consumer<Component> feedback) {
-        Optional<CharacterSheet> current = sheet(player);
-        if (current.isEmpty()) {
+        Optional<CharacterSheet> sheet = addExperience(player, amount);
+        if (sheet.isEmpty()) {
             feedback.accept(Component.translatable("commands.frosthain.no_character"));
             return 0;
+        }
+        feedback.accept(Component.translatable("commands.frosthain.ep", amount, sheet.get().characterLevel(),
+                new TalentAllocator(FrosthainMod.content()).availablePoints(sheet.get())));
+        return 1;
+    }
+
+    /**
+     * Adds FROSTHAIN experience and levels up the first class while possible (multiclass choice comes with M3.4).
+     * Returns the updated sheet, or empty if the player has no character yet.
+     */
+    public static Optional<CharacterSheet> addExperience(ServerPlayer player, int amount) {
+        Optional<CharacterSheet> current = sheet(player);
+        if (current.isEmpty()) {
+            return Optional.empty();
         }
         LevelingRules leveling = new LevelingRules(FrosthainMod.content());
         CharacterSheet sheet = current.get().withExperience(current.get().experience() + amount);
         ContentId mainClass = sheet.classLevels().keySet().iterator().next();
+        int before = sheet.characterLevel();
         while (leveling.pendingLevelUps(sheet) > 0 && leveling.checkLevelUp(sheet, mainClass).isEmpty()) {
             sheet = leveling.levelUp(sheet, mainClass);
         }
         save(player, sheet);
-        feedback.accept(Component.translatable("commands.frosthain.ep", amount, sheet.characterLevel(),
-                new TalentAllocator(FrosthainMod.content()).availablePoints(sheet)));
-        return 1;
+        if (sheet.characterLevel() > before) {
+            player.sendSystemMessage(Component.translatable("gui.frosthain.level_up", sheet.characterLevel()));
+        }
+        return Optional.of(sheet);
     }
 
     private static void reject(ServerPlayer player, List<String> problems) {

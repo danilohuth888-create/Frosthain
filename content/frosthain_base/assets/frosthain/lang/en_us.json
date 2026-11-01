@@ -393,5 +393,20 @@
   "gui.frosthain.talents.hint": "Click: select talent · Drag: move · Wheel: zoom · Esc: close",
   "gui.frosthain.talents.reset_confirm": "Really reset?",
   "commands.frosthain.ep": "Gained %s XP – level %s, %s talent points available",
-  "commands.frosthain.no_character": "No FROSTHAIN character created yet."
+  "commands.frosthain.no_character": "No FROSTHAIN character created yet.",
+  "gui.frosthain.journal.title": "Quest Journal",
+  "gui.frosthain.journal.main": "Main quests",
+  "gui.frosthain.journal.side": "Side quests",
+  "gui.frosthain.journal.done": "Completed",
+  "gui.frosthain.journal.empty": "No quests in this category yet.",
+  "gui.frosthain.journal.rewards": "Rewards",
+  "gui.frosthain.journal.reward_xp": "%s XP",
+  "gui.frosthain.journal.follow_up": "The story continues afterwards …",
+  "gui.frosthain.journal.pin": "Track in HUD",
+  "gui.frosthain.journal.unpin": "Stop tracking",
+  "gui.frosthain.journal.tracker_expand": "Expand tracker",
+  "gui.frosthain.journal.tracker_collapse": "Collapse tracker",
+  "gui.frosthain.level_up": "Level %s reached! New talent point – open the talent tree with K.",
+  "key.frosthain.journal": "Quest Journal",
+  "key.frosthain.tracker": "Expand/collapse quest tracker"
 }

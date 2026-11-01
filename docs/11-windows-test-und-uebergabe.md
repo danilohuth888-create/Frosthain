@@ -76,11 +76,15 @@ Beim Start von Minecraft erscheint jetzt das FROSTHAIN-Hauptmenü, beim ersten B
 | **Talentbaum (K)**: Pfade (Legende, Runenpfad, Klassenbaum als Vorschau), Zweig-Reiter, Sechseck-Knoten mit Verbindungen, Detailtafel, Freischalten/Zurücknehmen/Alle zurücksetzen, Ziehen und Zoomen | ✅ | Client-GameTest: 2 Talente freigeschaltet, Server speichert und prüft (`TalentAllocator`); Bilder `06_`/`07_talentbaum*.png` |
 | Attribut-Talente wirken (Schaden, Rüstung, Leben, Tempo, Reichweite … – 28 Effekte) | ✅ | GameTest prüft den Modifikator „Kampfhaltung“ auf dem Angriffsschaden; wird nach Respawn neu angewendet |
 | Testbefehl `/frosthain ep <Menge>` (nur mit Cheats/OP) bis es echte EP-Quellen gibt (M3.2) | ✅ | 2000 EP → Stufe 4 |
-| Questtracker, Questjournal, NPC-Dialog, Fähigkeitenleiste | ❌ nächste Schritte | Logik in `core`/`ui` vorhanden |
+| **Questtracker** rechts im HUD, standardmäßig eingeklappt („Quests (1)“), Taste **U** klappt aus (Hauptquest, Ziele mit Kästchen, max. 3 verfolgte Quests) | ✅ | Bilder `05_hud.png`, `08_questtracker.png` |
+| **Questjournal (J)**: Hauptquests/Nebenquests/Abgeschlossen mit Zählern, Pergamentseite mit Beschreibung, Checkliste, Belohnungen, „Im HUD verfolgen“ | ✅ | Bilder `09_`/`10_questjournal*.png` |
+| Questlog als Spieleranhang (`QuestLogCodec`, versioniert); „Das Erwachen“ startet mit dem Charakter; Abschluss gibt EP (Stufenaufstieg → Talentpunkt) und startet die Folgequest | ✅ | Client-GameTest: Abschluss, +150 EP, „Die erste Rune“ aktiv – auf dem Server geprüft |
+| Questziele in der Welt (Eldrin ansprechen, alten Schrein finden, Runenstein, Kisten) | ❌ | Ziele lassen sich bis dahin mit `/frosthain quest ziel <quest> <ziel>` erfüllen; Nebenquest mit `/frosthain quest start lost_supplies` |
+| NPC-Dialog, Fähigkeitenleiste | ❌ nächste Schritte | Logik in `core`/`ui` vorhanden |
 
 Grenzen: Aussehen-Schritt (Haare, Hautfarbe) fehlt noch, Attribute werden automatisch nach Klasse verteilt (Standardreihe), lange Namen in Kacheln werden gekürzt. Talent-Symbole sind vorerst Vanilla-Gegenstände; Fähigkeits-, Merkmals- und Resistenz-Talente werden gespeichert, wirken aber erst mit dem Fähigkeitensystem (M4.1). Auf Stufe 1 gibt es 1 Talentpunkt; EP-Quellen im Spiel folgen (M3.2).
 
-So probierst du es aus: Welt mit erlaubten Cheats öffnen, Charakter erstellen, `/frosthain ep 2000` eingeben (Stufe 4), dann **K** drücken.
+So probierst du es aus: Welt mit erlaubten Cheats öffnen, Charakter erstellen, `/frosthain ep 2000` eingeben (Stufe 4), dann **K** drücken. Quests: **J** öffnet das Journal, **U** klappt den Tracker aus; `/frosthain quest ziel awakening talk_eldrin` und danach `… find_shrine` schließen „Das Erwachen“ ab.
 
 ### Installation auf dem MSI über den echten Launcher
 

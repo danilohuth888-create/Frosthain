@@ -393,5 +393,20 @@
   "gui.frosthain.talents.hint": "Klicken: Talent wählen · Ziehen: verschieben · Mausrad: zoomen · Esc: schließen",
   "gui.frosthain.talents.reset_confirm": "Wirklich zurücksetzen?",
   "commands.frosthain.ep": "%s EP erhalten – Stufe %s, %s Talentpunkte verfügbar",
-  "commands.frosthain.no_character": "Noch kein FROSTHAIN-Charakter erstellt."
+  "commands.frosthain.no_character": "Noch kein FROSTHAIN-Charakter erstellt.",
+  "gui.frosthain.journal.title": "Questjournal",
+  "gui.frosthain.journal.main": "Hauptquests",
+  "gui.frosthain.journal.side": "Nebenquests",
+  "gui.frosthain.journal.done": "Abgeschlossen",
+  "gui.frosthain.journal.empty": "In dieser Kategorie gibt es noch keine Quests.",
+  "gui.frosthain.journal.rewards": "Belohnungen",
+  "gui.frosthain.journal.reward_xp": "%s EP",
+  "gui.frosthain.journal.follow_up": "Danach geht die Geschichte weiter …",
+  "gui.frosthain.journal.pin": "Im HUD verfolgen",
+  "gui.frosthain.journal.unpin": "Nicht mehr verfolgen",
+  "gui.frosthain.journal.tracker_expand": "Tracker ausklappen",
+  "gui.frosthain.journal.tracker_collapse": "Tracker einklappen",
+  "gui.frosthain.level_up": "Stufe %s erreicht! Neuer Talentpunkt – Talentbaum mit K.",
+  "key.frosthain.journal": "Questjournal",
+  "key.frosthain.tracker": "Questtracker ein-/ausklappen"
 }
