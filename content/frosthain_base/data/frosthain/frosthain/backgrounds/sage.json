@@ -1,0 +1,16 @@
+{
+  "source": "frosthain:srd_5_2_1",
+  "adapted": true,
+  "ability_options": [
+    "constitution",
+    "intelligence",
+    "wisdom"
+  ],
+  "skill_proficiencies": [
+    "frosthain:arcana",
+    "frosthain:history"
+  ],
+  "starting_items": [
+    "minecraft:book"
+  ]
+}

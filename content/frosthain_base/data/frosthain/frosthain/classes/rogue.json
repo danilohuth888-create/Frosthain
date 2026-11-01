@@ -1,0 +1,42 @@
+{
+  "source": "frosthain:srd_5_2_1",
+  "adapted": true,
+  "hit_die": 8,
+  "primary_abilities": [
+    "dexterity"
+  ],
+  "saving_throws": [
+    "dexterity",
+    "intelligence"
+  ],
+  "multiclass_requirements": [
+    {
+      "dexterity": 13
+    }
+  ],
+  "caster_progression": "none",
+  "resource": "frosthain:stamina",
+  "subclass_level": 3,
+  "skill_choices": {
+    "count": 4,
+    "from": [
+      "frosthain:acrobatics",
+      "frosthain:athletics",
+      "frosthain:deception",
+      "frosthain:insight",
+      "frosthain:intimidation",
+      "frosthain:investigation",
+      "frosthain:perception",
+      "frosthain:persuasion",
+      "frosthain:sleight_of_hand",
+      "frosthain:stealth"
+    ]
+  },
+  "armor_training": [
+    "light"
+  ],
+  "weapon_proficiencies": [
+    "simple"
+  ],
+  "_comment": "Waffenkategorien sind vorerst grob (simple/martial). Feinere Waffeneigenschaften (finesse, light) folgen mit dem Kampfsystem in Phase 4."
+}

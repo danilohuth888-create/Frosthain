@@ -1,0 +1,93 @@
+{
+  "source": "frosthain:srd_5_2_1",
+  "adapted": true,
+  "size": "medium",
+  "traits": [
+    {
+      "type": "attribute",
+      "attribute": "minecraft:scale",
+      "operation": "add_value",
+      "amount": 0.15
+    },
+    {
+      "type": "flag",
+      "flag": "frosthain:powerful_build"
+    }
+  ],
+  "lineages": [
+    {
+      "key": "cloud",
+      "traits": [
+        {
+          "type": "attribute",
+          "attribute": "minecraft:jump_strength",
+          "operation": "add_multiplied_base",
+          "amount": 0.1
+        }
+      ]
+    },
+    {
+      "key": "fire",
+      "traits": [
+        {
+          "type": "resistance",
+          "damage_type": "#minecraft:is_fire",
+          "amount": 0.25
+        }
+      ]
+    },
+    {
+      "key": "frost",
+      "traits": [
+        {
+          "type": "resistance",
+          "damage_type": "#minecraft:is_freezing",
+          "amount": 0.5
+        }
+      ]
+    },
+    {
+      "key": "hill",
+      "traits": [
+        {
+          "type": "attribute",
+          "attribute": "minecraft:knockback_resistance",
+          "operation": "add_value",
+          "amount": 0.2
+        }
+      ]
+    },
+    {
+      "key": "stone",
+      "traits": [
+        {
+          "type": "attribute",
+          "attribute": "minecraft:armor",
+          "operation": "add_value",
+          "amount": 2
+        }
+      ]
+    },
+    {
+      "key": "storm",
+      "traits": [
+        {
+          "type": "resistance",
+          "damage_type": "#minecraft:is_lightning",
+          "amount": 0.5
+        }
+      ]
+    }
+  ],
+  "appearance": {
+    "height_scale": [
+      0.97,
+      1.05
+    ],
+    "features": {
+      "markings": [
+        "frosthain:markings/goliath_lines"
+      ]
+    }
+  }
+}

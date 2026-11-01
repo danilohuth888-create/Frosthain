@@ -1,0 +1,136 @@
+{
+  "source": "frosthain:srd_5_2_1",
+  "adapted": true,
+  "size": "medium",
+  "traits": [
+    {
+      "type": "attribute",
+      "attribute": "minecraft:scale",
+      "operation": "add_value",
+      "amount": 0.05
+    },
+    {
+      "type": "flag",
+      "flag": "frosthain:breath_weapon"
+    }
+  ],
+  "lineages": [
+    {
+      "key": "black",
+      "traits": [
+        {
+          "type": "resistance",
+          "damage_type": "#frosthain:acid",
+          "amount": 0.5
+        }
+      ]
+    },
+    {
+      "key": "blue",
+      "traits": [
+        {
+          "type": "resistance",
+          "damage_type": "#minecraft:is_lightning",
+          "amount": 0.5
+        }
+      ]
+    },
+    {
+      "key": "brass",
+      "traits": [
+        {
+          "type": "resistance",
+          "damage_type": "#minecraft:is_fire",
+          "amount": 0.5
+        }
+      ]
+    },
+    {
+      "key": "bronze",
+      "traits": [
+        {
+          "type": "resistance",
+          "damage_type": "#minecraft:is_lightning",
+          "amount": 0.5
+        }
+      ]
+    },
+    {
+      "key": "copper",
+      "traits": [
+        {
+          "type": "resistance",
+          "damage_type": "#frosthain:acid",
+          "amount": 0.5
+        }
+      ]
+    },
+    {
+      "key": "gold",
+      "traits": [
+        {
+          "type": "resistance",
+          "damage_type": "#minecraft:is_fire",
+          "amount": 0.5
+        }
+      ]
+    },
+    {
+      "key": "green",
+      "traits": [
+        {
+          "type": "resistance",
+          "damage_type": "#frosthain:poison",
+          "amount": 0.5
+        }
+      ]
+    },
+    {
+      "key": "red",
+      "traits": [
+        {
+          "type": "resistance",
+          "damage_type": "#minecraft:is_fire",
+          "amount": 0.5
+        }
+      ]
+    },
+    {
+      "key": "silver",
+      "traits": [
+        {
+          "type": "resistance",
+          "damage_type": "#minecraft:is_freezing",
+          "amount": 0.5
+        }
+      ]
+    },
+    {
+      "key": "white",
+      "traits": [
+        {
+          "type": "resistance",
+          "damage_type": "#minecraft:is_freezing",
+          "amount": 0.5
+        }
+      ]
+    }
+  ],
+  "appearance": {
+    "height_scale": [
+      0.97,
+      1.05
+    ],
+    "features": {
+      "scales": [
+        "frosthain:scales/dragon"
+      ],
+      "tail": [
+        "frosthain:tail/dragon_short"
+      ]
+    },
+    "required_slots": [
+      "scales"
+    ]
+  }
+}

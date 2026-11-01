@@ -1,0 +1,52 @@
+{
+  "source": "frosthain:srd_5_2_1",
+  "adapted": true,
+  "hit_die": 10,
+  "primary_abilities": [
+    "strength",
+    "dexterity"
+  ],
+  "saving_throws": [
+    "strength",
+    "constitution"
+  ],
+  "multiclass_requirements": [
+    {
+      "strength": 13
+    },
+    {
+      "dexterity": 13
+    }
+  ],
+  "caster_progression": "none",
+  "resource": "frosthain:stamina",
+  "subclass_level": 3,
+  "skill_choices": {
+    "count": 2,
+    "from": [
+      "frosthain:acrobatics",
+      "frosthain:animal_handling",
+      "frosthain:athletics",
+      "frosthain:history",
+      "frosthain:insight",
+      "frosthain:intimidation",
+      "frosthain:persuasion",
+      "frosthain:perception",
+      "frosthain:survival"
+    ]
+  },
+  "armor_training": [
+    "light",
+    "medium",
+    "heavy",
+    "shields"
+  ],
+  "weapon_proficiencies": [
+    "simple",
+    "martial"
+  ],
+  "starting_powers": [
+    "frosthain:second_wind"
+  ],
+  "talent_tree": "frosthain:fighter"
+}

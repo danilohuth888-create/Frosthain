@@ -1,0 +1,13 @@
+{
+  "source": "frosthain:srd_5_2_1",
+  "adapted": true,
+  "ability_options": [
+    "dexterity",
+    "constitution",
+    "intelligence"
+  ],
+  "skill_proficiencies": [
+    "frosthain:sleight_of_hand",
+    "frosthain:stealth"
+  ]
+}

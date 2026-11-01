@@ -1,0 +1,11 @@
+{
+  "source": "frosthain:original",
+  "kind": "active",
+  "resource": "frosthain:spell_power",
+  "cost": 10,
+  "cooldown_ticks": 40,
+  "school": "evocation",
+  "tags": [
+    "projectile"
+  ]
+}

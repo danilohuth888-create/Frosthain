@@ -1,0 +1,11 @@
+{
+  "source": "frosthain:original",
+  "kind": "active",
+  "resource": "frosthain:spell_power",
+  "cost": 20,
+  "cooldown_ticks": 400,
+  "school": "rune",
+  "tags": [
+    "defense"
+  ]
+}

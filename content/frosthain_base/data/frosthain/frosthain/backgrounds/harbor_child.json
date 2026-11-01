@@ -1,0 +1,15 @@
+{
+  "source": "frosthain:original",
+  "ability_options": [
+    "dexterity",
+    "constitution",
+    "charisma"
+  ],
+  "skill_proficiencies": [
+    "frosthain:athletics",
+    "frosthain:perception"
+  ],
+  "starting_items": [
+    "minecraft:fishing_rod"
+  ]
+}

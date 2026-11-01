@@ -1,0 +1,44 @@
+{
+  "source": "frosthain:srd_5_2_1",
+  "adapted": true,
+  "hit_die": 10,
+  "primary_abilities": [
+    "dexterity",
+    "wisdom"
+  ],
+  "saving_throws": [
+    "strength",
+    "dexterity"
+  ],
+  "multiclass_requirements": [
+    {
+      "dexterity": 13,
+      "wisdom": 13
+    }
+  ],
+  "caster_progression": "half",
+  "resource": "frosthain:spell_power",
+  "subclass_level": 3,
+  "skill_choices": {
+    "count": 3,
+    "from": [
+      "frosthain:animal_handling",
+      "frosthain:athletics",
+      "frosthain:insight",
+      "frosthain:investigation",
+      "frosthain:nature",
+      "frosthain:perception",
+      "frosthain:stealth",
+      "frosthain:survival"
+    ]
+  },
+  "armor_training": [
+    "light",
+    "medium",
+    "shields"
+  ],
+  "weapon_proficiencies": [
+    "simple",
+    "martial"
+  ]
+}

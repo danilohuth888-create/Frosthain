@@ -1,0 +1,15 @@
+{
+  "source": "frosthain:original",
+  "ability_options": [
+    "strength",
+    "constitution",
+    "wisdom"
+  ],
+  "skill_proficiencies": [
+    "frosthain:survival",
+    "frosthain:animal_handling"
+  ],
+  "starting_items": [
+    "minecraft:bread"
+  ]
+}

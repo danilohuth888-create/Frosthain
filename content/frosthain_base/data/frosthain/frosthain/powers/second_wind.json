@@ -1,0 +1,12 @@
+{
+  "source": "frosthain:srd_5_2_1",
+  "adapted": true,
+  "kind": "active",
+  "resource": "frosthain:stamina",
+  "cost": 30,
+  "cooldown_ticks": 1200,
+  "school": "martial",
+  "tags": [
+    "healing"
+  ]
+}

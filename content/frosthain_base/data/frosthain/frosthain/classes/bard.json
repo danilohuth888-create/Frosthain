@@ -1,0 +1,49 @@
+{
+  "source": "frosthain:srd_5_2_1",
+  "adapted": true,
+  "hit_die": 8,
+  "primary_abilities": [
+    "charisma"
+  ],
+  "saving_throws": [
+    "dexterity",
+    "charisma"
+  ],
+  "multiclass_requirements": [
+    {
+      "charisma": 13
+    }
+  ],
+  "caster_progression": "full",
+  "resource": "frosthain:spell_power",
+  "subclass_level": 3,
+  "skill_choices": {
+    "count": 3,
+    "from": [
+      "frosthain:acrobatics",
+      "frosthain:animal_handling",
+      "frosthain:arcana",
+      "frosthain:athletics",
+      "frosthain:deception",
+      "frosthain:history",
+      "frosthain:insight",
+      "frosthain:intimidation",
+      "frosthain:investigation",
+      "frosthain:medicine",
+      "frosthain:nature",
+      "frosthain:perception",
+      "frosthain:performance",
+      "frosthain:persuasion",
+      "frosthain:religion",
+      "frosthain:sleight_of_hand",
+      "frosthain:stealth",
+      "frosthain:survival"
+    ]
+  },
+  "armor_training": [
+    "light"
+  ],
+  "weapon_proficiencies": [
+    "simple"
+  ]
+}

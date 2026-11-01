@@ -1,0 +1,217 @@
+{
+  "source": "frosthain:original",
+  "owner": {
+    "type": "class",
+    "class": "frosthain:fighter"
+  },
+  "root": "weapon_master",
+  "branches": [
+    "mastery",
+    "defense",
+    "techniques"
+  ],
+  "nodes": [
+    {
+      "key": "weapon_master",
+      "kind": "root",
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "key": "weapon_focus",
+      "kind": "passive",
+      "position": [
+        -1,
+        0
+      ],
+      "branch": "mastery",
+      "requires": [
+        "weapon_master"
+      ],
+      "max_rank": 3,
+      "effects": [
+        {
+          "type": "attribute",
+          "attribute": "minecraft:attack_damage",
+          "operation": "add_value",
+          "amount": 0.5
+        }
+      ]
+    },
+    {
+      "key": "swift_strikes",
+      "kind": "passive",
+      "position": [
+        -2,
+        0
+      ],
+      "branch": "mastery",
+      "requires": [
+        "weapon_focus"
+      ],
+      "max_rank": 2,
+      "required_class_level": 3,
+      "effects": [
+        {
+          "type": "attribute",
+          "attribute": "minecraft:attack_speed",
+          "operation": "add_multiplied_base",
+          "amount": 0.05
+        }
+      ]
+    },
+    {
+      "key": "action_surge",
+      "kind": "active",
+      "position": [
+        -3,
+        0
+      ],
+      "branch": "mastery",
+      "requires": [
+        "swift_strikes"
+      ],
+      "required_class_level": 5,
+      "effects": [
+        {
+          "type": "grant_power",
+          "power": "frosthain:action_surge"
+        }
+      ]
+    },
+    {
+      "key": "shield_training",
+      "kind": "passive",
+      "position": [
+        0,
+        1
+      ],
+      "branch": "defense",
+      "requires": [
+        "weapon_master"
+      ],
+      "max_rank": 2,
+      "effects": [
+        {
+          "type": "attribute",
+          "attribute": "minecraft:armor",
+          "operation": "add_value",
+          "amount": 1
+        }
+      ]
+    },
+    {
+      "key": "shield_bash",
+      "kind": "active",
+      "position": [
+        0,
+        2
+      ],
+      "branch": "defense",
+      "requires": [
+        "shield_training"
+      ],
+      "effects": [
+        {
+          "type": "grant_power",
+          "power": "frosthain:shield_bash"
+        }
+      ]
+    },
+    {
+      "key": "unbreakable",
+      "kind": "keystone",
+      "position": [
+        0,
+        3
+      ],
+      "branch": "defense",
+      "requires": [
+        "shield_bash"
+      ],
+      "required_class_level": 7,
+      "exclusive_group": "fighter_keystone",
+      "effects": [
+        {
+          "type": "attribute",
+          "attribute": "minecraft:knockback_resistance",
+          "operation": "add_value",
+          "amount": 0.3
+        },
+        {
+          "type": "attribute",
+          "attribute": "minecraft:armor_toughness",
+          "operation": "add_value",
+          "amount": 2
+        }
+      ]
+    },
+    {
+      "key": "battle_cry",
+      "kind": "active",
+      "position": [
+        1,
+        0
+      ],
+      "branch": "techniques",
+      "requires": [
+        "weapon_master"
+      ],
+      "effects": [
+        {
+          "type": "grant_power",
+          "power": "frosthain:battle_cry"
+        }
+      ]
+    },
+    {
+      "key": "tactician",
+      "kind": "passive",
+      "position": [
+        2,
+        0
+      ],
+      "branch": "techniques",
+      "requires": [
+        "battle_cry"
+      ],
+      "required_class_level": 3,
+      "effects": [
+        {
+          "type": "skill_proficiency",
+          "skill": "frosthain:insight"
+        }
+      ]
+    },
+    {
+      "key": "sweeping_strikes",
+      "kind": "keystone",
+      "position": [
+        3,
+        0
+      ],
+      "branch": "techniques",
+      "requires": [
+        "tactician"
+      ],
+      "required_class_level": 7,
+      "exclusive_group": "fighter_keystone",
+      "effects": [
+        {
+          "type": "attribute",
+          "attribute": "minecraft:entity_interaction_range",
+          "operation": "add_value",
+          "amount": 0.5
+        },
+        {
+          "type": "attribute",
+          "attribute": "minecraft:attack_damage",
+          "operation": "add_multiplied_total",
+          "amount": 0.05
+        }
+      ]
+    }
+  ]
+}

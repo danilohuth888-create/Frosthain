@@ -1,0 +1,32 @@
+# Gradle / Java
+.gradle/
+build/
+out/
+*.class
+!gradle/wrapper/gradle-wrapper.jar
+
+# IDEs
+.idea/
+*.iml
+.vscode/
+.classpath
+.project
+.settings/
+
+# Minecraft dev runs (Fabric Loom)
+run/
+runs/
+
+# Launcher (Tauri / Node / Rust)
+node_modules/
+dist/
+target/
+
+# Lokale Geheimnisse – niemals einchecken
+.env
+*.local.json
+secrets/
+
+# OS
+.DS_Store
+Thumbs.db

@@ -1,0 +1,16 @@
+{
+  "source": "frosthain:srd_5_2_1",
+  "adapted": true,
+  "ability_options": [
+    "intelligence",
+    "wisdom",
+    "charisma"
+  ],
+  "skill_proficiencies": [
+    "frosthain:insight",
+    "frosthain:religion"
+  ],
+  "starting_items": [
+    "minecraft:candle"
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "source": "frosthain:srd_5_2_1",
+  "adapted": true,
+  "size": "medium",
+  "traits": [
+    {
+      "type": "flag",
+      "flag": "frosthain:darkvision"
+    }
+  ],
+  "lineages": [
+    {
+      "key": "abyssal",
+      "traits": [
+        {
+          "type": "resistance",
+          "damage_type": "#frosthain:poison",
+          "amount": 0.5
+        }
+      ]
+    },
+    {
+      "key": "chthonic",
+      "traits": [
+        {
+          "type": "resistance",
+          "damage_type": "#frosthain:necrotic",
+          "amount": 0.5
+        }
+      ]
+    },
+    {
+      "key": "infernal",
+      "traits": [
+        {
+          "type": "resistance",
+          "damage_type": "#minecraft:is_fire",
+          "amount": 0.5
+        }
+      ]
+    }
+  ],
+  "appearance": {
+    "height_scale": [
+      0.95,
+      1.06
+    ],
+    "features": {
+      "horns": [
+        "frosthain:horns/ram",
+        "frosthain:horns/straight",
+        "frosthain:horns/crown"
+      ],
+      "tail": [
+        "frosthain:tail/fiend"
+      ]
+    },
+    "required_slots": [
+      "horns",
+      "tail"
+    ]
+  }
+}

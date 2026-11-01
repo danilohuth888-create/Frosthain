@@ -1,0 +1,377 @@
+{
+  "source": "frosthain:original",
+  "owner": {
+    "type": "general"
+  },
+  "root": "awakening",
+  "branches": [
+    "combat",
+    "survival",
+    "arcane"
+  ],
+  "nodes": [
+    {
+      "key": "awakening",
+      "kind": "root",
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "key": "toughness",
+      "kind": "passive",
+      "position": [
+        -1,
+        0
+      ],
+      "branch": "combat",
+      "requires": [
+        "awakening"
+      ],
+      "max_rank": 3,
+      "effects": [
+        {
+          "type": "attribute",
+          "attribute": "minecraft:max_health",
+          "operation": "add_value",
+          "amount": 2
+        }
+      ]
+    },
+    {
+      "key": "weapon_training",
+      "kind": "passive",
+      "position": [
+        -2,
+        0
+      ],
+      "branch": "combat",
+      "requires": [
+        "toughness"
+      ],
+      "max_rank": 3,
+      "effects": [
+        {
+          "type": "attribute",
+          "attribute": "minecraft:attack_damage",
+          "operation": "add_value",
+          "amount": 0.5
+        }
+      ]
+    },
+    {
+      "key": "dodge",
+      "kind": "active",
+      "position": [
+        -2,
+        -1
+      ],
+      "branch": "combat",
+      "requires": [
+        "toughness"
+      ],
+      "effects": [
+        {
+          "type": "grant_power",
+          "power": "frosthain:dodge_roll"
+        }
+      ]
+    },
+    {
+      "key": "stalwart",
+      "kind": "passive",
+      "position": [
+        -3,
+        0
+      ],
+      "branch": "combat",
+      "requires": [
+        "weapon_training"
+      ],
+      "max_rank": 2,
+      "required_level": 5,
+      "effects": [
+        {
+          "type": "attribute",
+          "attribute": "minecraft:knockback_resistance",
+          "operation": "add_value",
+          "amount": 0.1
+        }
+      ]
+    },
+    {
+      "key": "bloodlust",
+      "kind": "keystone",
+      "position": [
+        -4,
+        -1
+      ],
+      "branch": "combat",
+      "requires": [
+        "stalwart"
+      ],
+      "required_level": 10,
+      "exclusive_group": "general_keystone",
+      "effects": [
+        {
+          "type": "attribute",
+          "attribute": "minecraft:attack_damage",
+          "operation": "add_multiplied_total",
+          "amount": 0.1
+        },
+        {
+          "type": "attribute",
+          "attribute": "minecraft:armor",
+          "operation": "add_value",
+          "amount": -2
+        }
+      ]
+    },
+    {
+      "key": "bulwark",
+      "kind": "keystone",
+      "position": [
+        -4,
+        1
+      ],
+      "branch": "combat",
+      "requires": [
+        "stalwart"
+      ],
+      "required_level": 10,
+      "exclusive_group": "general_keystone",
+      "effects": [
+        {
+          "type": "attribute",
+          "attribute": "minecraft:armor",
+          "operation": "add_value",
+          "amount": 4
+        },
+        {
+          "type": "attribute",
+          "attribute": "minecraft:movement_speed",
+          "operation": "add_multiplied_base",
+          "amount": -0.05
+        }
+      ]
+    },
+    {
+      "key": "forager",
+      "kind": "passive",
+      "position": [
+        0,
+        1
+      ],
+      "branch": "survival",
+      "requires": [
+        "awakening"
+      ],
+      "max_rank": 2,
+      "effects": [
+        {
+          "type": "attribute",
+          "attribute": "minecraft:luck",
+          "operation": "add_value",
+          "amount": 0.5
+        }
+      ]
+    },
+    {
+      "key": "pathfinder",
+      "kind": "passive",
+      "position": [
+        0,
+        2
+      ],
+      "branch": "survival",
+      "requires": [
+        "forager"
+      ],
+      "max_rank": 2,
+      "effects": [
+        {
+          "type": "attribute",
+          "attribute": "minecraft:movement_efficiency",
+          "operation": "add_value",
+          "amount": 0.25
+        },
+        {
+          "type": "attribute",
+          "attribute": "minecraft:safe_fall_distance",
+          "operation": "add_value",
+          "amount": 1
+        }
+      ]
+    },
+    {
+      "key": "deep_breath",
+      "kind": "passive",
+      "position": [
+        -1,
+        2
+      ],
+      "branch": "survival",
+      "requires": [
+        "forager"
+      ],
+      "max_rank": 2,
+      "effects": [
+        {
+          "type": "attribute",
+          "attribute": "minecraft:oxygen_bonus",
+          "operation": "add_value",
+          "amount": 1
+        }
+      ]
+    },
+    {
+      "key": "climber",
+      "kind": "passive",
+      "position": [
+        1,
+        2
+      ],
+      "branch": "survival",
+      "requires": [
+        "forager"
+      ],
+      "required_level": 5,
+      "effects": [
+        {
+          "type": "attribute",
+          "attribute": "minecraft:step_height",
+          "operation": "add_value",
+          "amount": 0.4
+        }
+      ]
+    },
+    {
+      "key": "miners_luck",
+      "kind": "passive",
+      "position": [
+        0,
+        3
+      ],
+      "branch": "survival",
+      "requires_any": [
+        "pathfinder",
+        "climber"
+      ],
+      "max_rank": 3,
+      "effects": [
+        {
+          "type": "attribute",
+          "attribute": "minecraft:mining_efficiency",
+          "operation": "add_value",
+          "amount": 1
+        }
+      ]
+    },
+    {
+      "key": "attunement",
+      "kind": "passive",
+      "position": [
+        1,
+        0
+      ],
+      "branch": "arcane",
+      "requires": [
+        "awakening"
+      ],
+      "effects": [
+        {
+          "type": "skill_proficiency",
+          "skill": "frosthain:arcana"
+        }
+      ]
+    },
+    {
+      "key": "arcane_bolt",
+      "kind": "active",
+      "position": [
+        2,
+        0
+      ],
+      "branch": "arcane",
+      "requires": [
+        "attunement"
+      ],
+      "effects": [
+        {
+          "type": "grant_power",
+          "power": "frosthain:arcane_bolt"
+        }
+      ]
+    },
+    {
+      "key": "rune_ward",
+      "kind": "active",
+      "position": [
+        2,
+        1
+      ],
+      "branch": "arcane",
+      "requires": [
+        "attunement"
+      ],
+      "required_level": 3,
+      "effects": [
+        {
+          "type": "grant_power",
+          "power": "frosthain:rune_ward"
+        }
+      ]
+    },
+    {
+      "key": "spell_focus",
+      "kind": "passive",
+      "position": [
+        3,
+        0
+      ],
+      "branch": "arcane",
+      "requires_any": [
+        "arcane_bolt",
+        "rune_ward"
+      ],
+      "max_rank": 3,
+      "required_level": 5,
+      "effects": [
+        {
+          "type": "attribute",
+          "attribute": "frosthain:spell_power_max",
+          "operation": "add_value",
+          "amount": 10
+        }
+      ]
+    },
+    {
+      "key": "frostbound",
+      "kind": "keystone",
+      "position": [
+        4,
+        0
+      ],
+      "branch": "arcane",
+      "requires": [
+        "spell_focus"
+      ],
+      "required_level": 10,
+      "exclusive_group": "general_keystone",
+      "effects": [
+        {
+          "type": "resistance",
+          "damage_type": "#minecraft:is_freezing",
+          "amount": 1.0
+        },
+        {
+          "type": "attribute",
+          "attribute": "frosthain:spell_power_max",
+          "operation": "add_value",
+          "amount": 20
+        }
+      ]
+    }
+  ]
+}

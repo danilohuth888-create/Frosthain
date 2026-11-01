@@ -1,0 +1,38 @@
+{
+  "source": "frosthain:srd_5_2_1",
+  "adapted": true,
+  "hit_die": 8,
+  "primary_abilities": [
+    "charisma"
+  ],
+  "saving_throws": [
+    "wisdom",
+    "charisma"
+  ],
+  "multiclass_requirements": [
+    {
+      "charisma": 13
+    }
+  ],
+  "caster_progression": "none",
+  "resource": "frosthain:pact_magic",
+  "subclass_level": 3,
+  "skill_choices": {
+    "count": 2,
+    "from": [
+      "frosthain:arcana",
+      "frosthain:deception",
+      "frosthain:history",
+      "frosthain:intimidation",
+      "frosthain:investigation",
+      "frosthain:nature",
+      "frosthain:religion"
+    ]
+  },
+  "armor_training": [
+    "light"
+  ],
+  "weapon_proficiencies": [
+    "simple"
+  ]
+}

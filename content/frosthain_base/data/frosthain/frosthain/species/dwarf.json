@@ -1,0 +1,40 @@
+{
+  "source": "frosthain:srd_5_2_1",
+  "adapted": true,
+  "size": "medium",
+  "traits": [
+    {
+      "type": "flag",
+      "flag": "frosthain:darkvision"
+    },
+    {
+      "type": "attribute",
+      "attribute": "minecraft:scale",
+      "operation": "add_value",
+      "amount": -0.1
+    },
+    {
+      "type": "attribute",
+      "attribute": "minecraft:max_health",
+      "operation": "add_value",
+      "amount": 2
+    },
+    {
+      "type": "attribute",
+      "attribute": "minecraft:mining_efficiency",
+      "operation": "add_value",
+      "amount": 1.0
+    },
+    {
+      "type": "resistance",
+      "damage_type": "#frosthain:poison",
+      "amount": 0.5
+    }
+  ],
+  "appearance": {
+    "height_scale": [
+      0.95,
+      1.02
+    ]
+  }
+}

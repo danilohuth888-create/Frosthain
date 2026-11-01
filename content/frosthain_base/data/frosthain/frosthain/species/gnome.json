@@ -1,0 +1,50 @@
+{
+  "source": "frosthain:srd_5_2_1",
+  "adapted": true,
+  "size": "small",
+  "traits": [
+    {
+      "type": "attribute",
+      "attribute": "minecraft:scale",
+      "operation": "add_value",
+      "amount": -0.3
+    },
+    {
+      "type": "flag",
+      "flag": "frosthain:darkvision"
+    }
+  ],
+  "lineages": [
+    {
+      "key": "forest_gnome",
+      "traits": [
+        {
+          "type": "skill_proficiency",
+          "skill": "frosthain:animal_handling"
+        }
+      ]
+    },
+    {
+      "key": "rock_gnome",
+      "traits": [
+        {
+          "type": "attribute",
+          "attribute": "minecraft:mining_efficiency",
+          "operation": "add_value",
+          "amount": 0.5
+        }
+      ]
+    }
+  ],
+  "appearance": {
+    "height_scale": [
+      0.95,
+      1.05
+    ],
+    "features": {
+      "ears": [
+        "frosthain:ears/rounded_large"
+      ]
+    }
+  }
+}

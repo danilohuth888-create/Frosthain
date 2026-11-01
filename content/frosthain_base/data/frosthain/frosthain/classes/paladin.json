@@ -1,0 +1,43 @@
+{
+  "source": "frosthain:srd_5_2_1",
+  "adapted": true,
+  "hit_die": 10,
+  "primary_abilities": [
+    "strength",
+    "charisma"
+  ],
+  "saving_throws": [
+    "wisdom",
+    "charisma"
+  ],
+  "multiclass_requirements": [
+    {
+      "strength": 13,
+      "charisma": 13
+    }
+  ],
+  "caster_progression": "half",
+  "resource": "frosthain:spell_power",
+  "subclass_level": 3,
+  "skill_choices": {
+    "count": 2,
+    "from": [
+      "frosthain:athletics",
+      "frosthain:insight",
+      "frosthain:intimidation",
+      "frosthain:medicine",
+      "frosthain:persuasion",
+      "frosthain:religion"
+    ]
+  },
+  "armor_training": [
+    "light",
+    "medium",
+    "heavy",
+    "shields"
+  ],
+  "weapon_proficiencies": [
+    "simple",
+    "martial"
+  ]
+}

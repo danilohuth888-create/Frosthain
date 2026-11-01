@@ -1,0 +1,33 @@
+{
+  "source": "frosthain:srd_5_2_1",
+  "adapted": true,
+  "size": "small",
+  "traits": [
+    {
+      "type": "attribute",
+      "attribute": "minecraft:scale",
+      "operation": "add_value",
+      "amount": -0.25
+    },
+    {
+      "type": "flag",
+      "flag": "frosthain:lucky"
+    },
+    {
+      "type": "flag",
+      "flag": "frosthain:nimble_escape"
+    },
+    {
+      "type": "attribute",
+      "attribute": "minecraft:sneaking_speed",
+      "operation": "add_multiplied_base",
+      "amount": 0.1
+    }
+  ],
+  "appearance": {
+    "height_scale": [
+      0.95,
+      1.05
+    ]
+  }
+}

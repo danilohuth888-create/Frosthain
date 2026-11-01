@@ -1,0 +1,19 @@
+{
+  "source": "frosthain:srd_5_2_1",
+  "adapted": true,
+  "size": "medium",
+  "traits": [
+    {
+      "type": "attribute",
+      "attribute": "minecraft:max_health",
+      "operation": "add_value",
+      "amount": 2
+    }
+  ],
+  "appearance": {
+    "height_scale": [
+      0.92,
+      1.08
+    ]
+  }
+}

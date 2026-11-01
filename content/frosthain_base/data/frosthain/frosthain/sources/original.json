@@ -1,0 +1,7 @@
+{
+  "title": "FROSTHAIN Originalinhalte",
+  "publisher": "FROSTHAIN-Projekt",
+  "license": "FROSTHAIN-PROJECT",
+  "status": "approved",
+  "notes": "Eigene Inhalte des Projekts. Die Lizenz für Code und Inhalte legt der Projektinhaber fest (siehe docs/adr/0005-lizenzen-und-inhalte.md)."
+}

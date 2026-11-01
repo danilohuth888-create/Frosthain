@@ -1,0 +1,7 @@
+{
+  "source": "frosthain:original",
+  "color": "#4ecdc4",
+  "base_maximum": 50,
+  "regeneration_per_second": 2.0,
+  "regenerates_in_combat": true
+}

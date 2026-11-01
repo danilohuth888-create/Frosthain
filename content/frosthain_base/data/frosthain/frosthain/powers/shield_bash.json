@@ -1,0 +1,11 @@
+{
+  "source": "frosthain:original",
+  "kind": "active",
+  "resource": "frosthain:stamina",
+  "cost": 20,
+  "cooldown_ticks": 200,
+  "school": "martial",
+  "tags": [
+    "control"
+  ]
+}

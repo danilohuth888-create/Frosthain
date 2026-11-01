@@ -1,0 +1,67 @@
+{
+  "source": "frosthain:srd_5_2_1",
+  "adapted": true,
+  "size": "medium",
+  "traits": [
+    {
+      "type": "flag",
+      "flag": "frosthain:darkvision"
+    },
+    {
+      "type": "flag",
+      "flag": "frosthain:fey_ancestry"
+    },
+    {
+      "type": "skill_proficiency",
+      "skill": "frosthain:perception"
+    }
+  ],
+  "lineages": [
+    {
+      "key": "drow",
+      "traits": [
+        {
+          "type": "attribute",
+          "attribute": "minecraft:sneaking_speed",
+          "operation": "add_multiplied_base",
+          "amount": 0.15
+        }
+      ]
+    },
+    {
+      "key": "high_elf",
+      "traits": [
+        {
+          "type": "skill_proficiency",
+          "skill": "frosthain:arcana"
+        }
+      ]
+    },
+    {
+      "key": "wood_elf",
+      "traits": [
+        {
+          "type": "attribute",
+          "attribute": "minecraft:movement_speed",
+          "operation": "add_multiplied_base",
+          "amount": 0.05
+        }
+      ]
+    }
+  ],
+  "appearance": {
+    "height_scale": [
+      0.95,
+      1.08
+    ],
+    "features": {
+      "ears": [
+        "frosthain:ears/pointed_short",
+        "frosthain:ears/pointed_long"
+      ]
+    },
+    "required_slots": [
+      "ears"
+    ]
+  }
+}

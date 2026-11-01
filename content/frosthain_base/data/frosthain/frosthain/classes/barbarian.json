@@ -1,0 +1,40 @@
+{
+  "source": "frosthain:srd_5_2_1",
+  "adapted": true,
+  "hit_die": 12,
+  "primary_abilities": [
+    "strength"
+  ],
+  "saving_throws": [
+    "strength",
+    "constitution"
+  ],
+  "multiclass_requirements": [
+    {
+      "strength": 13
+    }
+  ],
+  "caster_progression": "none",
+  "resource": "frosthain:fury",
+  "subclass_level": 3,
+  "skill_choices": {
+    "count": 2,
+    "from": [
+      "frosthain:animal_handling",
+      "frosthain:athletics",
+      "frosthain:intimidation",
+      "frosthain:nature",
+      "frosthain:perception",
+      "frosthain:survival"
+    ]
+  },
+  "armor_training": [
+    "light",
+    "medium",
+    "shields"
+  ],
+  "weapon_proficiencies": [
+    "simple",
+    "martial"
+  ]
+}

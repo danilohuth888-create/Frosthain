@@ -1,0 +1,39 @@
+{
+  "source": "frosthain:srd_5_2_1",
+  "adapted": true,
+  "size": "medium",
+  "traits": [
+    {
+      "type": "attribute",
+      "attribute": "minecraft:scale",
+      "operation": "add_value",
+      "amount": 0.05
+    },
+    {
+      "type": "flag",
+      "flag": "frosthain:darkvision"
+    },
+    {
+      "type": "flag",
+      "flag": "frosthain:relentless_endurance"
+    },
+    {
+      "type": "attribute",
+      "attribute": "minecraft:movement_speed",
+      "operation": "add_multiplied_base",
+      "amount": 0.03
+    }
+  ],
+  "appearance": {
+    "height_scale": [
+      0.97,
+      1.06
+    ],
+    "features": {
+      "tusks": [
+        "frosthain:tusks/small",
+        "frosthain:tusks/large"
+      ]
+    }
+  }
+}

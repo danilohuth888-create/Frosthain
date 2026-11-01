@@ -1,0 +1,16 @@
+{
+  "source": "frosthain:srd_5_2_1",
+  "adapted": true,
+  "ability_options": [
+    "strength",
+    "dexterity",
+    "constitution"
+  ],
+  "skill_proficiencies": [
+    "frosthain:athletics",
+    "frosthain:intimidation"
+  ],
+  "starting_items": [
+    "minecraft:shield"
+  ]
+}

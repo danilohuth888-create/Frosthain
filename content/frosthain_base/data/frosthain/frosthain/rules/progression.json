@@ -1,0 +1,39 @@
+{
+  "_comment": "Erfahrungskurve EP(Stufe) = 150 * (Stufe - 1) * Stufe. Eigene RPG-Erfahrung, unabhängig von Vanilla-XP. Balancing-Startwert, wird im Spieltest angepasst.",
+  "max_level": 20,
+  "experience_thresholds": [
+    0,
+    300,
+    900,
+    1800,
+    3000,
+    4500,
+    6300,
+    8400,
+    10800,
+    13500,
+    16500,
+    19800,
+    23400,
+    27300,
+    31500,
+    36000,
+    40800,
+    45900,
+    51300,
+    57000
+  ],
+  "talent_points_per_level": 1,
+  "bonus_talent_points": {
+    "4": 1,
+    "8": 1,
+    "12": 1,
+    "16": 1,
+    "19": 1
+  },
+  "multiclass": {
+    "enabled": true,
+    "max_classes": 3,
+    "minimum_level_before_multiclass": 3
+  }
+}
