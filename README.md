@@ -8,12 +8,13 @@ Ein eigenständiges Fantasy-RPG-Erlebnis auf Basis von Minecraft Java Edition: e
 |---|---|
 | Projektplanung (Machbarkeit, Architektur, Konzepte, Roadmap, Risiken) | ✅ [docs/](docs/) |
 | RPG-Kern ohne Minecraft: Datenmodell, Lader, Validator, Charaktererstellung, Talente, Stufen, Multiclassing, Quests, Dialoge, Speicherformat | ✅ **74 Tests grün** |
-| Basisinhalte: 12 Klassen, 14 Unterklassen, 9 Spezies, 6 Hintergründe, 3 Talentbäume (inkl. Runenpfad), NPC Eldrin, 3 Quests, 1 Dialog, Deutsch + Englisch | ✅ Validator: 0 Fehler |
+| Basisinhalte: 12 SRD-Klassen + Runenmagier, 15 Unterklassen, 9 Spezies, 6 Hintergründe, 3 Talentbäume (inkl. Runenpfad), NPC Eldrin, 3 Quests, 1 Dialog, Deutsch + Englisch | ✅ Validator: 0 Fehler |
 | UI nach Referenzbildern B · D · F: Implementierungsplan, Präsentationslogik (`ui`), interaktiver Desktop-Prototyp | ✅ **30 Tests grün**, [Screenshots](docs/prototyp/) |
-| Fabric-Mod für Minecraft 26.3 | 🔶 baut im CI (Loader 0.20.1, Fabric API 0.165.0+26.3); **Dedicated Server startet mit geladenen Inhalten (CI)**; Client noch nicht geprüft |
+| Fabric-Mod für Minecraft 26.3 | 🔶 **Client und Server starten im CI** und laden alle Inhalte (0 Fehler); sichtbare RPG-Funktionen im Spiel noch nicht eingebaut |
+| Windows-Installer (ohne winget/Java/Git, SHA-256, Backup/Rollback) | ✅ automatisiert getestet (PowerShell 5.1 und 7), Vorabversion `frosthain-dev` |
 | CI auf GitHub (Ubuntu + Windows) | ✅ grün |
 | Launcher (Tauri 2, Anmeldung über den offiziellen Minecraft Launcher) | ⏳ M1.1 |
-| Im Spiel spielbar | ❌ noch nicht |
+| RPG im Spiel spielbar | ❌ noch nicht – siehe [Stand und Spielanleitung](docs/11-windows-test-und-uebergabe.md) |
 
 Lizenz: FROSTHAIN-Eigenentwicklungen sind proprietär, alle Rechte vorbehalten ([LICENSE.md](LICENSE.md)); Drittanbieter siehe [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
@@ -29,7 +30,8 @@ Lizenz: FROSTHAIN-Eigenentwicklungen sind proprietär, alle Rechte vorbehalten (
 8. [Risikoanalyse](docs/08-risikoanalyse.md)
 9. [Erster Implementierungsschritt](docs/09-erster-implementierungsschritt.md)
 10. [UI-Implementierungsplan B · D · F](docs/10-ui-implementierungsplan.md)
-11. [Windows-Installation, Testplan und Übergabe](docs/11-windows-test-und-uebergabe.md)
+11. [Installation, Spielanleitung, Testergebnisse, Übergabe](docs/11-windows-test-und-uebergabe.md)
+12. [Design „Immersive Fantasy 2.0“](docs/12-design-immersive-fantasy-2.md)
 
 Außerdem: [UI-Prototyp](docs/prototyp/) · [Referenzen und Vorgaben](docs/referenzen/) · [Inhaltskatalog und Lizenzen](docs/inhaltskatalog-und-lizenzen.md) · [Architekturentscheidungen (ADRs)](docs/adr/) · [Hinweise und Namensnennung](NOTICE.md)
 
@@ -65,7 +67,7 @@ Neue Inhalte (Klassen, Spezies, Talente) sind reine JSON-Dateien – siehe [Date
 
 ## Für Spieler
 
-Zum Testen: [Windows-Einrichtung mit einem PowerShell-Befehl](docs/11-windows-test-und-uebergabe.md). Für Endnutzer noch nicht verfügbar. Ziel: ein Download, ein PowerShell-Befehl, danach alles über den FROSTHAIN-Launcher – ohne Gradle oder Java-Builds.
+Entwicklungsstand installieren: [ein PowerShell-Befehl](docs/11-windows-test-und-uebergabe.md#111-installation-windows-1011-ohne-winget-ohne-java-ohne-git) (über den offiziellen Minecraft Launcher). Ziel: ein Download, ein PowerShell-Befehl, danach alles über den FROSTHAIN-Launcher – ohne Gradle oder Java-Builds.
 
 ---
 

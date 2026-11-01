@@ -1,53 +1,79 @@
-# 11 · Windows-Installation, Testplan und Übergabe
+# 11 · Installation, Spielanleitung, Testergebnisse und Übergabe
 
-Stand: 01.11.2026 · Branch `claude/ui-prototyp` · CI-Lauf 41338708077 (alle Jobs grün)
+Stand: 01.11.2026 · Branch `claude/ui-prototyp` · Pull Request #1 · CI-Läufe 41353429251 (push) und 41353434818 (PR), alle Jobs grün · Vorabversion `frosthain-dev`
 
-## 11.1 Einrichtung mit einem PowerShell-Befehl
+> **Ehrlicher Stand:** Die installierbare Version ist ein **Entwicklungsstand**. Minecraft startet mit FROSTHAIN und lädt alle Inhalte. Sichtbare RPG-Funktionen im Spiel (Charaktererstellung, Talentbaum, Quests, Dialoge, Runenmagie) sind **noch nicht** eingebaut. Sie existieren als getestete Logik und im Desktop-Prototyp. FROSTHAIN 1.0 ist nicht fertig.
 
-Voraussetzung: Windows 11 mit `winget` (App-Installer). Das Skript installiert bei Bedarf Git und JDK 25, holt das Repository nach `%USERPROFILE%\Frosthain`, führt alle Tests aus, baut die Mod und legt eine **getrennte** Test-Instanz unter `%LOCALAPPDATA%\Frosthain\test-instance` an. `%APPDATA%\.minecraft` und bestehende Welten bleiben unberührt.
+## 11.1 Installation (Windows 10/11, ohne winget, ohne Java, ohne Git)
+
+Voraussetzung: Der offizielle Minecraft Launcher ist installiert, wurde einmal gestartet, und du bist angemeldet. Der Launcher muss **geschlossen** sein, während das Skript läuft.
 
 ```powershell
-powershell -ExecutionPolicy Bypass -Command "irm https://raw.githubusercontent.com/danilohuth888-create/Frosthain/claude/ui-prototyp/installer/dev-test-setup.ps1 -OutFile $env:TEMP\frosthain-setup.ps1; & $env:TEMP\frosthain-setup.ps1 -Prototype"
+powershell -ExecutionPolicy Bypass -Command "irm https://github.com/danilohuth888-create/Frosthain/releases/download/frosthain-dev/install-frosthain.ps1 -OutFile $env:TEMP\install-frosthain.ps1; powershell -ExecutionPolicy Bypass -File $env:TEMP\install-frosthain.ps1"
 ```
 
-Nach dem Merge in `main` in der URL `claude/ui-prototyp` durch `main` ersetzen und `-Branch main` anhängen. Wer das Skript vorher lesen möchte: URL im Browser öffnen. **Das Skript wurde auf Windows noch nicht ausgeführt** (nur auf Linux-Seite geschrieben); Rückmeldungen bitte mit der Konsolenausgabe.
+Das Skript:
+- lädt `frosthain.jar`, `fabric-api.jar` und die Fabric-Versionsbeschreibung aus der Vorabversion und prüft jede Datei per SHA-256 (`SHA256SUMS.txt`); bei Abweichung bricht es ab, ohne etwas zu verändern;
+- sichert `launcher_profiles.json` nach `%LOCALAPPDATA%\Frosthain\backups\<Zeitstempel>` und stellt sie bei Fehlern wieder her;
+- legt die Fabric-Version additiv in `.minecraft\versions` ab und einen **eigenen Spielordner** `%LOCALAPPDATA%\Frosthain\instance` an (eigene Welten, Mods, Einstellungen);
+- trägt die Installation **„FROSTHAIN“** im offiziellen Launcher ein. Fremde Profile und Welten bleiben unberührt.
 
-## 11.2 Testplan
+Entfernen (Welten bleiben erhalten): dasselbe Skript mit `-Uninstall`. Weitere Optionen: `-MemoryGB 6`, `-InstanceDir <Ordner>`.
 
-| # | Test | Erwartung | Status |
-|---|---|---|---|
-| T1 | Skript aus 11.1 ausführen | endet mit „Fertig“, `mods` enthält `frosthain-0.1.0-SNAPSHOT.jar` und `fabric-api-0.165.0+26.3.jar` | ⏳ manuell |
-| T2 | UI-Prototyp (öffnet sich durch `-Prototype`) | HUD → `K` Talentbaum → „Kampfhaltung“ freischalten; Rechtsklick → Eldrin → „Ich bin bereit.“ → Tracker zeigt „Finde den alten Schrein …“ | ⏳ manuell |
-| T3 | Fabric-Installer: Client, Minecraft 26.3, Loader 0.20.1 | Installation „fabric-loader-0.20.1-26.3“ im offiziellen Launcher | ⏳ manuell |
-| T4 | Installation bearbeiten → Spielverzeichnis `%LOCALAPPDATA%\Frosthain\test-instance` → Spielen | Hauptmenü erscheint, Mod-Liste zeigt FROSTHAIN | ⏳ manuell |
-| T5 | Einzelspielerwelt erstellen, `test-instance\logs\latest.log` öffnen | Zeile `FROSTHAIN geladen: 12 Klassen, 9 Spezies, 3 Talentbäume, 3 Quests, 1 Dialoge – 0 Fehler` | ⏳ manuell |
-| A1 | `check` auf Ubuntu und Windows (CI) | 104 Tests grün, Inhaltsprüfung 0 Fehler | ✅ |
-| A2 | Mod-Build gegen 26.3 (CI, Ubuntu und Windows) | Jar mit `core`/`ui` als Jar-in-Jar | ✅ |
-| A3 | Fabric-Server-Start (CI, privater Testserver, EULA laut Freigabe nur dort) | `Done (3.149s)` und FROSTHAIN-Ladezeile mit 0 Fehlern | ✅ |
-| A4 | Prototyp-Screenshots headless (CI) | 9 PNGs als Artefakt | ✅ |
+Java braucht der Spieler nicht: Der offizielle Launcher bringt die passende Java-Laufzeit für Minecraft 26.3 mit. Für Entwickler gibt es `installer/dev-test-setup.ps1` (portables JDK 25 von Adoptium mit Prüfsumme, Quellcode als ZIP, Build, optional `-Prototype`).
 
-## 11.3 Was funktioniert – und was noch nicht getestet ist
+## 11.2 So spielst du (aktueller Stand)
 
-**Funktioniert und ist geprüft:** Regelkern (Charaktererstellung, Talente, Stufen, Multiclassing, Quests, Dialoge, Speicherformat), Inhaltsvalidierung mit Lizenz-Sperre, UI-Präsentationslogik, Desktop-Prototyp B/D/F, Mod-Build gegen 26.3, Start des Fabric-Servers mit geladenen Inhalten.
+1. Offiziellen Minecraft Launcher öffnen, Installation **FROSTHAIN** wählen, **Spielen**.
+2. Einzelspielerwelt erstellen und normal spielen.
+3. Nachweis, dass FROSTHAIN aktiv ist: `%LOCALAPPDATA%\Frosthain\instance\logs\latest.log` enthält `FROSTHAIN geladen: 13 Klassen, 9 Spezies, 3 Talentbäume, 3 Quests, 1 Dialoge – 0 Fehler`.
 
-**Noch nicht getestet:** Mod im Minecraft-**Client**; PowerShell-Skript auf Windows; Prototyp-Fenster auf Windows (nur headless gerendert); Barrierefreiheit/Controller.
+Die Oberflächen (HUD, Talentbaum, Dialog) kannst du im **Desktop-Prototyp** ausprobieren: `installer\dev-test-setup.ps1 -Prototype` (siehe `docs/prototyp/README.md`).
 
-**Noch nicht umgesetzt:** Oberflächen in Minecraft (Talentbaum, Questtracker, Dialog, Charaktereditor); Anwenden der Modifikatoren im Spiel; Engine-Funktionen (alle `PLANNED`); Datapack-Reload; Spielerdaten-Speicherung; NPC-Entity; Launcher; Klasse „Runenmagier“ (beschlossen, nicht angelegt); Talentbäume für 11 Klassen.
+## 11.3 Testergebnisse (GitHub Actions, 01.11.2026)
 
-## 11.4 Bekannte offene Punkte
-
-| # | Punkt | Auswirkung |
+| Test | Umgebung | Ergebnis |
 |---|---|---|
-| O1 | In der Cloud-Sitzung sind Fabric-/Mojang-Server weiterhin gesperrt (HTTP 403) – Mod wird nur im CI gebaut | Entwicklungsumweg über CI |
-| O2 | Gradle-Wrapper-Prüfsumme nicht gepinnt | Supply-Chain-Härtung offen |
-| O3 | GitHub-Actions-Warnungen: Node 20 veraltet (`checkout@v4`, `upload-artifact@v4`, `setup-gradle@v4`) | Aktionen aktualisieren |
-| O4 | Schriften haben keine Glyphen für ▸ ✓ ✗ ↑ ↓; Prototyp zeichnet sie als Vektoren – im Spiel genauso lösen | sonst Kästchen statt Zeichen |
-| O5 | Textumbruch kann eine Zeile mit „…“ beginnen | kosmetisch |
-| O6 | SRD-Inhaltsliste nur aus Sekundärquellen, Abgleich mit dem Original-PDF offen | Lizenz-Sorgfalt (M3.1) |
-| O7 | Der Server-Starttest meldet einmalig `NoSuchFileException: server.properties` | normal beim ersten Start, harmlos |
+| 104 JUnit-Tests (Kern 74, UI 30) + Inhaltsprüfung (0 Fehler) | Ubuntu und Windows | ✅ |
+| Mod-Build gegen Minecraft 26.3 (Loader 0.20.1, Fabric API 0.165.0+26.3) | Ubuntu und Windows | ✅ |
+| **Dedicated Server** startet, lädt FROSTHAIN | Ubuntu | ✅ `Done`, 0 Fehler |
+| **Minecraft-Client** startet (Fabric Client-GameTest), lädt FROSTHAIN, erstellt und speichert eine Einzelspielerwelt | Ubuntu, xvfb, Software-Rendering | ✅ `FROSTHAIN geladen: 13 Klassen … 0 Fehler`; Grafik: OpenGL ohne GPU nicht verfügbar → Minecraft wechselt automatisch auf **Vulkan** (llvmpipe) |
+| Ingame-Screenshots (Titelbildschirm, Welt) | Artefakt `client-screenshots` im CI-Lauf | erzeugt; aus der Cloud-Sitzung nicht abrufbar (Download auf GitHub möglich) |
+| **Installer**: Installation, Update, manipulierte Datei, fehlender Launcher, Deinstallation, fremde Profile/Welten unberührt, Datei ohne BOM | Windows PowerShell 5.1 **und** PowerShell 7 | ✅ 2 × 19 Prüfungen |
+| Portables JDK 25 ohne winget (Adoptium, SHA-256) | Windows | ✅ |
+| UI-Prototyp-Screenshots | Ubuntu headless | ✅ |
 
-## 11.5 Nächste drei Entwicklungsschritte
+**Noch nicht getestet:** Installation auf deinem MSI-Laptop (echter Launcher, echte Anmeldung); Spielen mit echter Grafikkarte; Prototyp-Fenster unter Windows.
 
-1. **Client-Start und Datapack-Reload (M0.3 abschließen):** Inhalte über den Ressourcen-Manager laden (`/reload`), Client-Start im CI (Fabric Client-GameTest, headless) und T1–T5 auf Windows.
-2. **Talentbaum im Spiel (U5, Teil 1):** `TalentTreeScreen` als Zeichenschicht über `TalentTreeView`, Spieleranhang für den Charakterbogen, Paket „Talent freischalten“ mit Serverprüfung, Taste `K`.
-3. **Questtracker und Dialog im Spiel (U5, Teil 2):** HUD-Element über die Fabric-HUD-API, `DialogueScreen` mit HUD-Ausblendung, Rechtsklick auf NPC (E optional, ohne Inventar zu blockieren).
+## 11.4 Funktionsübersicht
+
+| Bereich | Umgesetzt und getestet | Im Spiel sichtbar |
+|---|---|---|
+| Klassen (12 SRD + Runenmagier), Unterklassen, 9 Spezies, Hintergründe, Attribute | Daten + Regeln | ❌ |
+| Charaktererstellung (Regeln, Aussehen-Validierung, Speicherformat) | ✅ | ❌ |
+| Talentbäume (allgemein mit 4 Zweigen, Runenpfad, Krieger), Vergabe/Rücknahme/Reset, Multiclassing | ✅ | ❌ |
+| Quests (Haupt-/Neben-, aufeinanderfolgende Ziele, Folgequests), NPC Eldrin, Dialog „Das Erwachen“ | ✅ | ❌ |
+| Fähigkeiten (7 + Runenstoß) | nur Metadaten | ❌ |
+| Engine-Funktionen (Dunkelsicht usw.) | spezifiziert (`PLANNED`) | ❌ |
+| UI-Logik HUD/Talentbaum/Dialog + Desktop-Prototyp | ✅ | Prototyp |
+| Fabric-Mod: lädt und prüft Inhalte beim Start | ✅ Server + Client | nur im Log |
+| Installer (Bridge-Modus über offiziellen Launcher) | ✅ automatisiert | – |
+| Eigener Launcher (Tauri) | Konzept | ❌ |
+
+## 11.5 Bekannte Einschränkungen und offene Punkte
+
+| # | Punkt |
+|---|---|
+| O1 | In der Cloud-Arbeitsumgebung sind Fabric-/Mojang-Server gesperrt; Mod-Entwicklung läuft über CI-Durchläufe (langsam). Abhilfe: Netzwerkfreigabe in einer neuen Sitzung prüfen. |
+| O2 | Viele Fabric-Methoden heißen in 26.x anders (Mojang-Namen). Die echte API von `TestSingleplayerContext` wurde ins CI-Log geschrieben: `getServer`, `getConnection`, `getWorldSave`, `close`. |
+| O3 | Die Vorabversion `frosthain-dev` wird bei jedem Push auf den Branch neu gebaut; sie ist ein Entwicklungsstand ohne Code-Signatur. |
+| O4 | Gradle-Wrapper-Prüfsumme nicht gepinnt. |
+| O5 | Schriften ohne Glyphen ▸ ✓ ✗ ↑ ↓ – im Spiel wie im Prototyp als Grafik zeichnen. |
+| O6 | SRD-Inhaltsliste noch nicht mit dem Original-PDF abgeglichen; Halbelf/Wolfsmensch aus den Referenzen noch nicht angelegt. |
+| O7 | Der Prototyp nutzt noch die ältere, stärker verzierte Optik; Farben sind auf Design 2.0 umgestellt, Rahmen noch nicht. |
+
+## 11.6 Nächste Entwicklungsschritte (Reihenfolge nach Prioritätenliste)
+
+1. **RPG-Daten im Spiel verankern:** Charakterbogen als Spieleranhang (Fabric Data Attachment), Inhalte über Datapack-Reload, Netzwerkpakete mit Serverprüfung; Client-GameTest um Assertions erweitern.
+2. **Charaktererstellung im Spiel** (Design 2.0, großes Minecraft-Modell) beim ersten Betreten einer Welt, danach Talentbaum auf `K` mit serverseitiger Vergabe.
+3. **Fähigkeiten wirksam machen** (Ressourcen, Abklingzeiten, Fähigkeitenleiste, Runenstoß als erste echte Runenfähigkeit), danach Questtracker, Questjournal und NPC-Dialog mit Eldrin in der Welt.

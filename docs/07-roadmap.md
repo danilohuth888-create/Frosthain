@@ -25,7 +25,7 @@ flowchart LR
 |---|---|---|---|---|
 | M0.1 | Repository, Build, Architekturentscheidungen | Gradle 9.4 + JDK 25 baut; `./gradlew check` grün; ADRs 0001–0010 | S | ✅ |
 | M0.2 | Datenmodell, Registry, Validator, Basisinhalte | 58 Tests grün; Validator: 0 Fehler auf `content/`; Lizenz-Sperre per Test belegt | M | ✅ |
-| M0.3 | Fabric-Mod-Skelett gegen Minecraft 26.3 | Modul `:mod` baut mit `net.fabricmc.fabric-loom` ✅; Versionen gepinnt ✅; Inhalte werden beim Start über `core` geladen und geprüft (Code ✅, Start ⏳); Dedicated Server startet im CI mit geladenen Inhalten ✅; Dev-Client ⏳; Datapack-Reload ⏳; 1 GameTest headless ⏳ | M | 🔶 Teil 1 (Build im CI) erledigt |
+| M0.3 | Fabric-Mod-Skelett gegen Minecraft 26.3 | Modul `:mod` baut mit `net.fabricmc.fabric-loom` ✅; Versionen gepinnt ✅; Inhalte werden beim Start über `core` geladen und geprüft (Code ✅, Start ⏳); Dedicated Server ✅ und Client (Client-GameTest, Welt erstellt) ✅ starten im CI mit geladenen Inhalten; Datapack-Reload ⏳; 1 GameTest headless ⏳ | M | 🔶 Teil 1 (Build im CI) erledigt |
 | M0.4 | Remote-Repository und CI | GitHub-Repository ✅; CI (Ubuntu + Windows) grün ✅; Gradle-Wrapper-Prüfsumme gegen gradle.org pinnen ⏳; Branch-Schutz für `main` ⏳ | S | 🔶 |
 
 ## Phase 1 – Launcher
@@ -36,7 +36,7 @@ flowchart LR
 | M1.2 | Launcher-Oberfläche + Brückenmodus (Hauptweg der Anmeldung) | Tauri-App mit Start, Einstellungen, Diagnose-Grundlagen; legt die Installation „FROSTHAIN“ im offiziellen Launcher an (vorher Backup, auch Store-Variante); öffnet den offiziellen Launcher; manueller Test auf Windows 11: Installation → Eintrag sichtbar → Anmeldung im offiziellen Launcher → Spiel startet mit FROSTHAIN-Mod | L | ⏳ |
 | M1.3 | ~~Eigene Microsoft-Anmeldung~~ | zurückgestellt: Azure-App funktioniert nicht (ADR 0004); Anmeldung über den offiziellen Launcher (M1.2) | – | zurückgestellt |
 | M1.4 | Modmanager, Sicherung, Diagnose, `.mrpack`-Export | Aktivieren/Deaktivieren/Hinzufügen (Modrinth); `.mrpack`-Export importierbar in Prism Launcher; Abhängigkeits- und Konfliktprüfung mit Testfällen; Backup vor jedem Update, Wiederherstellung getestet; Absturzanalyse für mindestens 5 bekannte Fehlerbilder | L | ⏳ |
-| M1.5 | Installation und Updates | Installer pro Benutzer; `install.ps1` mit Prüfsummenprüfung; signierter Selbst-Update; signiertes Modpack-Manifest; Test auf frischem Windows 11 | M | ⏳ |
+| M1.5 | Installation und Updates | 🔶 `install-frosthain.ps1` (Bridge-Modus, SHA-256, Backup/Rollback, ohne winget) im CI auf Windows getestet ✅; Installer pro Benutzer; signierter Selbst-Update; signiertes Modpack-Manifest; Test auf frischem Windows 11 | M | ⏳ |
 
 ## Phase 2 – Charaktereditor
 
