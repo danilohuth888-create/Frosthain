@@ -3,11 +3,13 @@
   "owner": {
     "type": "general"
   },
+  "category": "general",
   "root": "awakening",
   "branches": [
     "combat",
-    "survival",
-    "arcane"
+    "magic",
+    "crafting",
+    "survival"
   ],
   "nodes": [
     {
@@ -16,18 +18,40 @@
       "position": [
         0,
         0
-      ]
+      ],
+      "icon": "frosthain:icon/tree"
+    },
+    {
+      "key": "combat_stance",
+      "kind": "passive",
+      "position": [
+        -1,
+        -1
+      ],
+      "branch": "combat",
+      "requires": [
+        "awakening"
+      ],
+      "effects": [
+        {
+          "type": "attribute",
+          "attribute": "minecraft:attack_damage",
+          "operation": "add_multiplied_base",
+          "amount": 0.1
+        }
+      ],
+      "icon": "frosthain:icon/swords"
     },
     {
       "key": "toughness",
       "kind": "passive",
       "position": [
-        -1,
-        0
+        -2,
+        -1
       ],
       "branch": "combat",
       "requires": [
-        "awakening"
+        "combat_stance"
       ],
       "max_rank": 3,
       "effects": [
@@ -37,14 +61,34 @@
           "operation": "add_value",
           "amount": 2
         }
-      ]
+      ],
+      "icon": "frosthain:icon/heart"
+    },
+    {
+      "key": "dodge",
+      "kind": "active",
+      "position": [
+        -1,
+        -2
+      ],
+      "branch": "combat",
+      "requires": [
+        "combat_stance"
+      ],
+      "effects": [
+        {
+          "type": "grant_power",
+          "power": "frosthain:dodge_roll"
+        }
+      ],
+      "icon": "frosthain:icon/boot"
     },
     {
       "key": "weapon_training",
       "kind": "passive",
       "position": [
         -2,
-        0
+        -2
       ],
       "branch": "combat",
       "requires": [
@@ -58,32 +102,15 @@
           "operation": "add_value",
           "amount": 0.5
         }
-      ]
-    },
-    {
-      "key": "dodge",
-      "kind": "active",
-      "position": [
-        -2,
-        -1
       ],
-      "branch": "combat",
-      "requires": [
-        "toughness"
-      ],
-      "effects": [
-        {
-          "type": "grant_power",
-          "power": "frosthain:dodge_roll"
-        }
-      ]
+      "icon": "frosthain:icon/sword"
     },
     {
       "key": "stalwart",
       "kind": "passive",
       "position": [
         -3,
-        0
+        -2
       ],
       "branch": "combat",
       "requires": [
@@ -98,14 +125,15 @@
           "operation": "add_value",
           "amount": 0.1
         }
-      ]
+      ],
+      "icon": "frosthain:icon/shield"
     },
     {
       "key": "bloodlust",
       "kind": "keystone",
       "position": [
-        -4,
-        -1
+        -3,
+        -3
       ],
       "branch": "combat",
       "requires": [
@@ -126,41 +154,252 @@
           "operation": "add_value",
           "amount": -2
         }
-      ]
+      ],
+      "icon": "frosthain:icon/flame"
     },
     {
-      "key": "bulwark",
+      "key": "attunement",
+      "kind": "passive",
+      "position": [
+        1,
+        -1
+      ],
+      "branch": "magic",
+      "requires": [
+        "awakening"
+      ],
+      "effects": [
+        {
+          "type": "skill_proficiency",
+          "skill": "frosthain:arcana"
+        }
+      ],
+      "icon": "frosthain:icon/eye"
+    },
+    {
+      "key": "arcane_bolt",
+      "kind": "active",
+      "position": [
+        2,
+        -1
+      ],
+      "branch": "magic",
+      "requires": [
+        "attunement"
+      ],
+      "effects": [
+        {
+          "type": "grant_power",
+          "power": "frosthain:arcane_bolt"
+        }
+      ],
+      "icon": "frosthain:icon/bolt"
+    },
+    {
+      "key": "rune_ward",
+      "kind": "active",
+      "position": [
+        1,
+        -2
+      ],
+      "branch": "magic",
+      "requires": [
+        "attunement"
+      ],
+      "required_level": 3,
+      "effects": [
+        {
+          "type": "grant_power",
+          "power": "frosthain:rune_ward"
+        }
+      ],
+      "icon": "frosthain:icon/rune"
+    },
+    {
+      "key": "spell_focus",
+      "kind": "passive",
+      "position": [
+        2,
+        -2
+      ],
+      "branch": "magic",
+      "requires_any": [
+        "arcane_bolt",
+        "rune_ward"
+      ],
+      "max_rank": 3,
+      "required_level": 5,
+      "effects": [
+        {
+          "type": "attribute",
+          "attribute": "frosthain:spell_power_max",
+          "operation": "add_value",
+          "amount": 10
+        }
+      ],
+      "icon": "frosthain:icon/star"
+    },
+    {
+      "key": "mana_flow",
+      "kind": "passive",
+      "position": [
+        3,
+        -2
+      ],
+      "branch": "magic",
+      "requires": [
+        "spell_focus"
+      ],
+      "max_rank": 2,
+      "effects": [
+        {
+          "type": "attribute",
+          "attribute": "frosthain:spell_power_regen",
+          "operation": "add_multiplied_base",
+          "amount": 0.1
+        }
+      ],
+      "icon": "frosthain:icon/drop"
+    },
+    {
+      "key": "arcane_overload",
       "kind": "keystone",
       "position": [
-        -4,
-        1
+        3,
+        -3
       ],
-      "branch": "combat",
+      "branch": "magic",
       "requires": [
-        "stalwart"
+        "spell_focus"
       ],
       "required_level": 10,
       "exclusive_group": "general_keystone",
       "effects": [
         {
           "type": "attribute",
-          "attribute": "minecraft:armor",
+          "attribute": "frosthain:spell_power_max",
           "operation": "add_value",
-          "amount": 4
+          "amount": 20
         },
         {
           "type": "attribute",
-          "attribute": "minecraft:movement_speed",
-          "operation": "add_multiplied_base",
-          "amount": -0.05
+          "attribute": "minecraft:armor",
+          "operation": "add_value",
+          "amount": -2
         }
-      ]
+      ],
+      "icon": "frosthain:icon/crystal"
+    },
+    {
+      "key": "miners_luck",
+      "kind": "passive",
+      "position": [
+        1,
+        1
+      ],
+      "branch": "crafting",
+      "requires": [
+        "awakening"
+      ],
+      "max_rank": 3,
+      "effects": [
+        {
+          "type": "attribute",
+          "attribute": "minecraft:mining_efficiency",
+          "operation": "add_value",
+          "amount": 1
+        }
+      ],
+      "icon": "frosthain:icon/pickaxe"
+    },
+    {
+      "key": "steady_hands",
+      "kind": "passive",
+      "position": [
+        2,
+        1
+      ],
+      "branch": "crafting",
+      "requires": [
+        "miners_luck"
+      ],
+      "effects": [
+        {
+          "type": "attribute",
+          "attribute": "minecraft:block_interaction_range",
+          "operation": "add_value",
+          "amount": 0.5
+        }
+      ],
+      "icon": "frosthain:icon/hammer"
+    },
+    {
+      "key": "ore_sense",
+      "kind": "passive",
+      "position": [
+        1,
+        2
+      ],
+      "branch": "crafting",
+      "requires": [
+        "miners_luck"
+      ],
+      "required_level": 3,
+      "effects": [
+        {
+          "type": "flag",
+          "flag": "frosthain:ore_sense"
+        }
+      ],
+      "icon": "frosthain:icon/gem"
+    },
+    {
+      "key": "thrifty_crafting",
+      "kind": "passive",
+      "position": [
+        2,
+        2
+      ],
+      "branch": "crafting",
+      "requires_any": [
+        "steady_hands",
+        "ore_sense"
+      ],
+      "required_level": 5,
+      "effects": [
+        {
+          "type": "flag",
+          "flag": "frosthain:thrifty_crafting"
+        }
+      ],
+      "icon": "frosthain:icon/hourglass"
+    },
+    {
+      "key": "masterwork",
+      "kind": "keystone",
+      "position": [
+        3,
+        3
+      ],
+      "branch": "crafting",
+      "requires": [
+        "thrifty_crafting"
+      ],
+      "required_level": 10,
+      "exclusive_group": "general_keystone",
+      "effects": [
+        {
+          "type": "flag",
+          "flag": "frosthain:masterwork"
+        }
+      ],
+      "icon": "frosthain:icon/crown"
     },
     {
       "key": "forager",
       "kind": "passive",
       "position": [
-        0,
+        -1,
         1
       ],
       "branch": "survival",
@@ -175,13 +414,36 @@
           "operation": "add_value",
           "amount": 0.5
         }
-      ]
+      ],
+      "icon": "frosthain:icon/leaf"
+    },
+    {
+      "key": "deep_breath",
+      "kind": "passive",
+      "position": [
+        -2,
+        1
+      ],
+      "branch": "survival",
+      "requires": [
+        "forager"
+      ],
+      "max_rank": 2,
+      "effects": [
+        {
+          "type": "attribute",
+          "attribute": "minecraft:oxygen_bonus",
+          "operation": "add_value",
+          "amount": 1
+        }
+      ],
+      "icon": "frosthain:icon/wave"
     },
     {
       "key": "pathfinder",
       "kind": "passive",
       "position": [
-        0,
+        -1,
         2
       ],
       "branch": "survival",
@@ -202,39 +464,20 @@
           "operation": "add_value",
           "amount": 1
         }
-      ]
-    },
-    {
-      "key": "deep_breath",
-      "kind": "passive",
-      "position": [
-        -1,
-        2
       ],
-      "branch": "survival",
-      "requires": [
-        "forager"
-      ],
-      "max_rank": 2,
-      "effects": [
-        {
-          "type": "attribute",
-          "attribute": "minecraft:oxygen_bonus",
-          "operation": "add_value",
-          "amount": 1
-        }
-      ]
+      "icon": "frosthain:icon/paw"
     },
     {
       "key": "climber",
       "kind": "passive",
       "position": [
-        1,
+        -2,
         2
       ],
       "branch": "survival",
-      "requires": [
-        "forager"
+      "requires_any": [
+        "deep_breath",
+        "pathfinder"
       ],
       "required_level": 5,
       "effects": [
@@ -244,134 +487,37 @@
           "operation": "add_value",
           "amount": 0.4
         }
-      ]
+      ],
+      "icon": "frosthain:icon/mountain"
     },
     {
-      "key": "miners_luck",
-      "kind": "passive",
+      "key": "wild_heart",
+      "kind": "keystone",
       "position": [
-        0,
+        -3,
         3
       ],
       "branch": "survival",
-      "requires_any": [
-        "pathfinder",
+      "requires": [
         "climber"
-      ],
-      "max_rank": 3,
-      "effects": [
-        {
-          "type": "attribute",
-          "attribute": "minecraft:mining_efficiency",
-          "operation": "add_value",
-          "amount": 1
-        }
-      ]
-    },
-    {
-      "key": "attunement",
-      "kind": "passive",
-      "position": [
-        1,
-        0
-      ],
-      "branch": "arcane",
-      "requires": [
-        "awakening"
-      ],
-      "effects": [
-        {
-          "type": "skill_proficiency",
-          "skill": "frosthain:arcana"
-        }
-      ]
-    },
-    {
-      "key": "arcane_bolt",
-      "kind": "active",
-      "position": [
-        2,
-        0
-      ],
-      "branch": "arcane",
-      "requires": [
-        "attunement"
-      ],
-      "effects": [
-        {
-          "type": "grant_power",
-          "power": "frosthain:arcane_bolt"
-        }
-      ]
-    },
-    {
-      "key": "rune_ward",
-      "kind": "active",
-      "position": [
-        2,
-        1
-      ],
-      "branch": "arcane",
-      "requires": [
-        "attunement"
-      ],
-      "required_level": 3,
-      "effects": [
-        {
-          "type": "grant_power",
-          "power": "frosthain:rune_ward"
-        }
-      ]
-    },
-    {
-      "key": "spell_focus",
-      "kind": "passive",
-      "position": [
-        3,
-        0
-      ],
-      "branch": "arcane",
-      "requires_any": [
-        "arcane_bolt",
-        "rune_ward"
-      ],
-      "max_rank": 3,
-      "required_level": 5,
-      "effects": [
-        {
-          "type": "attribute",
-          "attribute": "frosthain:spell_power_max",
-          "operation": "add_value",
-          "amount": 10
-        }
-      ]
-    },
-    {
-      "key": "frostbound",
-      "kind": "keystone",
-      "position": [
-        4,
-        0
-      ],
-      "branch": "arcane",
-      "requires": [
-        "spell_focus"
       ],
       "required_level": 10,
       "exclusive_group": "general_keystone",
       "effects": [
         {
-          "type": "resistance",
-          "damage_type": "#minecraft:is_freezing",
-          "amount": 1.0
+          "type": "attribute",
+          "attribute": "minecraft:max_health",
+          "operation": "add_value",
+          "amount": 4
         },
         {
           "type": "attribute",
-          "attribute": "frosthain:spell_power_max",
-          "operation": "add_value",
-          "amount": 20
+          "attribute": "minecraft:movement_speed",
+          "operation": "add_multiplied_base",
+          "amount": 0.05
         }
-      ]
+      ],
+      "icon": "frosthain:icon/paw"
     }
   ]
 }

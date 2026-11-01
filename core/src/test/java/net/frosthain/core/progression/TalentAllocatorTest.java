@@ -66,7 +66,7 @@ class TalentAllocatorTest {
     void spendsPointsAndExplainsMissingPoints() {
         CharacterSheet sheet = Characters.humanFighter();
         assertEquals(1, talents.availablePoints(sheet));
-        CharacterSheet after = talents.allocate(sheet, general("toughness"));
+        CharacterSheet after = talents.allocate(sheet, general("combat_stance"));
         assertEquals(0, talents.availablePoints(after));
         List<Blocker> blockers = talents.checkAllocate(after, general("toughness"));
         assertEquals(List.of(Blocker.of(Blocker.Reason.NOT_ENOUGH_POINTS, 1)), blockers);
@@ -82,29 +82,31 @@ class TalentAllocatorTest {
 
     @Test
     void respectsMaxRank() {
-        CharacterSheet sheet = allocateAll(fighterAtLevel(4), general("toughness"), general("toughness"), general("toughness"));
+        CharacterSheet sheet = allocateAll(fighterAtLevel(4), general("combat_stance"),
+                general("toughness"), general("toughness"), general("toughness"));
         assertTrue(has(talents.checkAllocate(sheet, general("toughness")), Blocker.Reason.MAX_RANK_REACHED));
     }
 
     @Test
     void requiresAnyNeedsOneOfSeveralPaths() {
-        CharacterSheet sheet = allocateAll(fighterAtLevel(3), general("forager"));
-        assertTrue(has(talents.checkAllocate(sheet, general("miners_luck")), Blocker.Reason.MISSING_ANY_PREREQUISITE));
-        CharacterSheet withPath = talents.allocate(sheet, general("pathfinder"));
-        assertEquals(List.of(), talents.checkAllocate(withPath, general("miners_luck")));
+        CharacterSheet sheet = allocateAll(fighterAtLevel(5), general("attunement"));
+        assertTrue(has(talents.checkAllocate(sheet, general("spell_focus")), Blocker.Reason.MISSING_ANY_PREREQUISITE));
+        CharacterSheet withPath = talents.allocate(sheet, general("arcane_bolt"));
+        assertEquals(List.of(), talents.checkAllocate(withPath, general("spell_focus")));
     }
 
     @Test
     void keystonesAreMutuallyExclusive() {
-        CharacterSheet sheet = allocateAll(fighterAtLevel(10),
-                general("toughness"), general("weapon_training"), general("stalwart"), general("bloodlust"));
-        List<Blocker> bulwark = talents.checkAllocate(sheet, general("bulwark"));
-        assertTrue(bulwark.contains(Blocker.of(Blocker.Reason.EXCLUSIVE_CONFLICT, "bloodlust")), bulwark::toString);
+        CharacterSheet sheet = allocateAll(fighterAtLevel(10), general("combat_stance"),
+                general("toughness"), general("weapon_training"), general("stalwart"), general("bloodlust"),
+                general("attunement"), general("arcane_bolt"), general("spell_focus"));
+        List<Blocker> overload = talents.checkAllocate(sheet, general("arcane_overload"));
+        assertEquals(List.of(Blocker.of(Blocker.Reason.EXCLUSIVE_CONFLICT, "bloodlust")), overload);
     }
 
     @Test
     void refundIsBlockedWhileOtherTalentsDependOnIt() {
-        CharacterSheet sheet = allocateAll(fighterAtLevel(4), general("toughness"), general("weapon_training"));
+        CharacterSheet sheet = allocateAll(fighterAtLevel(4), general("combat_stance"), general("toughness"), general("weapon_training"));
         List<Blocker> blockers = talents.checkRefund(sheet, general("toughness"));
         assertTrue(has(blockers, Blocker.Reason.REQUIRED_BY_OTHER_TALENT), blockers::toString);
 
@@ -113,13 +115,13 @@ class TalentAllocatorTest {
         assertEquals(1, refunded.talents().get(general("toughness")));
 
         CharacterSheet leafRefunded = talents.refund(sheet, general("weapon_training"));
-        assertEquals(Map.of(general("toughness"), 1), leafRefunded.talents());
+        assertEquals(Map.of(general("combat_stance"), 1, general("toughness"), 1), leafRefunded.talents());
         assertTrue(has(talents.checkRefund(leafRefunded, general("weapon_training")), Blocker.Reason.NOT_ALLOCATED));
     }
 
     @Test
     void fullResetReturnsAllPoints() {
-        CharacterSheet sheet = allocateAll(fighterAtLevel(4), general("toughness"), general("weapon_training"), fighter("weapon_focus"));
+        CharacterSheet sheet = allocateAll(fighterAtLevel(4), general("combat_stance"), general("toughness"), fighter("weapon_focus"));
         assertEquals(2, talents.availablePoints(sheet));
         CharacterSheet reset = talents.resetAll(sheet);
         assertEquals(5, talents.availablePoints(reset));
@@ -146,24 +148,25 @@ class TalentAllocatorTest {
 
     @Test
     void sanitizeRemovesAllocationsThatBecameInvalid() {
-        CharacterSheet valid = allocateAll(fighterAtLevel(4), general("toughness"), general("weapon_training"));
+        CharacterSheet valid = allocateAll(fighterAtLevel(4), general("combat_stance"), general("toughness"), general("weapon_training"));
         Map<TalentRef, Integer> broken = new LinkedHashMap<>(valid.talents());
         // A content update removed one node and the save lost the prerequisite of another.
         broken.put(general("removed_in_update"), 1);
-        broken.remove(general("toughness"));
+        broken.remove(general("combat_stance"));
         CharacterSheet damaged = valid.withTalents(broken);
 
         TalentAllocator.Sanitized result = talents.sanitize(damaged);
         assertEquals(List.of(), talents.findViolations(result.sheet()));
         assertTrue(result.removed().contains(general("removed_in_update")));
-        // weapon_training lost its prerequisite and is removed too.
+        // toughness lost its prerequisite, weapon_training then lost toughness: both are removed.
+        assertTrue(result.removed().contains(general("toughness")));
         assertTrue(result.removed().contains(general("weapon_training")));
         assertEquals(Map.of(), result.sheet().talents());
     }
 
     @Test
     void sanitizeHandlesOverspentBudget() {
-        CharacterSheet sheet = allocateAll(fighterAtLevel(4), general("toughness"), general("toughness"), general("weapon_training"));
+        CharacterSheet sheet = allocateAll(fighterAtLevel(4), general("combat_stance"), general("toughness"), general("weapon_training"));
         // Simulate a lower level (e.g. rule change): level 2 only grants 2 points but 3 are spent.
         Map<ContentId, Integer> lower = Map.of(ContentId.of("fighter"), 2);
         TalentAllocator.Sanitized result = talents.sanitize(sheet.withClassLevels(lower));

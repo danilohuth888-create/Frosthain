@@ -1,0 +1,191 @@
+{
+  "source": "frosthain:original",
+  "owner": {
+    "type": "general"
+  },
+  "category": "rune",
+  "root": "origin",
+  "branches": [
+    "lore",
+    "warding",
+    "elemental"
+  ],
+  "nodes": [
+    {
+      "key": "origin",
+      "kind": "root",
+      "position": [
+        0,
+        0
+      ],
+      "icon": "frosthain:icon/rune"
+    },
+    {
+      "key": "rune_sight",
+      "kind": "passive",
+      "position": [
+        0,
+        -1
+      ],
+      "branch": "lore",
+      "requires": [
+        "origin"
+      ],
+      "effects": [
+        {
+          "type": "flag",
+          "flag": "frosthain:rune_sight"
+        }
+      ],
+      "icon": "frosthain:icon/eye"
+    },
+    {
+      "key": "runic_memory",
+      "kind": "passive",
+      "position": [
+        0,
+        -2
+      ],
+      "branch": "lore",
+      "requires": [
+        "rune_sight"
+      ],
+      "required_level": 3,
+      "effects": [
+        {
+          "type": "skill_proficiency",
+          "skill": "frosthain:history"
+        }
+      ],
+      "icon": "frosthain:icon/book"
+    },
+    {
+      "key": "arcane_ward",
+      "kind": "passive",
+      "position": [
+        -1,
+        -2
+      ],
+      "branch": "warding",
+      "requires": [
+        "rune_sight"
+      ],
+      "max_rank": 2,
+      "effects": [
+        {
+          "type": "attribute",
+          "attribute": "minecraft:armor",
+          "operation": "add_value",
+          "amount": 1
+        }
+      ],
+      "icon": "frosthain:icon/shield"
+    },
+    {
+      "key": "ward_circle",
+      "kind": "active",
+      "position": [
+        -2,
+        -2
+      ],
+      "branch": "warding",
+      "requires": [
+        "arcane_ward"
+      ],
+      "required_level": 3,
+      "effects": [
+        {
+          "type": "grant_power",
+          "power": "frosthain:rune_ward"
+        }
+      ],
+      "icon": "frosthain:icon/circle"
+    },
+    {
+      "key": "frost_bond",
+      "kind": "passive",
+      "position": [
+        1,
+        -2
+      ],
+      "branch": "elemental",
+      "requires": [
+        "rune_sight"
+      ],
+      "effects": [
+        {
+          "type": "resistance",
+          "damage_type": "#minecraft:is_freezing",
+          "amount": 0.5
+        }
+      ],
+      "icon": "frosthain:icon/snowflake"
+    },
+    {
+      "key": "ember_rune",
+      "kind": "passive",
+      "position": [
+        2,
+        -2
+      ],
+      "branch": "elemental",
+      "requires": [
+        "frost_bond"
+      ],
+      "required_level": 4,
+      "effects": [
+        {
+          "type": "resistance",
+          "damage_type": "#minecraft:is_fire",
+          "amount": 0.25
+        }
+      ],
+      "icon": "frosthain:icon/flame"
+    },
+    {
+      "key": "storm_rune",
+      "kind": "passive",
+      "position": [
+        2,
+        -3
+      ],
+      "branch": "elemental",
+      "requires": [
+        "ember_rune"
+      ],
+      "required_level": 8,
+      "effects": [
+        {
+          "type": "resistance",
+          "damage_type": "#minecraft:is_lightning",
+          "amount": 0.5
+        }
+      ],
+      "icon": "frosthain:icon/bolt"
+    },
+    {
+      "key": "rune_master",
+      "kind": "keystone",
+      "position": [
+        0,
+        -3
+      ],
+      "branch": "lore",
+      "requires_any": [
+        "runic_memory",
+        "ward_circle",
+        "storm_rune"
+      ],
+      "required_level": 10,
+      "effects": [
+        {
+          "type": "attribute",
+          "attribute": "frosthain:spell_power_max",
+          "operation": "add_value",
+          "amount": 15
+        }
+      ],
+      "icon": "frosthain:icon/crown"
+    }
+  ]
+}

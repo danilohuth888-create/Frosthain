@@ -1,0 +1,21 @@
+{
+  "source": "frosthain:original",
+  "kind": "main",
+  "sequential": true,
+  "experience": 150,
+  "objectives": [
+    {
+      "key": "talk_eldrin",
+      "type": "talk",
+      "target": "frosthain:eldrin"
+    },
+    {
+      "key": "find_shrine",
+      "type": "discover",
+      "target": "frosthain:old_shrine"
+    }
+  ],
+  "follow_ups": [
+    "frosthain:first_rune"
+  ]
+}

@@ -21,6 +21,7 @@ public record TalentTreeDefinition(
         ContentId source,
         boolean adapted,
         Owner owner,
+        Category category,
         String root,
         List<String> branches,
         Map<String, TalentNode> nodes
@@ -36,6 +37,9 @@ public record TalentTreeDefinition(
         record ForSubclass(ContentId subclassId) implements Owner {
         }
     }
+
+    /** How the tree is presented: general paths, class paths and the rune path are visually distinct (UI spec D). */
+    public enum Category { GENERAL, CLASS, RUNE }
 
     public enum NodeKind {
         /** Entry point; free and automatically unlocked once the tree is accessible. */
@@ -92,6 +96,12 @@ public record TalentTreeDefinition(
                     "erwartet: general, class oder subclass");
         };
         ownerJson.finish();
+        Category defaultCategory = owner instanceof Owner.General ? Category.GENERAL : Category.CLASS;
+        Category category = json.enumValue("category", Category.class, defaultCategory);
+        if ((category == Category.CLASS) != !(owner instanceof Owner.General)) {
+            throw new ContentParseException(json.childPath("category"),
+                    "category 'class' gehört genau zu Klassen-/Unterklassenbäumen");
+        }
 
         String root = json.string("root");
         List<String> branches = json.stringList("branches");
@@ -112,7 +122,7 @@ public record TalentTreeDefinition(
         if (nodes.get(root).kind() != NodeKind.ROOT) {
             throw new ContentParseException(json.childPath("root"), "Wurzelknoten muss kind=root haben");
         }
-        return new TalentTreeDefinition(id, json.id("source"), json.bool("adapted", false), owner, root,
+        return new TalentTreeDefinition(id, json.id("source"), json.bool("adapted", false), owner, category, root,
                 branches, Collections.unmodifiableMap(nodes));
     }
 

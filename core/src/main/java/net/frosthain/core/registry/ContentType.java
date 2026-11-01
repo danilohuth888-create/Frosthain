@@ -4,7 +4,10 @@ import net.frosthain.core.ContentId;
 import net.frosthain.core.content.BackgroundDefinition;
 import net.frosthain.core.content.ClassDefinition;
 import net.frosthain.core.content.ContentDefinition;
+import net.frosthain.core.content.DialogueDefinition;
+import net.frosthain.core.content.NpcDefinition;
 import net.frosthain.core.content.PowerDefinition;
+import net.frosthain.core.content.QuestDefinition;
 import net.frosthain.core.content.ResourceDefinition;
 import net.frosthain.core.content.SkillDefinition;
 import net.frosthain.core.content.SourceDefinition;
@@ -50,9 +53,17 @@ public record ContentType<T extends ContentDefinition>(
     public static final ContentType<TalentTreeDefinition> TALENT_TREES =
             new ContentType<>("talent_trees", TalentTreeDefinition.class, TalentTreeDefinition::parse);
 
+    public static final ContentType<NpcDefinition> NPCS =
+            new ContentType<>("npcs", NpcDefinition.class, NpcDefinition::parse);
+    public static final ContentType<QuestDefinition> QUESTS =
+            new ContentType<>("quests", QuestDefinition.class, QuestDefinition::parse);
+    public static final ContentType<DialogueDefinition> DIALOGUES =
+            new ContentType<>("dialogues", DialogueDefinition.class, DialogueDefinition::parse);
+
     /** All content types in load order. */
     public static final List<ContentType<?>> ALL = List.of(
-            SOURCES, SKILLS, RESOURCES, POWERS, SPECIES, CLASSES, SUBCLASSES, BACKGROUNDS, TALENT_TREES);
+            SOURCES, SKILLS, RESOURCES, POWERS, SPECIES, CLASSES, SUBCLASSES, BACKGROUNDS, TALENT_TREES,
+            NPCS, QUESTS, DIALOGUES);
 
     public T parse(ContentId id, JsonObjectReader json) {
         T definition = parser.apply(id, json);
