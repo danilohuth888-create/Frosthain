@@ -22,6 +22,7 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -106,7 +107,7 @@ public final class ContentValidator {
 
     private void checkSourcesAttribution() {
         for (SourceDefinition source : registry.all(ContentType.SOURCES).values()) {
-            boolean requiresAttribution = source.license().toUpperCase().startsWith("CC-BY");
+            boolean requiresAttribution = source.license().toUpperCase(Locale.ROOT).startsWith("CC-BY");
             if (requiresAttribution && source.attribution().isEmpty()) {
                 diagnostics.add(Diagnostic.error(location(ContentType.SOURCES, source.id()),
                         "Lizenz " + source.license() + " verlangt einen Namensnennungstext (attribution)"));
