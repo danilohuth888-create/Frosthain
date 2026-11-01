@@ -43,7 +43,43 @@ Die Oberflächen (HUD, Talentbaum, Dialog) kannst du im **Desktop-Prototyp** aus
 | Portables JDK 25 ohne winget (Adoptium, SHA-256) | Windows | ✅ |
 | UI-Prototyp-Screenshots | Ubuntu headless | ✅ |
 
-**Noch nicht getestet:** Installation auf deinem MSI-Laptop (echter Launcher, echte Anmeldung); Spielen mit echter Grafikkarte; Prototyp-Fenster unter Windows.
+### Lokaler Test auf dem MSI-Laptop (Windows 11 Home, 01.11.2026)
+
+Umgebung: Microsoft Build of OpenJDK 25.0.4 (nur für die Build-Prozesse als `JAVA_HOME` gesetzt; `java` im PATH bleibt JDK 17), Gradle 9.8.2 über den Wrapper, Intel UHD + NVIDIA GeForce RTX 3050 Laptop GPU, Minecraft Launcher aus dem Microsoft Store 2.6.2.0.
+
+| Test | Ergebnis |
+|---|---|
+| `gradlew.bat check :mod:build` | ✅ 105 JUnit-Tests (Kern 75, UI 30), Inhaltsprüfung 0 Fehler, 12 Warnungen (Klassen ohne Talentbaum) |
+| Server-GameTest (`:mod:runGameTest`, Teil von `check`) | ✅ `FROSTHAIN geladen … 0 Fehler`, `All 1 required tests passed` |
+| Reproduzierbarkeit | ✅ lokal gebaute `frosthain.jar` ist bitgenau gleich der CI-Datei aus `frosthain-dev` (SHA-256 `2be39326…`) |
+| Installer-Test (`Test-Installer.ps1`, künstliches `.minecraft`) | ✅ 19/19 mit Windows PowerShell 5.1 (PowerShell 7 nicht installiert) |
+| **Minecraft-Client** (`:mod:runClientGameTest`) mit echter Grafik | ✅ startet, lädt FROSTHAIN, erstellt Einzelspielerwelt, Screenshots; OpenGL-Backend |
+| UI-Prototyp-Screenshots unter Windows | ✅ 9 Bilder (`tools/ui-prototype/build/screenshots/`) |
+
+Gefunden und behoben:
+- **Schriften wurden im Spiel verworfen:** Minecraft akzeptiert in Ressourcenpfaden nur `[a-z0-9/._-]`; `Cinzel.ttf`, `EBGaramond*.ttf` und die OFL-Texte wurden mit `Invalid path in mod resource-pack` ignoriert. Dateien heißen jetzt `cinzel.ttf`, `eb_garamond.ttf`, `eb_garamond_italic.ttf`, `cinzel_ofl.txt`, `eb_garamond_ofl.txt`; neuer Test `BaseContentPackTest.everyPackFileHasAPathMinecraftAccepts` verhindert den Rückfall.
+- **`dev-test-setup.ps1` lud unnötig ein JDK:** Ein installiertes JDK 25 wurde nur erkannt, wenn es im PATH stand. Jetzt werden auch `JAVA_HOME` und die üblichen Installationsordner (Microsoft, Eclipse Adoptium, Java, Zulu, BellSoft) geprüft.
+
+**Noch nicht getestet:** interaktives Prototyp-Fenster unter Windows.
+
+### Erste Oberflächen im Spiel (02.11.2026)
+
+Beim Start von Minecraft erscheint jetzt das FROSTHAIN-Hauptmenü, beim ersten Betreten einer Welt die Charaktererstellung. Bilder: [docs/spiel/](spiel/).
+
+| Ansicht (Design 2.0) | Im Spiel | Nachweis |
+|---|---|---|
+| Hauptmenü „FROSTHAIN – Das Erwachen“ (Einzelspieler, Mehrspieler, Charakter, Optionen, Beenden) | ✅ | Produktionsstart auf dem MSI (Minecraft-Klassenpfad wie im Launcher), Bild `01_hauptmenue.png` |
+| Charaktererstellung: Spezies · Klasse · Hintergrund · Fertig (Name, Attribute), Spielermodell | ✅ | Client-GameTest: Erstellung als Elf/Runenmagier/Gelehrter, Server speichert und prüft (`CharacterFactory`) |
+| Charakter als Spieleranhang (persistent, bleibt nach dem Tod) | ✅ | GameTest liest den gespeicherten Bogen auf dem Server |
+| HUD-Abzeichen (Name, Klasse, Stufe), Taste **I** öffnet „Dein Held“ | ✅ | Screenshot `05_hud.png` |
+| Vorschau der Charaktererstellung aus dem Hauptmenü (nur ansehen) | ✅ | GameTest |
+| Talentbaum (K), Questtracker, Questjournal, NPC-Dialog, Fähigkeitenleiste | ❌ nächste Schritte | Logik in `core`/`ui` vorhanden |
+
+Grenzen: Aussehen-Schritt (Haare, Hautfarbe) fehlt noch, Attribute werden automatisch nach Klasse verteilt (Standardreihe), lange Namen in Kacheln werden gekürzt.
+
+### Installation auf dem MSI über den echten Launcher
+
+`install-frosthain.ps1` hat Profil und Fabric-Version korrekt eingetragen; andere Profile blieben unverändert. Minecraft startete über den Launcher, lud aber **keine Mods**: siehe O9. Nach dem Kopieren in den echten Ordner lädt der Produktionsstart 52 Mods inklusive FROSTHAIN, 0 Fehler.
 
 ## 11.4 Funktionsübersicht
 
@@ -71,6 +107,8 @@ Die Oberflächen (HUD, Talentbaum, Dialog) kannst du im **Desktop-Prototyp** aus
 | O5 | Schriften ohne Glyphen ▸ ✓ ✗ ↑ ↓ – im Spiel wie im Prototyp als Grafik zeichnen. |
 | O6 | SRD-Inhaltsliste noch nicht mit dem Original-PDF abgeglichen; Halbelf/Wolfsmensch aus den Referenzen noch nicht angelegt. |
 | O7 | Der Prototyp nutzt noch die ältere, stärker verzierte Optik; Farben sind auf Design 2.0 umgestellt, Rahmen noch nicht. |
+| O8 | Auf Laptops mit zwei Grafikchips (MSI: Intel UHD + RTX 3050) meldet Minecraft „Preferring discrete GPU: NVIDIA“, nutzt aber tatsächlich die Intel UHD. Abhilfe beim Spieler: Windows-Einstellungen → System → Anzeige → Grafik → `javaw.exe` der Minecraft-Laufzeit auf „Hohe Leistung“ (Systemeinstellung, nicht automatisch durch FROSTHAIN). Beim echten Start über den Launcher lief Minecraft am 01.11. bereits auf der RTX 3050. |
+| O9 | Wird der Installer aus einer Store-App (MSIX) heraus gestartet – z. B. aus der Claude-Desktop-App –, leitet Windows **neu angelegte Ordner unter `%LOCALAPPDATA%`** in den privaten Speicher dieser App um (`%LOCALAPPDATA%\Packages\<App>\LocalCache\Local\Frosthain`). Minecraft sieht dann einen leeren `mods`-Ordner. In einer normalen PowerShell tritt das nicht auf. Abhilfe in der Entwicklung: Dateien über den Paketkontext des Launchers kopieren (`Invoke-CommandInDesktopPackage`, Launcher hat Schreibvirtualisierung abgeschaltet) oder die Instanz außerhalb von AppData anlegen (`-InstanceDir`). Die Profilsicherung vom 01.11. liegt deshalb unter `…\Packages\Claude_pzs8sxrjxfjjc\LocalCache\Local\Frosthain\backups`. |
 
 ## 11.6 Nächste Entwicklungsschritte (Reihenfolge nach Prioritätenliste)
 

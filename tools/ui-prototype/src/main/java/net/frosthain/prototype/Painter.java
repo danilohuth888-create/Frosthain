@@ -30,9 +30,9 @@ final class Painter {
 
     Painter(Path contentRoot) {
         Path fonts = contentRoot.resolve("frosthain_base/assets/frosthain/font");
-        baseFonts.put(Theme.FontRole.HEADING, load(fonts.resolve("Cinzel.ttf")));
-        baseFonts.put(Theme.FontRole.BODY, load(fonts.resolve("EBGaramond.ttf")));
-        baseFonts.put(Theme.FontRole.BODY_ITALIC, load(fonts.resolve("EBGaramond-Italic.ttf")));
+        baseFonts.put(Theme.FontRole.HEADING, load(fonts.resolve("cinzel.ttf")));
+        baseFonts.put(Theme.FontRole.BODY, load(fonts.resolve("eb_garamond.ttf")));
+        baseFonts.put(Theme.FontRole.BODY_ITALIC, load(fonts.resolve("eb_garamond_italic.ttf")));
     }
 
     private static Font load(Path file) {

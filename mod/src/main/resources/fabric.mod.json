@@ -8,7 +8,8 @@
   "license": "LicenseRef-All-Rights-Reserved",
   "environment": "*",
   "entrypoints": {
-    "main": ["net.frosthain.mod.FrosthainMod"]
+    "main": ["net.frosthain.mod.FrosthainMod"],
+    "client": ["net.frosthain.mod.client.FrosthainClient"]
   },
   "depends": {
     "fabricloader": ">=${loader_version}",

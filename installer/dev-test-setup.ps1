@@ -38,6 +38,17 @@ function Ensure-Jdk25 {
     if ($onPath -and (Get-JavaMajor $onPath.Source) -eq 25) {
         return (Split-Path (Split-Path $onPath.Source -Parent) -Parent)
     }
+    # Installierte JDKs, die nicht im PATH stehen (z. B. PATH zeigt auf JDK 17, JDK 25 liegt daneben).
+    $candidates = @()
+    if ($env:JAVA_HOME) { $candidates += $env:JAVA_HOME }
+    foreach ($vendor in @("Microsoft", "Eclipse Adoptium", "Java", "Zulu", "BellSoft")) {
+        $candidates += Get-ChildItem (Join-Path $env:ProgramFiles $vendor) -Directory -Filter "jdk-25*" -ErrorAction SilentlyContinue |
+            Sort-Object Name -Descending | ForEach-Object { $_.FullName }
+    }
+    foreach ($candidate in $candidates) {
+        $java = Join-Path $candidate "bin\java.exe"
+        if ((Test-Path $java) -and (Get-JavaMajor $java) -eq 25) { return $candidate }
+    }
     $existing = Get-ChildItem $RuntimeDir -Directory -Filter "jdk-25*" -ErrorAction SilentlyContinue | Select-Object -First 1
     if ($existing -and (Test-Path (Join-Path $existing.FullName "bin\java.exe"))) { return $existing.FullName }
 

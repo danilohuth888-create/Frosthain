@@ -43,7 +43,7 @@ flowchart LR
 | # | Meilenstein | Abnahmekriterien | Größe | Status |
 |---|---|---|---|---|
 | M2.1 | Designentwurf (B, D, F) | UI-Implementierungsplan (docs/10) ✅; interaktiver Prototyp mit Screenshots (docs/prototyp) ✅; Freigabe durch den Inhaber ⏳ | M | 🔶 wartet auf Freigabe |
-| M2.2 | Charakter im Spiel | Spieleranhang mit `CharacterSheetCodec`; Server öffnet Editor vor dem ersten Handeln; Erstellung über Pakete, serverseitig geprüft; GameTest: ungültige Anfrage wird abgelehnt | M | ⏳ |
+| M2.2 | Charakter im Spiel | Spieleranhang mit `CharacterSheetCodec` ✅; Server öffnet Editor vor dem ersten Handeln ✅; Erstellung über Pakete, serverseitig geprüft ✅ (Client-GameTest); GameTest: ungültige Anfrage wird abgelehnt ⏳ | M | 🔶 |
 | M2.3 | Editor-Oberfläche | 8 Schritte; 3D-Vorschau drehen/zoomen; Schnellstart-Held; Controller-Navigation; Client-GameTest mit Screenshots je Schritt | L | ⏳ |
 | M2.4 | Aussehen komplett | `appearance_parts`; Skin-Compositing; Zusatzteile (Ohren, Hörner, Schweif, Hauer); Aussehen im Spiel änderbar; Charakter-Zusammenfassung für den Launcher | L | ⏳ |
 
