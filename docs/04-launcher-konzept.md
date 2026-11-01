@@ -21,8 +21,9 @@
 | **Installation** | Minecraft-Version laut Modpack-Manifest, Bibliotheken (inkl. Windows-Regeln), Assets, Fabric Loader, FROSTHAIN-Mod; jede Datei per SHA-1/SHA-256 geprüft; parallele Downloads mit Wiederaufnahme | M1.1 |
 | **Java** | verwaltete Java-25-Laufzeit pro Instanz (Mojang-Laufzeitkomponente oder Temurin), alternativ eigener Pfad | M1.1 |
 | **Instanzen** | eigene Spielverzeichnisse unter `%LOCALAPPDATA%\Frosthain\instances\`, getrennt von `.minecraft`; gemeinsamer Cache für Bibliotheken/Assets | M1.1 |
-| **Anmeldung** | Microsoft → Xbox Live → XSTS → Minecraft Services → Besitzprüfung → Profil; mehrere Konten | M1.3 (nach Freigabe) |
-| **Brückenmodus** | Profil im offiziellen Minecraft Launcher anlegen (mit Backup von dessen Profildatei) | M1.2 |
+| **Anmeldung & Start (Brückenmodus)** | Installation „FROSTHAIN“ im offiziellen Minecraft Launcher anlegen/aktualisieren (mit Backup der Profildatei), offiziellen Launcher öffnen; Anmeldung und Start dort | M1.2 |
+| **Modpack-Export** | `.mrpack` für Prism Launcher, Modrinth App u. a. | M1.4 |
+| ~~Eigene Anmeldung~~ | zurückgestellt: Azure-App funktioniert nicht (ADR 0004) | – |
 | **Start & Status** | Startknopf, Fortschritt, „Spiel läuft“, Absturzerkennung | M1.2 |
 | **Einstellungen** | RAM (Empfehlung anhand des Systems), Java, JVM-Argumente (Expertenbereich), Auflösung/Vollbild, Grafikvoreinstellung | M1.2 |
 | **Modmanager** | FROSTHAIN-Mods (fest), kuratierte optionale Mods, eigene Mods aus Modrinth; aktivieren/deaktivieren; Abhängigkeiten und Konflikte aus `fabric.mod.json` (`depends`, `breaks`, `conflicts`) und Modrinth-Metadaten | M1.4 |
@@ -30,38 +31,39 @@
 | **Sicherung** | automatisch vor jedem Update und jeder Migration, manuell per Knopf; Aufbewahrung konfigurierbar; Wiederherstellung mit Bestätigung | M1.4 |
 | **Diagnose** | Launcher- und Spiellog, Absturzbericht-Analyse mit verständlichen deutschen Erklärungen bekannter Fehler (falsche Java-Version, fehlende Abhängigkeit, zu wenig RAM, Mod-Konflikt), Export eines Diagnosepakets mit entfernten Geheimnissen | M1.4 |
 | **Updates** | Launcher: signierter Tauri-Updater; Spielinhalte: signiertes Modpack-Manifest | M1.5 |
-| **Offline** | Start im Einzelspieler mit zwischengespeichertem, zuvor verifiziertem Profil | M1.3 |
+| **Offline** | wie im offiziellen Launcher (nach früherer Anmeldung) | M1.2 |
 
-## 4.3 Anmeldung im Detail
+## 4.3 Anmeldung: Brückenmodus über den offiziellen Minecraft Launcher
+
+Stand 01.11.2026: Die eigene Azure-App funktioniert nicht. Deshalb meldet sich der Spieler **im offiziellen Minecraft Launcher** an; FROSTHAIN übernimmt alles andere ([ADR 0004](adr/0004-authentifizierung.md)).
 
 ```mermaid
 sequenceDiagram
   participant U as Spieler
-  participant L as FROSTHAIN-Launcher
-  participant B as Standardbrowser
-  participant MS as Microsoft-Konto
-  participant X as Xbox Live / XSTS
-  participant M as Minecraft Services
-  U->>L: „Anmelden“
-  L->>B: öffnet Microsoft-Anmeldeseite (OAuth 2.0 + PKCE, Loopback-Redirect)
-  B->>MS: Anmeldung (Passwort/2FA nur bei Microsoft)
-  MS-->>L: Autorisierungscode an http://127.0.0.1:<port>
-  L->>MS: Code → Access + Refresh Token
-  L->>X: Xbox-Live-Token, dann XSTS-Token
-  L->>M: login_with_xbox → Minecraft-Token
-  L->>M: Besitzprüfung + Profil (Name, UUID, Skin)
-  L->>L: Refresh Token in Windows-Anmeldeinformationsverwaltung
+  participant F as FROSTHAIN-Launcher
+  participant O as Offizieller Minecraft Launcher
+  U->>F: „Spielen“
+  F->>F: Updates prüfen, Dateien installieren/prüfen, Weltsicherung
+  F->>F: Fabric-Version additiv in .minecraft/versions ablegen
+  F->>F: Backup der Profildatei, Installation „FROSTHAIN“ eintragen (gameDir = FROSTHAIN-Instanz)
+  F->>O: offiziellen Launcher öffnen
+  U->>O: Anmeldung (nur beim ersten Mal) und „Spielen“
+  O->>O: Besitzprüfung, Start mit FROSTHAIN-Instanz
+  F-->>U: Statusanzeige „Spiel läuft“ über das Log der Instanz
 ```
 
-**Sicherheitsregeln**
-- Passwörter werden nie im Launcher eingegeben – nur im Browser bei Microsoft.
-- Eigene Azure-App-Registrierung (öffentlicher Client, PKCE, nur `XboxLive.signin offline_access`). Keine fremden Client-IDs.
-- Refresh Token ausschließlich in der Windows-Anmeldeinformationsverwaltung (DPAPI, an das Windows-Konto gebunden). Access Tokens nur im Arbeitsspeicher.
-- Logs und Diagnosepakete filtern Tokens, auch in der Startzeile des Spiels.
-- Das Minecraft-Token muss dem Spielprozess als Startargument übergeben werden (so verlangt es der Client, auch beim offiziellen Launcher); es ist dadurch für Prozesse desselben Windows-Benutzers sichtbar. Dieses Restrisiko wird dokumentiert, nicht verschleiert.
-- Gerätecode-Fluss als Alternative für Systeme ohne Standardbrowser.
+| Aspekt | Umsetzung |
+|---|---|
+| Anmeldung, Besitzprüfung, Tokens | ausschließlich im offiziellen Launcher; FROSTHAIN sieht und speichert keine Zugangsdaten |
+| Profildateien | `launcher_profiles.json`, zusätzlich `launcher_profiles_microsoft_store.json` (Store-Variante); vor jeder Änderung Backup; nur der eigene Eintrag wird geändert |
+| Unbekanntes Profilformat | nichts schreiben, stattdessen Anleitung zum manuellen Anlegen anzeigen |
+| Spielstatus | FROSTHAIN liest das Log der eigenen Instanz (Start, Absturz, Ende) |
+| Offline | wie im offiziellen Launcher nach früherer Anmeldung |
+| Alternative | `.mrpack`-Export für Prism Launcher, Modrinth App und andere Launcher mit eigener Anmeldung |
 
-**Externe Voraussetzung:** Mojang muss die App-ID freischalten (siehe [Machbarkeitsanalyse §1.3.2](01-machbarkeitsanalyse.md#132-anmeldung-kritischer-pfad)). Bis dahin: Brückenmodus.
+**Ausgeschlossen:** fremde Client-IDs, Passwort- oder Tokenabfrage im FROSTHAIN-Launcher, Auslesen von Tokens anderer Launcher, Offline-Konten ohne Kauf.
+
+**Später möglich:** eine eigene Anmeldung über eine freigegebene Registrierung. Der Baustein bleibt als Schnittstelle im Code vorgesehen.
 
 ## 4.4 Dateilayout auf Windows
 
@@ -79,7 +81,7 @@ sequenceDiagram
 └── logs\                   Launcher-Logs (rotierend, ohne Tokens)
 ```
 
-Der Ordner `%APPDATA%\.minecraft` anderer Installationen wird **nie** verändert. Einzige Ausnahme: der Brückenmodus ergänzt dort nach Rückfrage ein Profil in `launcher_profiles.json` und legt vorher eine Sicherungskopie an.
+Der Ordner `%APPDATA%\.minecraft` anderer Installationen wird **nie** verändert. Einzige Ausnahme ist der Brückenmodus: Er ergänzt dort nach Rückfrage die Installation „FROSTHAIN“ in den Profildateien (vorher Sicherungskopie) und legt die Fabric-Versionsbeschreibung additiv unter `versions\` ab. Welten, Einstellungen und fremde Profile werden nie verändert.
 
 ## 4.5 Modpack-Manifest (gemeinsames Format)
 
@@ -117,6 +119,6 @@ Designsprache wie die Mod: Dark Fantasy, dezente Goldakzente, ruhige Animationen
 
 1. Download von `FrosthainSetup.exe` **oder** ein PowerShell-Befehl, der Installer und Prüfsumme lädt, prüft und startet.
 2. Installation pro Benutzer, ohne Adminrechte, Startmenü-Eintrag.
-3. Erster Start: Systemprüfung → Anmeldung (oder Brückenmodus) → Installation der Spieldateien → „Spielen“.
+3. Erster Start: Systemprüfung → Installation der Spieldateien → Eintrag im offiziellen Minecraft Launcher → „Spielen“ (Anmeldung beim ersten Mal im offiziellen Launcher).
 
 Kein Gradle, kein Java-Build, keine manuelle Mod-Installation für den Endnutzer.

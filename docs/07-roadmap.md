@@ -9,7 +9,7 @@ Status: ✅ erledigt und geprüft · 🔶 erledigt, aber noch nicht in Zielumgeb
 
 ```mermaid
 flowchart LR
-  A0["Inhaber-Aktionen\nRepo · Netzwerk · Azure-Antrag"] --> M03["M0.3 Mod-Skelett"]
+  A0["Inhaber-Aktionen\nRepo · Netzwerk"] --> M03["M0.3 Mod-Skelett"]
   A0 --> M04["M0.4 CI grün"]
   M03 --> M22["M2.2 Charakter im Spiel"]
   M04 --> M11["M1.1 launcher-core"]
@@ -17,8 +17,6 @@ flowchart LR
   M21["M2.1 Designentwurf\n(braucht Referenzbilder)"] --> M23["M2.3 Editor-UI"]
   M22 --> M23 --> M24["M2.4 Aussehen komplett"]
   M24 --> M3["Phase 3 RPG-Fundament"] --> M4["Phase 4 Spielsysteme"] --> M5["Phase 5 Welt\n★ Vertical Slice"]
-  A0 -.->|"Freigabe durch Mojang"| M13["M1.3 eigener Login"]
-  M12 --> M13
 ```
 
 ## Phase 0 – Technische Vorbereitung
@@ -35,9 +33,9 @@ flowchart LR
 | # | Meilenstein | Abnahmekriterien | Größe | Status |
 |---|---|---|---|---|
 | M1.1 | `launcher-core` (Rust) | Versionsmanifest, Versions-JSON, OS-Regeln, Bibliotheken, Assets, Fabric-Profil, verifizierter Download mit Wiederaufnahme; `cargo test` mit aufgezeichneten Manifesten; CI-Job installiert 26.3 + Fabric in ein Temp-Verzeichnis, alle Prüfsummen korrekt | L | ⏳ |
-| M1.2 | Launcher-Oberfläche + Brückenmodus | Tauri-App mit Start, Einstellungen, Diagnose-Grundlagen; legt Profil im offiziellen Launcher an (vorher Backup); manueller Test auf Windows 11: Installation → Profil sichtbar → Spiel startet mit FROSTHAIN-Mod | L | ⏳ |
-| M1.3 | Eigene Microsoft-Anmeldung | PKCE-Login im Browser, Xbox/XSTS/Minecraft-Token, Besitzprüfung, Refresh; Token nur in der Anmeldeinformationsverwaltung; automatischer Test: keine Tokens in Logs/Diagnosepaket; Offline-Start mit verifiziertem Profil | M | ⛔ Mojang-Freigabe der App-ID |
-| M1.4 | Modmanager, Sicherung, Diagnose | Aktivieren/Deaktivieren/Hinzufügen (Modrinth); Abhängigkeits- und Konfliktprüfung mit Testfällen; Backup vor jedem Update, Wiederherstellung getestet; Absturzanalyse für mindestens 5 bekannte Fehlerbilder | L | ⏳ |
+| M1.2 | Launcher-Oberfläche + Brückenmodus (Hauptweg der Anmeldung) | Tauri-App mit Start, Einstellungen, Diagnose-Grundlagen; legt die Installation „FROSTHAIN“ im offiziellen Launcher an (vorher Backup, auch Store-Variante); öffnet den offiziellen Launcher; manueller Test auf Windows 11: Installation → Eintrag sichtbar → Anmeldung im offiziellen Launcher → Spiel startet mit FROSTHAIN-Mod | L | ⏳ |
+| M1.3 | ~~Eigene Microsoft-Anmeldung~~ | zurückgestellt: Azure-App funktioniert nicht (ADR 0004); Anmeldung über den offiziellen Launcher (M1.2) | – | zurückgestellt |
+| M1.4 | Modmanager, Sicherung, Diagnose, `.mrpack`-Export | Aktivieren/Deaktivieren/Hinzufügen (Modrinth); `.mrpack`-Export importierbar in Prism Launcher; Abhängigkeits- und Konfliktprüfung mit Testfällen; Backup vor jedem Update, Wiederherstellung getestet; Absturzanalyse für mindestens 5 bekannte Fehlerbilder | L | ⏳ |
 | M1.5 | Installation und Updates | Installer pro Benutzer; `install.ps1` mit Prüfsummenprüfung; signierter Selbst-Update; signiertes Modpack-Manifest; Test auf frischem Windows 11 | M | ⏳ |
 
 ## Phase 2 – Charaktereditor

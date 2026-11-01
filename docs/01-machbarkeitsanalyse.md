@@ -7,7 +7,7 @@ Stand: 01.11.2026 · Grundlage: Auftrag „FROSTHAIN – Complete Rebuild“, Re
 | Anforderung | Bewertung | Kernaussage |
 |---|---|---|
 | Eigener Windows-Launcher | 🟢 machbar | Tauri 2 (Rust + Web-UI), ca. 10–20 MB statt ~150 MB bei Electron. |
-| Offizielle Microsoft-Anmeldung im eigenen Launcher | 🟡 hängt an externer Freigabe | Mojang schaltet neue Azure-App-IDs nur nach manueller Prüfung frei. Ohne Freigabe kein eigener Login. Fallback vorhanden (§1.3). |
+| Offizielle Microsoft-Anmeldung im eigenen Launcher | 🔴 zurückgestellt (Stand 01.11.2026) | Die eigene Azure-App funktioniert nicht. Angemeldet wird im offiziellen Minecraft Launcher (Brückenmodus, ADR 0004). |
 | Offline-Spiel | 🟡 eingeschränkt | Nur Einzelspieler und nur nach einer früheren, gültigen Anmeldung auf diesem Gerät. Keine „Cracked“-Konten. |
 | Automatische Installation Minecraft/Fabric/Mods | 🟢 machbar | Offizielle Manifeste von Mojang und Fabric, SHA-1-Prüfung jeder Datei. |
 | Modmanager mit Abhängigkeitsprüfung | 🟢 machbar | `fabric.mod.json` (depends/breaks) + Modrinth-Metadaten. Garantierte Kompatibilität nur für eine kuratierte Liste. |
@@ -52,6 +52,8 @@ Was ausdrücklich **nicht** gemacht wird: fremde Client-IDs anderer Launcher wie
 2. *Nach Freigabe:* eigener Login und Start direkt aus dem FROSTHAIN-Launcher.
 
 Die Freigabe muss der Projektinhaber beantragen (Azure-Konto, App-Registrierung, Formular). Das sollte **sofort** passieren, weil es die längste externe Wartezeit im Projekt ist.
+
+> **Update 01.11.2026:** Die Azure-App funktioniert nicht. Stufe 2 ist zurückgestellt; der Brückenmodus ist jetzt der Hauptweg, ergänzt um einen `.mrpack`-Export für andere Launcher ([ADR 0004](adr/0004-authentifizierung.md)).
 
 ### 1.3.3 Charaktereditor
 - **3D-Vorschau:** Minecraft kann Entities in GUI-Bildschirmen rendern (wie im Inventar). Drehen per Maus/Stick und Zoomen sind damit machbar, ohne Fremdbibliothek.
