@@ -45,8 +45,6 @@ jobs:
   mod:
     name: Fabric-Mod (Minecraft 26.3)
     runs-on: ubuntu-latest
-    env:
-      MINECRAFT_VERSION: "26.3"
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v5
@@ -54,42 +52,21 @@ jobs:
           distribution: temurin
           java-version: "25"
       - uses: gradle/actions/setup-gradle@v4
-      - name: Fabric-Versionen ermitteln
-        id: versions
+      - name: Neuere Fabric-Versionen prüfen (nur Hinweis)
         shell: bash
         run: |
-          set -euo pipefail
-          MC="$MINECRAFT_VERSION"
-          GAME=$(curl -fsS https://meta.fabricmc.net/v2/versions/game | jq -r --arg v "$MC" '[.[] | select(.version==$v)][0] | "\(.version) stable=\(.stable)"')
-          LOADER=$(curl -fsS https://meta.fabricmc.net/v2/versions/loader | jq -r '[.[] | select(.stable)][0].version')
+          MC=$(grep '^fabric.minecraftVersion=' gradle.properties | cut -d= -f2)
+          LOADER=$(curl -fsS https://meta.fabricmc.net/v2/versions/loader | jq -r '[.[] | select(.stable)][0].version' || true)
           API=$(curl -fsS https://maven.fabricmc.net/net/fabricmc/fabric-api/fabric-api/maven-metadata.xml \
                 | grep -oE "<version>[^<]*\+${MC}</version>" | sed -E 's#</?version>##g' | tail -1 || true)
           LOOM=$(curl -fsS https://maven.fabricmc.net/net/fabricmc/fabric-loom/net.fabricmc.fabric-loom.gradle.plugin/maven-metadata.xml \
                 | grep -oE '<version>[0-9]+\.[0-9]+(\.[0-9]+)?</version>' | sed -E 's#</?version>##g' | sort -V | tail -1 || true)
-          echo "Minecraft: $GAME | Loader: $LOADER | Fabric API: $API | Loom: $LOOM"
-          echo "::notice title=Fabric-Versionen::minecraft=$MC loader=$LOADER fabric_api=$API loom=$LOOM ($GAME)"
-          test -n "$LOADER" && test -n "$API" && test -n "$LOOM"
-          echo "loader=$LOADER" >> "$GITHUB_OUTPUT"
-          echo "api=$API" >> "$GITHUB_OUTPUT"
-          echo "loom=$LOOM" >> "$GITHUB_OUTPUT"
-          {
-            echo "### Fabric-Versionen"
-            echo "| Komponente | Version |"
-            echo "|---|---|"
-            echo "| Minecraft | $GAME |"
-            echo "| Fabric Loader | $LOADER |"
-            echo "| Fabric API | $API |"
-            echo "| Loom | $LOOM |"
-          } >> "$GITHUB_STEP_SUMMARY"
-      - name: Mod bauen
+          echo "::notice title=Neueste Fabric-Versionen::loader=$LOADER fabric_api=$API loom=$LOOM (gepinnt siehe gradle.properties)"
+      - name: Mod bauen (gepinnte Versionen)
         shell: bash
         run: |
           set -o pipefail
-          ./gradlew :mod:build --console=plain \
-            -Pfabric.minecraftVersion="$MINECRAFT_VERSION" \
-            -Pfabric.loaderVersion="${{ steps.versions.outputs.loader }}" \
-            -Pfabric.apiVersion="${{ steps.versions.outputs.api }}" \
-            -Pfabric.loomVersion="${{ steps.versions.outputs.loom }}" 2>&1 | tee mod-build.log
+          ./gradlew :mod:build --console=plain 2>&1 | tee mod-build.log
       - name: Fehler als Annotationen melden
         if: failure()
         shell: bash

@@ -40,7 +40,9 @@ flowchart LR
 |---|---|---|---|
 | `core` | Regeln, Datenmodell, Lader, Validator, Charakterbogen, Speicherformat | Java 25, Gson | **umgesetzt (Phase 0/3-Grundlage), 58 Tests** |
 | `content/` | Basis-Inhaltspaket als Datapack | JSON + Sprachdateien | **umgesetzt (Grundbestand)** |
-| `mod` (common) | Datapack-Registries, Spielerdaten-Anhänge, Netzwerkpakete, Anwendung von Modifikatoren, Fähigkeiten, Quests, NPCs | Fabric Loader + Fabric API, Minecraft 26.3 | geplant ab M0.3 |
+| `ui` | Präsentationslogik: Talentbaum-, Questtracker-, Dialog-Ansicht, HUD-Regeln, Tastenprüfung, Theme | Java 25, ohne Minecraft | **umgesetzt, 30 Tests** |
+| `tools/ui-prototype` | Desktop-Prototyp der Oberflächen B, D, F | Java2D über `ui` | **umgesetzt** |
+| `mod` (common) | Datapack-Registries, Spielerdaten-Anhänge, Netzwerkpakete, Anwendung von Modifikatoren, Fähigkeiten, Quests, NPCs | Fabric Loader 0.20.1 + Fabric API 0.165.0+26.3, Minecraft 26.3 | **Skelett baut im CI**; Inhalte werden beim Start geladen |
 | `mod` (client) | Charaktereditor, Talentbaum, Zauberbuch, Questjournal, Dialoge, HUD | Vanilla-Screen-API, eigenes kleines Widget-Set | geplant ab M2 |
 | `launcher` | Installation, Anmeldung, Instanzen, Mods, Backups, Diagnose | Tauri 2, Rust, TypeScript/React | geplant ab M1.1 |
 | Gemeinsame Formate | Austausch Launcher ↔ Mod | JSON mit `schema_version` | Charakterformat v1 umgesetzt |

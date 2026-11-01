@@ -142,10 +142,10 @@ Die Prüfung ist als Test hinterlegt (Vanilla-Belegung bis 1.21). Im Spiel prüf
 
 | # | Schritt | Ergebnis | Prüfung |
 |---|---|---|---|
-| U1 | Kern-Erweiterungen (Quests, NPCs, Dialoge, Baumkategorie) + Beispielinhalte | Daten und Laufzeitlogik | JUnit, Inhaltsvalidator |
-| U2 | Modul `ui`: Theme, Translator, Textumbruch, `TalentTreeView`, `QuestTrackerView`, `DialogueView`, `HudPolicy`, `KeyBindingPlan` | testbare Präsentationslogik | JUnit |
-| U3 | **Prototyp** `tools/ui-prototype`: interaktives Desktop-Fenster (Java2D) für B, D, F mit echten Regeln; Bildschirmfotos ohne Bildschirm erzeugbar | sofort ausprobierbar ohne Minecraft | Screenshot-Durchsicht, Smoke-Test |
-| U4 | Mod-Skelett (M0.3) | lädt Inhalte im Spiel | CI auf GitHub |
+| U1 ✅ | Kern-Erweiterungen (Quests, NPCs, Dialoge, Baumkategorie) + Beispielinhalte | Daten und Laufzeitlogik | JUnit, Inhaltsvalidator |
+| U2 ✅ | Modul `ui`: Theme, Translator, Textumbruch, `TalentTreeView`, `QuestTrackerView`, `DialogueView`, `HudPolicy`, `KeyBindingPlan` | testbare Präsentationslogik | JUnit |
+| U3 ✅ | **Prototyp** `tools/ui-prototype`: interaktives Desktop-Fenster (Java2D) für B, D, F mit echten Regeln; Bildschirmfotos ohne Bildschirm erzeugbar | sofort ausprobierbar ohne Minecraft | Screenshot-Durchsicht, Smoke-Test |
+| U4 🔶 | Mod-Skelett (M0.3) | baut gegen 26.3 im CI; Start im Spiel offen | CI auf GitHub |
 | U5 | Minecraft-Zeichenschicht: TalentTreeScreen, Questtracker-HUD-Element, DialogueScreen, HUD-Ausblendung über die Fabric-HUD-API, TTF-Schriften als Font-Provider | Oberflächen im Spiel | Client-GameTests mit Screenshots |
 | U6 | Spieltest, Feinschliff, Barrierefreiheit (Textgröße, Kontrast, Controller) | Abnahme durch den Inhaber | Checkliste |
 

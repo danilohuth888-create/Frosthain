@@ -25,8 +25,8 @@ flowchart LR
 |---|---|---|---|---|
 | M0.1 | Repository, Build, Architekturentscheidungen | Gradle 9.4 + JDK 25 baut; `./gradlew check` grün; ADRs 0001–0010 | S | ✅ |
 | M0.2 | Datenmodell, Registry, Validator, Basisinhalte | 58 Tests grün; Validator: 0 Fehler auf `content/`; Lizenz-Sperre per Test belegt | M | ✅ |
-| M0.3 | Fabric-Mod-Skelett gegen Minecraft 26.3 | Modul `:mod` baut mit `net.fabricmc.fabric-loom`; Mod startet im Dev-Client und auf dem Dedicated Server; lädt `content/` als Datapack über `core`, meldet Anzahl und Diagnosen im Log; `/reload` lädt neu; 1 GameTest headless grün; exakte Versionen von Loader, Fabric API, Loom in `libs.versions.toml` gepinnt | M | ⛔ Netzwerkzugriff auf Fabric/Mojang |
-| M0.4 | Remote-Repository und CI | GitHub-Repository; CI (Ubuntu + Windows) grün; Gradle-Wrapper-Prüfsumme gegen gradle.org gepinnt; Branch-Schutz für `main` | S | ⛔ Repository fehlt |
+| M0.3 | Fabric-Mod-Skelett gegen Minecraft 26.3 | Modul `:mod` baut mit `net.fabricmc.fabric-loom` ✅; Versionen gepinnt ✅; Inhalte werden beim Start über `core` geladen und geprüft (Code ✅, Start ⏳); Mod startet im Dev-Client und auf dem Dedicated Server ⏳; Datapack-Reload ⏳; 1 GameTest headless ⏳ | M | 🔶 Teil 1 (Build im CI) erledigt |
+| M0.4 | Remote-Repository und CI | GitHub-Repository ✅; CI (Ubuntu + Windows) grün ✅; Gradle-Wrapper-Prüfsumme gegen gradle.org pinnen ⏳; Branch-Schutz für `main` ⏳ | S | 🔶 |
 
 ## Phase 1 – Launcher
 
@@ -42,7 +42,7 @@ flowchart LR
 
 | # | Meilenstein | Abnahmekriterien | Größe | Status |
 |---|---|---|---|---|
-| M2.1 | Designentwurf (B, D, F) | Entwürfe für Editor, HUD, Talentbaum, Dialog auf Basis der Referenzbilder; vom Inhaber freigegeben | M | ⛔ Referenzbilder |
+| M2.1 | Designentwurf (B, D, F) | UI-Implementierungsplan (docs/10) ✅; interaktiver Prototyp mit Screenshots (docs/prototyp) ✅; Freigabe durch den Inhaber ⏳ | M | 🔶 wartet auf Freigabe |
 | M2.2 | Charakter im Spiel | Spieleranhang mit `CharacterSheetCodec`; Server öffnet Editor vor dem ersten Handeln; Erstellung über Pakete, serverseitig geprüft; GameTest: ungültige Anfrage wird abgelehnt | M | ⏳ |
 | M2.3 | Editor-Oberfläche | 8 Schritte; 3D-Vorschau drehen/zoomen; Schnellstart-Held; Controller-Navigation; Client-GameTest mit Screenshots je Schritt | L | ⏳ |
 | M2.4 | Aussehen komplett | `appearance_parts`; Skin-Compositing; Zusatzteile (Ohren, Hörner, Schweif, Hauer); Aussehen im Spiel änderbar; Charakter-Zusammenfassung für den Launcher | L | ⏳ |

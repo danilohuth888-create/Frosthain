@@ -22,7 +22,7 @@ Stand: 01.11.2026 · Grundlage: Auftrag „FROSTHAIN – Complete Rebuild“, Re
 | Quests, Wegpunkte, NPC-Dialoge | 🟢 machbar | Eigenes Quest- und Dialogsystem; eigene Wegpunkt-Anzeige, Minimap-Integration optional. |
 | Deutsch primär, weitere Sprachen vorbereitet | 🟢 umgesetzt | Übersetzungsschlüssel aus IDs; Prüfung auf fehlende Texte im Validator. |
 | Installation: 1 Download + 1 PowerShell-Befehl | 🟢 machbar | Ohne Code-Signaturzertifikat zeigt Windows SmartScreen Warnungen (§1.3.9). |
-| Zielversion Minecraft Java 26.3 + Fabric | 🟡 plausibel, hier nicht verifizierbar | 26.3 erschien laut mehreren Sekundärquellen am 15.09.2026. Mojang- und Fabric-Server sind aus dieser Cloud-Umgebung gesperrt; die Fabric-Toolchain wird in M0.3 verifiziert. |
+| Zielversion Minecraft Java 26.3 + Fabric | 🟢 verifiziert (01.11.2026) | Fabric führt 26.3 als stabil; die Mod baut im CI mit Loader 0.20.1, Fabric API 0.165.0+26.3, Loom 1.19.3 (ADR 0002). Start im Spiel noch offen. |
 
 ## 1.2 Geprüfte Fakten und ihr Verifikationsstand
 
