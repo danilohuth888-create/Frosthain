@@ -47,7 +47,8 @@ public final class DirectoryContentSource {
     }
 
     private static void scanPack(Path packRoot, List<ContentFile> files, List<LangFile> langs) {
-        String pack = packRoot.getFileName().toString();
+        // The root of a mod jar has no file name; use the full path as pack name then.
+        String pack = packRoot.getFileName() == null ? packRoot.toString() : packRoot.getFileName().toString();
         Path data = packRoot.resolve("data");
         if (Files.isDirectory(data)) {
             for (Path namespaceDir : listDirectories(data)) {
