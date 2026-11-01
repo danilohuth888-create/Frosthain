@@ -10,7 +10,6 @@ Stand: 01.11.2026. Nur Komponenten, die im Repository tatsächlich enthalten sin
 | Gson | 2.13.2 | Google LLC | https://github.com/google/gson | Apache-2.0 (`gson-parent-2.13.2.pom`, Maven Central) | keine | Wird zur Laufzeit von Minecraft bereitgestellt; vom Prototyp mitgeliefert → Apache-2.0-Hinweis beilegen |
 | Gradle Wrapper | 9.8.2 (Distribution), `gradle-wrapper.jar` im Repository | Gradle Inc. | https://gradle.org | Apache-2.0 (`META-INF/LICENSE` im JAR) | keine | nur Build-Werkzeug, nicht Teil des Spiels |
 | JUnit | 6.1.3 | JUnit-Team | https://junit.org | EPL-2.0 (`junit-bom-6.1.3.pom`) | keine | nur Tests, wird nicht ausgeliefert |
-
 | Fabric Loader | 0.20.1 | FabricMC | https://github.com/FabricMC/fabric-loader | Apache-2.0 (`LICENSE` im Repository, abgerufen 01.11.2026) | keine | Laufzeitvoraussetzung der Mod; nicht im Mod-Jar enthalten. Bei späterer Auslieferung durch den Launcher Lizenzhinweis beilegen |
 | Fabric API | 0.165.0+26.3 | FabricMC | https://github.com/FabricMC/fabric | Apache-2.0 (`LICENSE` im Repository, abgerufen 01.11.2026) | keine | wie Fabric Loader |
 | Fabric Loom (Gradle-Plugin) | 1.19.3 | FabricMC | https://github.com/FabricMC/fabric-loom | MIT (`LICENSE` im Repository, abgerufen 01.11.2026) | keine | nur Build-Werkzeug, nicht Teil des Spiels |
