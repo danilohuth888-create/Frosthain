@@ -16,7 +16,8 @@ Gewünscht ist Minecraft Java 26.3 mit Fabric. Laut Sekundärquellen erschien 26
 - Gepinnt in `gradle.properties`: Fabric Loader **0.20.1**, Fabric API **0.165.0+26.3**, Loom **1.19.3**.
 - Loom 1.19.3 verlangt **Gradle ≥ 9.8.0** → Wrapper auf Gradle 9.8.2 angehoben.
 - `:mod:build` erfolgreich; das Jar enthält `fabric.mod.json`, Inhalte, Schriften sowie `core` und `ui` als Jar-in-Jar.
-- Noch offen: Start im Client/Server und GameTest (M0.3, Teil 2).
+- Dedicated Server startet im CI (privater Testserver, EULA laut Freigabe des Inhabers nur dort): `Done (3.149s)`, FROSTHAIN lädt 12 Klassen, 9 Spezies, 3 Talentbäume, 3 Quests, 1 Dialog ohne Fehler.
+- Noch offen: Start im Client und GameTest (M0.3, Teil 2).
 
 ## Fallback
 Fehlt für 26.3 eine zwingend benötigte Komponente, wird auf 26.2 ausgewichen und das hier dokumentiert.

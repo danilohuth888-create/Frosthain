@@ -25,7 +25,7 @@ flowchart LR
 |---|---|---|---|---|
 | M0.1 | Repository, Build, Architekturentscheidungen | Gradle 9.4 + JDK 25 baut; `./gradlew check` grün; ADRs 0001–0010 | S | ✅ |
 | M0.2 | Datenmodell, Registry, Validator, Basisinhalte | 58 Tests grün; Validator: 0 Fehler auf `content/`; Lizenz-Sperre per Test belegt | M | ✅ |
-| M0.3 | Fabric-Mod-Skelett gegen Minecraft 26.3 | Modul `:mod` baut mit `net.fabricmc.fabric-loom` ✅; Versionen gepinnt ✅; Inhalte werden beim Start über `core` geladen und geprüft (Code ✅, Start ⏳); Mod startet im Dev-Client und auf dem Dedicated Server ⏳; Datapack-Reload ⏳; 1 GameTest headless ⏳ | M | 🔶 Teil 1 (Build im CI) erledigt |
+| M0.3 | Fabric-Mod-Skelett gegen Minecraft 26.3 | Modul `:mod` baut mit `net.fabricmc.fabric-loom` ✅; Versionen gepinnt ✅; Inhalte werden beim Start über `core` geladen und geprüft (Code ✅, Start ⏳); Dedicated Server startet im CI mit geladenen Inhalten ✅; Dev-Client ⏳; Datapack-Reload ⏳; 1 GameTest headless ⏳ | M | 🔶 Teil 1 (Build im CI) erledigt |
 | M0.4 | Remote-Repository und CI | GitHub-Repository ✅; CI (Ubuntu + Windows) grün ✅; Gradle-Wrapper-Prüfsumme gegen gradle.org pinnen ⏳; Branch-Schutz für `main` ⏳ | S | 🔶 |
 
 ## Phase 1 – Launcher
