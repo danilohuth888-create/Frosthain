@@ -28,6 +28,16 @@ dependencies {
     include(project(":ui"))
 }
 
+// Fabric GameTests: eigener Source-Set "gametest"; der Client-Test startet das echte Spiel (CI: xvfb + Mesa).
+// eula = true gilt nur für diese automatisierten Testläufe (Freigabe des Projektinhabers vom 01.11.2026).
+fabricApi {
+    configureTests {
+        createSourceSet = true
+        modId = "frosthain-gametest"
+        eula = true
+    }
+}
+
 tasks.withType<JavaCompile>().configureEach {
     options.encoding = "UTF-8"
     options.release = 25

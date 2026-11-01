@@ -29,13 +29,14 @@ class BaseContentPackTest {
     }
 
     @Test
-    void containsAllTwelveSrdClassesAndNineSpecies() {
+    void containsAllTwelveSrdClassesTheRuneMageAndNineSpecies() {
         Set<String> classes = Set.of("barbarian", "bard", "cleric", "druid", "fighter", "monk", "paladin", "ranger", "rogue",
                 "sorcerer", "warlock", "wizard");
         for (String clazz : classes) {
             assertTrue(registry.contains(ContentType.CLASSES, ContentId.of(clazz)), clazz);
         }
-        assertEquals(12, registry.all(ContentType.CLASSES).size());
+        assertTrue(registry.contains(ContentType.CLASSES, ContentId.of("rune_mage")), "Runenmagier (FROSTHAIN-Klasse)");
+        assertEquals(13, registry.all(ContentType.CLASSES).size());
         assertEquals(9, registry.all(ContentType.SPECIES).size());
     }
 

@@ -16,12 +16,12 @@ jobs:
         os: [ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: "25"
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@v5
       - name: Tests und Inhaltsprüfung
         run: ./gradlew check --console=plain
       - name: UI-Prototyp-Screenshots (headless)
@@ -29,13 +29,13 @@ jobs:
         run: ./gradlew :ui-prototype:screenshots --console=plain
       - name: Screenshots sichern
         if: runner.os == 'Linux'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: ui-prototype-screenshots
           path: tools/ui-prototype/build/screenshots/
       - name: Testberichte sichern
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: test-reports-${{ matrix.os }}
           path: |
@@ -46,12 +46,12 @@ jobs:
     name: Fabric-Mod (Minecraft 26.3)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: "25"
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@v5
       - name: Neuere Fabric-Versionen prüfen (nur Hinweis)
         shell: bash
         run: |
@@ -112,13 +112,116 @@ jobs:
           echo "::notice title=Server-Starttest::$(grep -o 'Done (.*' server.log | head -1)"
       - name: Server-Log sichern
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: server-log
           path: server.log
           if-no-files-found: ignore
-      - name: Mod-Jar sichern
-        uses: actions/upload-artifact@v4
+      - name: Release-Dateien zusammenstellen und prüfen
+        shell: bash
+        run: |
+          set -euo pipefail
+          prop() { grep "^$1=" gradle.properties | cut -d= -f2; }
+          MC=$(prop fabric.minecraftVersion); LOADER=$(prop fabric.loaderVersion); API=$(prop fabric.apiVersion)
+          API_URL="https://maven.fabricmc.net/net/fabricmc/fabric-api/fabric-api/${API/+/%2B}/fabric-api-${API/+/%2B}.jar"
+          mkdir -p release
+          cp "$(ls mod/build/libs/frosthain-*.jar | grep -v sources | head -1)" release/frosthain.jar
+          curl -fsSL "$API_URL" -o release/fabric-api.jar
+          echo "$(curl -fsSL "$API_URL.sha1")  release/fabric-api.jar" | sha1sum -c -
+          curl -fsSL "https://meta.fabricmc.net/v2/versions/loader/$MC/$LOADER/profile/json" -o release/fabric-loader-profile.json
+          jq -e '.id and .inheritsFrom' release/fabric-loader-profile.json
+          curl -fsSL https://raw.githubusercontent.com/FabricMC/fabric/HEAD/LICENSE -o release/LICENSE-fabric-api.txt
+          cp installer/install-frosthain.ps1 LICENSE.md NOTICE.md THIRD_PARTY_NOTICES.md release/
+          (cd release && sha256sum * > SHA256SUMS.txt && cat SHA256SUMS.txt)
+      - name: Release-Dateien sichern
+        uses: actions/upload-artifact@v5
         with:
-          name: frosthain-mod
-          path: mod/build/libs/
+          name: release-assets
+          path: release/
+
+  client:
+    name: Minecraft-Client-Start (headless)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "25"
+      - uses: gradle/actions/setup-gradle@v5
+      - name: Software-Rendering bereitstellen
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq xvfb libgl1-mesa-dri mesa-vulkan-drivers libvulkan1 > /dev/null
+      - name: Client-GameTest
+        timeout-minutes: 25
+        shell: bash
+        env:
+          LIBGL_ALWAYS_SOFTWARE: "1"
+        run: |
+          set -o pipefail
+          xvfb-run -a -s "-screen 0 1920x1080x24" ./gradlew :mod:runClientGameTest --console=plain --no-daemon 2>&1 | tee client.log
+      - name: Ergebnis auswerten
+        if: always()
+        shell: bash
+        run: |
+          grep -E "FROSTHAIN geladen|OpenGL|Vulkan|Backend|GL_RENDERER|ERROR|Exception|gametest|GameTest" client.log | head -60 || true
+          ls -R mod/build/run 2>/dev/null | grep -iE "screenshots|\.png" | head -20 || true
+          if grep -q 'FROSTHAIN geladen: .* 0 Fehler' client.log; then
+            echo "::notice title=Client-Start::$(grep -o 'FROSTHAIN geladen.*' client.log | head -1)"
+          else
+            echo "::error title=Client-Start::FROSTHAIN-Ladezeile im Client fehlt"
+          fi
+      - name: Client-Screenshots und Log sichern
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: client-screenshots
+          path: |
+            mod/build/run/**/screenshots/**
+            mod/run/**/screenshots/**
+            client.log
+          if-no-files-found: warn
+
+  installer:
+    name: Windows-Installer-Test
+    needs: mod
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/download-artifact@v5
+        with:
+          name: release-assets
+          path: release
+      - name: Installer mit Windows PowerShell 5.1
+        shell: powershell
+        run: .\installer\tests\Test-Installer.ps1 -AssetDir "$PWD\release"
+      - name: Installer mit PowerShell 7
+        shell: pwsh
+        run: .\installer\tests\Test-Installer.ps1 -AssetDir "$PWD\release"
+      - name: Portables JDK 25 ohne winget (Adoptium, Prüfsumme)
+        shell: powershell
+        run: |
+          .\installer\dev-test-setup.ps1 -JdkOnly -RuntimeDir "$env:RUNNER_TEMP\frosthain-runtime"
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+
+  release:
+    name: Entwicklungs-Release veröffentlichen
+    needs: [mod, installer]
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v5
+        with:
+          name: release-assets
+          path: release
+      - name: Vorabversion frosthain-dev ersetzen
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          gh release delete frosthain-dev --yes --cleanup-tag || true
+          gh release create frosthain-dev release/* --prerelease --target "$GITHUB_SHA" \
+            --title "FROSTHAIN Entwicklungsstand ${GITHUB_SHA::7}" \
+            --notes "Automatisch gebaut aus ${GITHUB_REF_NAME} (${GITHUB_SHA::7}). Kein fertiges Spiel – siehe docs/11-windows-test-und-uebergabe.md. Installation: install-frosthain.ps1 herunterladen und mit 'powershell -ExecutionPolicy Bypass -File install-frosthain.ps1' ausführen."

@@ -1,0 +1,12 @@
+{
+  "source": "frosthain:original",
+  "kind": "active",
+  "resource": "frosthain:spell_power",
+  "cost": 40,
+  "cooldown_ticks": 160,
+  "school": "rune",
+  "tags": [
+    "projectile",
+    "knockback"
+  ]
+}

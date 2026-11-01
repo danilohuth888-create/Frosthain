@@ -13,11 +13,16 @@ public final class Theme {
     private Theme() {
     }
 
-    public static final int PANEL_BACKGROUND = 0xEB0E1013;
-    public static final int HUD_PANEL_BACKGROUND = 0xC70E1013;
-    public static final int PANEL_INNER = 0xFF16191E;
-    public static final int FRAME_GOLD = 0xFFB8955A;
-    public static final int FRAME_GOLD_BRIGHT = 0xFFE6C27A;
+    // "Immersive Fantasy 2.0" (docs/12-design-immersive-fantasy-2.md): slate, parchment, old gold, rune blue, forest green.
+    public static final int PANEL_BACKGROUND = 0xE617191D;
+    public static final int HUD_PANEL_BACKGROUND = 0xB317191D;
+    public static final int PANEL_INNER = 0xFF1E2227;
+    public static final int FRAME_GOLD = 0xFF9C8452;
+    public static final int FRAME_GOLD_BRIGHT = 0xFFD2B172;
+    public static final int PARCHMENT = 0xFFE7DABF;
+    public static final int INK = 0xFF3A2F22;
+    public static final int RUNE_BLUE = 0xFF4FA3FF;
+    public static final int FOREST_GREEN = 0xFF5FA54A;
     public static final int FRAME_GOLD_DIM = 0xFF6B5836;
     public static final int TEXT_PRIMARY = 0xFFEDE3CF;
     public static final int TEXT_SECONDARY = 0xFFB9AE98;
@@ -27,9 +32,9 @@ public final class Theme {
     public static final int NODE_LOCKED = 0xFF3A3D42;
 
     public static final int BRANCH_COMBAT = 0xFFE0452E;
-    public static final int BRANCH_MAGIC = 0xFF3BA4F0;
+    public static final int BRANCH_MAGIC = RUNE_BLUE;
     public static final int BRANCH_CRAFTING = 0xFFB25FE0;
-    public static final int BRANCH_SURVIVAL = 0xFF6DC54A;
+    public static final int BRANCH_SURVIVAL = FOREST_GREEN;
     public static final int BRANCH_RUNE = 0xFF7FD3E6;
 
     /** Branch palette by branch index; matches reference image D (red, blue, violet, green). */

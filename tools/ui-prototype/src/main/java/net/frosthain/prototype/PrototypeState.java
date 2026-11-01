@@ -49,7 +49,8 @@ final class PrototypeState {
     CharacterSheet sheet;
     QuestLog questLog;
     Scene scene = Scene.HUD;
-    boolean trackerCollapsed;
+    /** Design 2.0: the quest tracker starts collapsed and is opened on demand (H or click). */
+    boolean trackerCollapsed = true;
     String notification = "";
 
     ContentId selectedTree = ContentId.of("general");

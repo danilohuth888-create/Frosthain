@@ -1,100 +1,103 @@
 ﻿<#
 .SYNOPSIS
-  FROSTHAIN – Test- und Entwicklungsumgebung unter Windows 11 einrichten.
+  FROSTHAIN – Entwicklungsumgebung unter Windows einrichten (ohne winget, ohne Git, ohne Adminrechte).
 
 .DESCRIPTION
-  1. Prüft Git und JDK 25 und installiert sie bei Bedarf über winget.
-  2. Klont oder aktualisiert das Repository.
-  3. Führt alle Tests und die Inhaltsprüfung aus und baut die Fabric-Mod.
-  4. Legt eine getrennte Test-Instanz an (mods-Ordner mit FROSTHAIN und Fabric API).
-  5. Startet auf Wunsch den UI-Prototyp (-Prototype).
+  1. Sucht ein JDK 25. Fehlt es, wird Eclipse Temurin 25 als ZIP von api.adoptium.net geladen,
+     per SHA-256 (Prüfsumme aus der Adoptium-API) geprüft und nach %LOCALAPPDATA%\Frosthain\runtime entpackt.
+  2. Lädt den Quellcode des Branches als ZIP von GitHub (vorhandener Ordner wird umbenannt, nicht gelöscht).
+  3. Führt Tests und Inhaltsprüfung aus und baut die Mod (Gradle Wrapper, kein separates Gradle nötig).
+  4. Optional: startet den UI-Prototyp (-Prototype).
 
-  Verändert weder %APPDATA%\.minecraft noch bestehende Welten oder Launcher-Profile.
-  Stand: 01.11.2026 – auf Windows noch nicht ausgeführt (siehe docs/11-windows-test-und-uebergabe.md).
+  Für das reine Spielen wird dieses Skript NICHT gebraucht – dafür gibt es install-frosthain.ps1.
 #>
+[CmdletBinding()]
 param(
     [string]$Branch = "claude/ui-prototyp",
     [string]$Target = (Join-Path $env:USERPROFILE "Frosthain"),
-    [switch]$Prototype
+    [string]$RuntimeDir = (Join-Path $env:LOCALAPPDATA "Frosthain\runtime"),
+    [switch]$Prototype,
+    [switch]$JdkOnly
 )
 
 $ErrorActionPreference = "Stop"
-$Repo = "https://github.com/danilohuth888-create/Frosthain.git"
-$FabricApi = "0.165.0+26.3"
-$Instance = Join-Path $env:LOCALAPPDATA "Frosthain\test-instance"
+[Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
 
 function Step([string]$Text) { Write-Host "`n==> $Text" -ForegroundColor Yellow }
-function Have([string]$Command) { [bool](Get-Command $Command -ErrorAction SilentlyContinue) }
-function Run([string]$Exe, [string[]]$Arguments) {
-    & $Exe @Arguments
-    if ($LASTEXITCODE -ne 0) { throw "Fehlgeschlagen ($LASTEXITCODE): $Exe $($Arguments -join ' ')" }
-}
-function JavaMajor {
+
+function Get-JavaMajor([string]$Java) {
     $previous = $ErrorActionPreference
     $ErrorActionPreference = "Continue"
-    try { $out = (& java -version 2>&1 | Out-String) } catch { $out = "" } finally { $ErrorActionPreference = $previous }
+    try { $out = (& $Java -version 2>&1 | Out-String) } catch { $out = "" } finally { $ErrorActionPreference = $previous }
     if ($out -match 'version "(\d+)') { return [int]$Matches[1] }
     return 0
 }
 
-Step "Voraussetzungen prüfen"
-if (-not (Have "git")) {
-    Run "winget" @("install", "--id", "Git.Git", "-e", "--source", "winget", "--accept-package-agreements", "--accept-source-agreements")
-    $env:Path = "$env:ProgramFiles\Git\cmd;$env:Path"
-}
-if ((Have "java") -and (JavaMajor) -eq 25) {
-    Write-Host "JDK 25 gefunden."
-} else {
-    Write-Host "JDK 25 wird installiert (Eclipse Temurin)…"
-    Run "winget" @("install", "--id", "EclipseAdoptium.Temurin.25.JDK", "-e", "--source", "winget", "--accept-package-agreements", "--accept-source-agreements")
-    $jdk = Get-ChildItem (Join-Path $env:ProgramFiles "Eclipse Adoptium") -Directory -Filter "jdk-25*" -ErrorAction SilentlyContinue | Select-Object -First 1
-    if (-not $jdk) { throw "JDK 25 nicht gefunden. Bitte manuell installieren: https://adoptium.net (Version 25) und Skript erneut starten." }
-    $env:JAVA_HOME = $jdk.FullName
-    $env:Path = "$($jdk.FullName)\bin;$env:Path"
+function Ensure-Jdk25 {
+    $onPath = Get-Command java -ErrorAction SilentlyContinue
+    if ($onPath -and (Get-JavaMajor $onPath.Source) -eq 25) {
+        return (Split-Path (Split-Path $onPath.Source -Parent) -Parent)
+    }
+    $existing = Get-ChildItem $RuntimeDir -Directory -Filter "jdk-25*" -ErrorAction SilentlyContinue | Select-Object -First 1
+    if ($existing -and (Test-Path (Join-Path $existing.FullName "bin\java.exe"))) { return $existing.FullName }
+
+    Write-Host "JDK 25 wird von Adoptium geladen (Eclipse Temurin, ca. 200 MB) …"
+    $api = "https://api.adoptium.net/v3/assets/latest/25/hotspot?architecture=x64&image_type=jdk&os=windows&vendor=eclipse"
+    $release = (Invoke-RestMethod -UseBasicParsing -Uri $api) | Select-Object -First 1
+    if (-not $release) { throw "Adoptium lieferte kein JDK 25 für Windows x64." }
+    $package = $release.binary.package
+    New-Item -ItemType Directory -Force -Path $RuntimeDir | Out-Null
+    $zip = Join-Path $RuntimeDir $package.name
+    Invoke-WebRequest -UseBasicParsing -Uri $package.link -OutFile $zip
+    $actual = (Get-FileHash -Algorithm SHA256 $zip).Hash.ToLowerInvariant()
+    if ($actual -ne ([string]$package.checksum).ToLowerInvariant()) {
+        Remove-Item $zip -Force
+        throw "Prüfsumme des JDK stimmt nicht (erwartet $($package.checksum), erhalten $actual). Abgebrochen."
+    }
+    Expand-Archive -Path $zip -DestinationPath $RuntimeDir -Force
+    Remove-Item $zip -Force
+    $jdk = Get-ChildItem $RuntimeDir -Directory -Filter "jdk-25*" | Select-Object -First 1
+    if (-not $jdk) { throw "JDK konnte nicht entpackt werden." }
+    return $jdk.FullName
 }
 
-Step "Repository holen ($Branch)"
-if (Test-Path (Join-Path $Target ".git")) {
-    Run "git" @("-C", $Target, "fetch", "origin", $Branch)
-    Run "git" @("-C", $Target, "checkout", $Branch)
-    Run "git" @("-C", $Target, "pull", "--ff-only", "origin", $Branch)
-} else {
-    Run "git" @("clone", "--branch", $Branch, $Repo, $Target)
-}
-
-Push-Location $Target
 try {
-    Step "Tests, Inhaltsprüfung und Mod-Build"
-    Run ".\gradlew.bat" @("check", ":mod:build", "--console=plain")
+    Step "JDK 25"
+    $jdkHome = Ensure-Jdk25
+    $env:JAVA_HOME = $jdkHome
+    $env:Path = "$jdkHome\bin;$env:Path"
+    Write-Host "JAVA_HOME = $jdkHome (Java $(Get-JavaMajor (Join-Path $jdkHome 'bin\java.exe')))"
+    if ($JdkOnly) { exit 0 }
 
-    Step "Test-Instanz vorbereiten: $Instance"
-    $mods = Join-Path $Instance "mods"
-    New-Item -ItemType Directory -Force -Path $mods | Out-Null
-    Get-ChildItem $mods -Filter "frosthain-*.jar" -ErrorAction SilentlyContinue | Remove-Item
-    $jar = Get-ChildItem "mod\build\libs" -Filter "frosthain-*.jar" | Where-Object { $_.Name -notlike "*-sources.jar" } | Select-Object -First 1
-    Copy-Item $jar.FullName $mods
-    $apiFile = Join-Path $mods "fabric-api-$FabricApi.jar"
-    if (-not (Test-Path $apiFile)) {
-        $encoded = $FabricApi -replace '\+', '%2B'
-        Invoke-WebRequest -Uri "https://maven.fabricmc.net/net/fabricmc/fabric-api/fabric-api/$encoded/fabric-api-$encoded.jar" -OutFile $apiFile
+    Step "Quellcode laden ($Branch)"
+    $zip = Join-Path ([System.IO.Path]::GetTempPath()) "frosthain-src.zip"
+    Invoke-WebRequest -UseBasicParsing -Uri "https://codeload.github.com/danilohuth888-create/Frosthain/zip/refs/heads/$Branch" -OutFile $zip
+    $extract = Join-Path ([System.IO.Path]::GetTempPath()) ("frosthain-src-" + [guid]::NewGuid().ToString("N"))
+    Expand-Archive -Path $zip -DestinationPath $extract
+    if (Test-Path $Target) {
+        $old = "$Target.alt-" + (Get-Date -Format "yyyyMMdd-HHmmss")
+        Rename-Item $Target $old
+        Write-Host "Vorheriger Ordner umbenannt: $old"
     }
-    Get-ChildItem $mods | ForEach-Object { Write-Host "  mods\$($_.Name)" }
+    Move-Item (Get-ChildItem $extract -Directory | Select-Object -First 1).FullName $Target
+    Remove-Item $zip, $extract -Recurse -Force -ErrorAction SilentlyContinue
 
-    if ($Prototype) {
-        Step "UI-Prototyp starten (Fenster schließen zum Beenden)"
-        Run ".\gradlew.bat" @(":ui-prototype:run", "--console=plain")
+    Push-Location $Target
+    try {
+        Step "Tests, Inhaltsprüfung und Mod-Build"
+        & .\gradlew.bat check ":mod:build" --console=plain
+        if ($LASTEXITCODE -ne 0) { throw "Gradle-Build fehlgeschlagen (Code $LASTEXITCODE)." }
+        Write-Host "Mod: $(Get-ChildItem 'mod\build\libs' -Filter 'frosthain-*.jar' | Select-Object -First 1 -ExpandProperty FullName)"
+        if ($Prototype) {
+            Step "UI-Prototyp"
+            & .\gradlew.bat ":ui-prototype:run" --console=plain
+        }
+    } finally {
+        Pop-Location
     }
-} finally {
-    Pop-Location
+    Write-Host "`nFertig." -ForegroundColor Green
+    exit 0
+} catch {
+    Write-Host "`nFehler: $($_.Exception.Message)" -ForegroundColor Red
+    exit 1
 }
-
-Step "Fertig"
-Write-Host @"
-Nächste Schritte (manuell, siehe docs/11-windows-test-und-uebergabe.md):
-  1. Fabric-Installer von https://fabricmc.net/use/installer/ starten: Client, Minecraft 26.3, Loader 0.20.1.
-  2. Im offiziellen Minecraft Launcher die Installation "fabric-loader-0.20.1-26.3" bearbeiten
-     und als Spielverzeichnis eintragen: $Instance
-  3. Spielen, Einzelspielerwelt erstellen, danach in $Instance\logs\latest.log nach
-     "FROSTHAIN geladen" suchen (erwartet: 12 Klassen … 0 Fehler).
-UI-Prototyp jederzeit: cd "$Target"; .\gradlew.bat :ui-prototype:run
-"@
