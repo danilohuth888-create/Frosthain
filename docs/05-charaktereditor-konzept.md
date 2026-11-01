@@ -1,6 +1,6 @@
 # 5 · Konzept: Charaktereditor
 
-> Die ursprünglichen Referenzbilder (Richtungen B, D, F) liegen noch nicht vor und wurden **nicht** gesehen. Dieses Konzept beschreibt Struktur und Verhalten; die visuelle Gestaltung wird nach Erhalt der Referenzen als Designentwurf vorgelegt, bevor Oberflächen gebaut werden.
+> Aktualisiert am 01.11.2026: Die Referenzbilder für B, D und F liegen jetzt vor (`docs/referenzen/referenzbilder_B_D_F.webp`) zusammen mit den abgestimmten Spezifikationen. Die konkrete Umsetzung von HUD, Talentbaum und Dialogen steht in [10 · UI-Implementierungsplan](10-ui-implementierungsplan.md); §5.9 unten ist dadurch präzisiert.
 
 ## 5.1 Wann der Editor erscheint
 
@@ -94,7 +94,7 @@ Skalierbare Schrift, hohe Kontraste im Dark-Fantasy-Stil, keine reinen Farbsigna
 
 ## 5.9 UI-Leitlinien für alle Oberflächen
 
-Gilt für Mod und Launcher; ersetzt durch den Designentwurf nach Eingang der Referenzbilder.
+Gilt für Mod und Launcher. Verbindliche Details: [10 · UI-Implementierungsplan](10-ui-implementierungsplan.md) und `docs/referenzen/`.
 
 | Richtung | Leitlinie |
 |---|---|
@@ -103,6 +103,6 @@ Gilt für Mod und Launcher; ersetzt durch den Designentwurf nach Eingang der Ref
 | **F – Filmische NPC-Dialoge** | HUD ausgeblendet, Kamera auf den NPC, Letterbox-Balken, Sprechername und Porträt/3D-Ansicht, gut lesbarer Text, nummerierte Antworten mit Kennzeichnung von Proben („[Überzeugen]“). |
 | ~~E – Königreichsverwaltung~~ | wird ausdrücklich nicht umgesetzt. |
 
-Allgemein: dunkle Flächen mit leichter Textur, dezente Goldlinien, eine Serifenschrift für Überschriften und eine gut lesbare Schrift für Fließtext (Schriftlizenz prüfen: nur frei lizenzierte Schriften, z. B. SIL OFL), ruhige Übergänge (150–250 ms), keine blinkenden Elemente, keine Informationsflut.
+Allgemein: dunkle Flächen mit leichter Textur, dezente Goldlinien, eine Serifenschrift für Überschriften (Cinzel) und eine gut lesbare Schrift für Fließtext (EB Garamond), beide SIL OFL 1.1, ruhige Übergänge (150–250 ms), keine blinkenden Elemente, keine Informationsflut.
 
 **Tastenbelegung:** NPCs werden mit der normalen „Benutzen“-Taste (Rechtsklick) angesprochen – keine neue Taste nötig, Hinweis „Rechtsklick: Sprechen“ erscheint dezent in der Nähe. Für Menüs gibt es *eine* FROSTHAIN-Menütaste (Vorschlag: `B` – bis 1.21 in Vanilla allein unbelegt, `Strg+B` ist der Erzähler; gegen die Tastenliste von 26.3 in M0.3 prüfen) mit Radialmenü (Charakter, Talente, Zauberbuch, Journal, Chronik). Alle Belegungen sind über die Vanilla-Steuerung änderbar; beim Start prüft die Mod auf Konflikte und weist darauf hin.
