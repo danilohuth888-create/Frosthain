@@ -62,12 +62,15 @@ public class FrosthainButton extends AbstractButton {
             g.horizontalLine(x + 2, x + w - 3, y + h - 2, Theme.FRAME_GOLD_BRIGHT);
         }
         int color = !active ? Theme.TEXT_DISABLED : highlight ? Theme.FRAME_GOLD_BRIGHT : Theme.TEXT_PRIMARY;
-        Component label = style == Style.TILE ? Ui.body(getMessage()) : Ui.heading(getMessage());
+        // Cinzel for menus and tabs; narrow buttons fall back to EB Garamond, then to a shortened label.
         Font font = Minecraft.getInstance().font;
-        String plain = label.getString();
-        Component shown = font.width(label) > w - 6
-                ? (style == Style.TILE ? Ui.body(Component.literal(font.plainSubstrByWidth(plain, w - 10) + "…")) : label)
-                : label;
+        Component shown = style == Style.TILE ? Ui.body(getMessage()) : Ui.heading(getMessage());
+        if (font.width(shown) > w - 6) {
+            shown = Ui.body(getMessage());
+        }
+        if (font.width(shown) > w - 6) {
+            shown = Ui.body(Component.literal(font.plainSubstrByWidth(getMessage().getString(), w - 10) + "…"));
+        }
         g.centeredText(font, shown, x + w / 2, y + (h - font.lineHeight) / 2 + 1, color);
     }
 

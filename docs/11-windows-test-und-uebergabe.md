@@ -73,9 +73,14 @@ Beim Start von Minecraft erscheint jetzt das FROSTHAIN-Hauptmenü, beim ersten B
 | Charakter als Spieleranhang (persistent, bleibt nach dem Tod) | ✅ | GameTest liest den gespeicherten Bogen auf dem Server |
 | HUD-Abzeichen (Name, Klasse, Stufe), Taste **I** öffnet „Dein Held“ | ✅ | Screenshot `05_hud.png` |
 | Vorschau der Charaktererstellung aus dem Hauptmenü (nur ansehen) | ✅ | GameTest |
-| Talentbaum (K), Questtracker, Questjournal, NPC-Dialog, Fähigkeitenleiste | ❌ nächste Schritte | Logik in `core`/`ui` vorhanden |
+| **Talentbaum (K)**: Pfade (Legende, Runenpfad, Klassenbaum als Vorschau), Zweig-Reiter, Sechseck-Knoten mit Verbindungen, Detailtafel, Freischalten/Zurücknehmen/Alle zurücksetzen, Ziehen und Zoomen | ✅ | Client-GameTest: 2 Talente freigeschaltet, Server speichert und prüft (`TalentAllocator`); Bilder `06_`/`07_talentbaum*.png` |
+| Attribut-Talente wirken (Schaden, Rüstung, Leben, Tempo, Reichweite … – 28 Effekte) | ✅ | GameTest prüft den Modifikator „Kampfhaltung“ auf dem Angriffsschaden; wird nach Respawn neu angewendet |
+| Testbefehl `/frosthain ep <Menge>` (nur mit Cheats/OP) bis es echte EP-Quellen gibt (M3.2) | ✅ | 2000 EP → Stufe 4 |
+| Questtracker, Questjournal, NPC-Dialog, Fähigkeitenleiste | ❌ nächste Schritte | Logik in `core`/`ui` vorhanden |
 
-Grenzen: Aussehen-Schritt (Haare, Hautfarbe) fehlt noch, Attribute werden automatisch nach Klasse verteilt (Standardreihe), lange Namen in Kacheln werden gekürzt.
+Grenzen: Aussehen-Schritt (Haare, Hautfarbe) fehlt noch, Attribute werden automatisch nach Klasse verteilt (Standardreihe), lange Namen in Kacheln werden gekürzt. Talent-Symbole sind vorerst Vanilla-Gegenstände; Fähigkeits-, Merkmals- und Resistenz-Talente werden gespeichert, wirken aber erst mit dem Fähigkeitensystem (M4.1). Auf Stufe 1 gibt es 1 Talentpunkt; EP-Quellen im Spiel folgen (M3.2).
+
+So probierst du es aus: Welt mit erlaubten Cheats öffnen, Charakter erstellen, `/frosthain ep 2000` eingeben (Stufe 4), dann **K** drücken.
 
 ### Installation auf dem MSI über den echten Launcher
 

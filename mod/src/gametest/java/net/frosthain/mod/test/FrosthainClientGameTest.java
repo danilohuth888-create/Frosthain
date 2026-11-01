@@ -5,13 +5,17 @@ import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
 import net.frosthain.core.ContentId;
 import net.frosthain.core.character.CharacterSheet;
+import net.frosthain.core.character.TalentRef;
 import net.frosthain.core.registry.ContentType;
 import net.frosthain.mod.FrosthainMod;
 import net.frosthain.mod.character.CharacterService;
 import net.frosthain.mod.client.ClientCharacter;
 import net.frosthain.mod.client.screen.CharacterCreationScreen;
 import net.frosthain.mod.client.screen.FrosthainTitleScreen;
+import net.frosthain.mod.client.screen.TalentTreeScreen;
 import net.minecraft.client.Minecraft;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 
 /**
  * Real client test: boots Minecraft with FROSTHAIN, checks the main menu, walks through character creation in a
@@ -71,7 +75,43 @@ public final class FrosthainClientGameTest implements FabricClientGameTest {
             context.setScreen(() -> new CharacterCreationScreen(null, CharacterCreationScreen.Mode.VIEW));
             context.takeScreenshot("frosthain-08-charakter");
             context.setScreen(() -> null);
+
+            // Talent tree (K): 2000 EP = level 4 = 4 points; unlock two talents and check rules and effects on the server.
+            singleplayer.getServer().runCommand("execute as @a run frosthain ep 2000");
+            context.waitFor(client -> ClientCharacter.sheet().map(s -> s.characterLevel() >= 4).orElse(false));
+            context.setScreen(TalentTreeScreen::new);
+            context.waitTicks(5);
+            context.takeScreenshot("frosthain-09-talentbaum");
+            unlock(context, "combat_stance");
+            unlock(context, "toughness");
+            context.waitTicks(5);
+            context.takeScreenshot("frosthain-10-talente-freigeschaltet");
+            singleplayer.getServer().runOnServer(server -> {
+                ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
+                CharacterSheet sheet = CharacterService.sheet(player).orElseThrow();
+                if (!sheet.talents().containsKey(new TalentRef(ContentId.of("general"), "combat_stance"))) {
+                    throw new AssertionError("Talent wurde nicht gespeichert: " + sheet.talents());
+                }
+                boolean applied = player.getAttribute(Attributes.ATTACK_DAMAGE).getModifiers().stream()
+                        .anyMatch(modifier -> modifier.id().getNamespace().equals(FrosthainMod.MOD_ID));
+                if (!applied) {
+                    throw new AssertionError("Kampfhaltung wirkt nicht auf den Angriffsschaden");
+                }
+            });
+            context.setScreen(() -> null);
         }
+    }
+
+    private static void unlock(ClientGameTestContext context, String node) {
+        TalentRef ref = new TalentRef(ContentId.of("general"), node);
+        context.runOnClient(client -> {
+            if (!(client.gui.screen() instanceof TalentTreeScreen screen)) {
+                throw new AssertionError("Talentbaum ist nicht offen: " + client.gui.screen());
+            }
+            screen.selectNode(node);
+            screen.unlockSelected();
+        });
+        context.waitFor(client -> ClientCharacter.sheet().map(s -> s.talents().containsKey(ref)).orElse(false));
     }
 
     private static CharacterCreationScreen creation(Minecraft client) {

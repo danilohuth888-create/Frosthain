@@ -388,5 +388,10 @@
   "gui.frosthain.creation.preview_hint": "Preview: your hero is created when you first enter a world and is saved with that world.",
   "gui.frosthain.hud.class_level": "%s · Level %s",
   "key.frosthain.character": "Character",
-  "key.category.frosthain.frosthain": "FROSTHAIN"
+  "key.category.frosthain.frosthain": "FROSTHAIN",
+  "key.frosthain.talents": "Talent Tree",
+  "gui.frosthain.talents.hint": "Click: select talent · Drag: move · Wheel: zoom · Esc: close",
+  "gui.frosthain.talents.reset_confirm": "Really reset?",
+  "commands.frosthain.ep": "Gained %s XP – level %s, %s talent points available",
+  "commands.frosthain.no_character": "No FROSTHAIN character created yet."
 }

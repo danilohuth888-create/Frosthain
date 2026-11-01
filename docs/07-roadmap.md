@@ -53,7 +53,7 @@ flowchart LR
 |---|---|---|---|---|
 | M3.1 | Inhalte prüfen und vervollständigen | SRD-Abgleich mit dem Original-PDF dokumentiert; Klassenmerkmale je Stufe als Daten | M | ⏳ |
 | M3.2 | Regeln wirken im Spiel | Modifikatoren → Attribute/Resistenzen; Engine-Funktionen `darkvision`, `lucky`, … umgesetzt (Status `IMPLEMENTED` mit GameTest); EP-Quellen; Stufenaufstieg-Dialog | L | ⏳ |
-| M3.3 | Talentbaum-Oberfläche + 6 Kernklassen | Schwenken/Zoomen, Sperrgründe, Vorschau, Bestätigung, Reset; Talentbäume für Krieger, Magier, Schurke, Kleriker, Druide, Barde | L | ⏳ (Kriegerbaum als Daten ✅) |
+| M3.3 | Talentbaum-Oberfläche + 6 Kernklassen | Schwenken/Zoomen ✅, Sperrgründe ✅, Vorschau ✅, Bestätigung ✅, Reset ✅ (Taste K, serverseitig geprüft, Client-GameTest); Talentbäume für Krieger ✅ (Daten), Magier, Schurke, Kleriker, Druide, Barde ⏳ | L | 🔶 |
 | M3.4 | Multiclassing und Unterklassen im Spiel | Auswahl-UI; Talentbäume der übrigen 6 Klassen; Validator ohne Warnungen | L | ⏳ |
 
 ## Phase 4 – Spielsysteme

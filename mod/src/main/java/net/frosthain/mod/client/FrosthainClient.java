@@ -16,13 +16,14 @@ import net.frosthain.mod.network.CharacterStatePayload;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.gui.screens.TitleScreen;
 
-/** Client entry point: FROSTHAIN main menu, character editor, HUD badge and the "Charakter" key (I). */
+/** Client entry point: FROSTHAIN main menu, character editor, HUD badge, keys I (character) and K (talents). */
 public final class FrosthainClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        KeyMapping characterKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.frosthain.character",
-                InputConstants.KEY_I, KeyMapping.Category.register(FrosthainMod.id("frosthain"))));
+        KeyMapping.Category category = KeyMapping.Category.register(FrosthainMod.id("frosthain"));
+        KeyMapping characterKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.frosthain.character", InputConstants.KEY_I, category));
+        KeyMapping talentKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.frosthain.talents", InputConstants.KEY_K, category));
 
         // Every way back to the title screen creates a vanilla TitleScreen; replace exactly that class.
         ScreenEvents.AFTER_INIT.register((client, screen, width, height) -> {
@@ -40,6 +41,9 @@ public final class FrosthainClient implements ClientModInitializer {
             ClientCharacter.tick(client);
             while (characterKey.consumeClick()) {
                 ClientCharacter.openCharacterScreen(client);
+            }
+            while (talentKey.consumeClick()) {
+                ClientCharacter.openTalentTree(client);
             }
         });
 

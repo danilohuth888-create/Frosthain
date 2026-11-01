@@ -388,5 +388,10 @@
   "gui.frosthain.creation.preview_hint": "Vorschau: Dein Held wird beim ersten Betreten einer Welt erstellt und mit der Welt gespeichert.",
   "gui.frosthain.hud.class_level": "%s · Stufe %s",
   "key.frosthain.character": "Charakter",
-  "key.category.frosthain.frosthain": "FROSTHAIN"
+  "key.category.frosthain.frosthain": "FROSTHAIN",
+  "key.frosthain.talents": "Talentbaum",
+  "gui.frosthain.talents.hint": "Klicken: Talent wählen · Ziehen: verschieben · Mausrad: zoomen · Esc: schließen",
+  "gui.frosthain.talents.reset_confirm": "Wirklich zurücksetzen?",
+  "commands.frosthain.ep": "%s EP erhalten – Stufe %s, %s Talentpunkte verfügbar",
+  "commands.frosthain.no_character": "Noch kein FROSTHAIN-Charakter erstellt."
 }
