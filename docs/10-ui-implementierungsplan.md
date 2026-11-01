@@ -43,8 +43,8 @@ Hinweis: Im Bild steht „Passiver Talent“; korrekt ist „Passives Talent“.
 
 | # | Thema | Vorgabe | Umsetzung | Begründung |
 |---|---|---|---|---|
-| A1 | Taste für NPC-Interaktion | F: „Standardwunsch E, aber Konflikte prüfen“ | **Standard: Benutzen-Taste (Rechtsklick)**. Optional einschaltbar: „E spricht mit NPC im Blick“ (sonst bleibt E Inventar) | E ist in Vanilla die Inventartaste; der Ursprungsauftrag verbietet das Überschreiben wichtiger Tasten. **Entscheidung des Inhabers erbeten.** |
-| A2 | Linke Liste im Talentbaum | Bild: Klassen „Krieger, Runenmagier, Waldläufer, Handwerker“ | Liste aller Pfade: Allgemein, Runenpfad, Klassenbäume | „Runenmagier“ und „Handwerker“ sind keine SRD-Klassen. Runen und Handwerk sind als Pfad bzw. Zweig umgesetzt. **Offen:** Sollen es eigene FROSTHAIN-Klassen werden? |
+| A1 | Taste für NPC-Interaktion | F: „Standardwunsch E, aber Konflikte prüfen“ | **Standard: Benutzen-Taste (Rechtsklick)**. Optional einschaltbar: „E spricht mit NPC im Blick“ (sonst bleibt E Inventar) | E ist in Vanilla die Inventartaste. **Entschieden (01.11.2026):** Rechtsklick ist Standard; E bleibt optional und darf das Inventar nicht unbeabsichtigt blockieren (nur bei NPC im Blick und in Reichweite). |
+| A2 | Linke Liste im Talentbaum | Bild: Klassen „Krieger, Runenmagier, Waldläufer, Handwerker“ | Liste aller Pfade: Allgemein, Runenpfad, Klassenbäume | **Entschieden (01.11.2026):** „Runenmagier“ wird eine eigene spielbare FROSTHAIN-Klasse (Umsetzung in Phase 3, noch nicht angelegt). „Handwerker“ bleibt ein Talentzweig, den alle Klassen nutzen können. |
 | A3 | Logo oben links im HUD | Bild: dauerhaft sichtbar | Kapitelbanner, blendet aus | Spezifikation B: wenige permanente Elemente |
 | A4 | Ziffern vor Antworten | Bild: keine; Mockup-HTML: „1 ·“ | dezente Ziffern, abschaltbar | Tastaturbedienung erkennbar machen (Spezifikation F) |
 | A5 | Minimap | Bild: vorhanden | eigene Minimap erst in M4.4; Prototyp zeigt Platzhalter | Aufwand; optionale Anbindung an eine Minimap-Mod wird geprüft |

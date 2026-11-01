@@ -80,6 +80,43 @@ jobs:
           JAR=$(ls mod/build/libs/frosthain-*.jar | grep -v sources | head -1)
           unzip -l "$JAR" | grep -E "fabric.mod.json|META-INF/jars/|frosthain/frosthain/classes/fighter.json|Cinzel.ttf"
           echo "::notice title=Mod-Jar::$(basename "$JAR") $(stat -c %s "$JAR") Bytes"
+      - name: Server-Starttest (privater Testserver)
+        timeout-minutes: 15
+        shell: bash
+        run: |
+          # Der Projektinhaber hat die Minecraft-EULA am 01.11.2026 ausschließlich für diesen
+          # automatisierten, privaten Testserver akzeptiert. Nicht auf andere Server übertragen.
+          mkdir -p mod/run
+          echo "eula=true" > mod/run/eula.txt
+          ./gradlew :mod:runServer --console=plain --no-daemon > server.log 2>&1 &
+          PID=$!
+          ok=0
+          for i in $(seq 1 150); do
+            if grep -q 'Done (' server.log; then ok=1; break; fi
+            if ! kill -0 "$PID" 2>/dev/null; then break; fi
+            sleep 4
+          done
+          pkill -f 'net.fabricmc.devlaunchinjector' || true
+          pkill -f 'runServer' || true
+          grep -E 'FROSTHAIN|Done \(|\[.*ERROR\]|Exception' server.log | head -40
+          if [ "$ok" -ne 1 ]; then
+            echo "::error title=Server-Starttest::Server ist nicht vollständig gestartet"
+            tail -80 server.log
+            exit 1
+          fi
+          if ! grep -q 'FROSTHAIN geladen: .* 0 Fehler' server.log; then
+            echo "::error title=Server-Starttest::FROSTHAIN-Ladezeile fehlt oder meldet Fehler"
+            exit 1
+          fi
+          echo "::notice title=Server-Starttest::$(grep -o 'FROSTHAIN geladen.*' server.log | head -1)"
+          echo "::notice title=Server-Starttest::$(grep -o 'Done (.*' server.log | head -1)"
+      - name: Server-Log sichern
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: server-log
+          path: server.log
+          if-no-files-found: ignore
       - name: Mod-Jar sichern
         uses: actions/upload-artifact@v4
         with:
