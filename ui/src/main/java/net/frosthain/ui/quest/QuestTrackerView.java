@@ -33,8 +33,9 @@ public final class QuestTrackerView {
     }
 
     /** Pixel sizes; scaled by the renderer's GUI scale. */
-    public record Style(int padding, int markerWidth, int sectionSize, int questSize, int objectiveSize, double lineSpacing) {
-        public static final Style DEFAULT = new Style(10, 16, 15, 15, 13, 1.25);
+    public record Style(int padding, int markerWidth, int sectionSize, int questSize, int objectiveSize, double lineSpacing,
+                        int sectionGap) {
+        public static final Style DEFAULT = new Style(10, 16, 17, 16, 15, 1.22, 14);
     }
 
     private QuestTrackerView() {
@@ -62,7 +63,7 @@ public final class QuestTrackerView {
             String section = translator.t("ui.frosthain.quests.kind." + quest.kind().name().toLowerCase(Locale.ROOT));
             if (!section.equals(currentSection)) {
                 if (currentSection != null) {
-                    y += style.padding() / 2;
+                    y += style.sectionGap();
                 }
                 lines.add(new Line(LineKind.SECTION, section, style.padding(), y, lineHeight(style.sectionSize(), style),
                         Theme.FontRole.HEADING, style.sectionSize(), Theme.TEXT_PRIMARY, Marker.NONE));

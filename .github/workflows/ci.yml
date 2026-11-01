@@ -2,7 +2,6 @@ name: CI
 
 on:
   push:
-    branches: [main]
   pull_request:
 
 permissions:
@@ -25,9 +24,20 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
       - name: Tests und Inhaltsprüfung
         run: ./gradlew check --console=plain
+      - name: UI-Prototyp-Screenshots (headless)
+        if: runner.os == 'Linux'
+        run: ./gradlew :ui-prototype:screenshots --console=plain
+      - name: Screenshots sichern
+        if: runner.os == 'Linux'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ui-prototype-screenshots
+          path: tools/ui-prototype/build/screenshots/
       - name: Testberichte sichern
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: test-reports-${{ matrix.os }}
-          path: core/build/reports/tests/
+          path: |
+            core/build/reports/tests/
+            ui/build/reports/tests/
