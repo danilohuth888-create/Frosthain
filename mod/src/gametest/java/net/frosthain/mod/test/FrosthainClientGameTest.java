@@ -19,7 +19,7 @@ public final class FrosthainClientGameTest implements FabricClientGameTest {
             throw new AssertionError("FROSTHAIN-Inhalte wurden im Client nicht geladen");
         }
         try (TestSingleplayerContext singleplayer = context.worldBuilder().create()) {
-            singleplayer.getClientWorld().waitForChunksRender();
+            singleplayer.getClientLevel().waitForChunksRender();
             context.takeScreenshot("frosthain-02-einzelspielerwelt");
         }
     }
