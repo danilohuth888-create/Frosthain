@@ -296,8 +296,10 @@ public final class FrosthainClientGameTest implements FabricClientGameTest {
             // Starting village: built at the spawn; the notice board starts "Verlorene Vorräte", three crates finish it (+80 EP).
             StarterVillage.Village village = singleplayer.getServer().computeOnServer(server ->
                     StarterVillage.village(server.overworld()).orElseThrow(() -> new AssertionError("Startdorf wurde nicht errichtet")));
-            singleplayer.getServer().runCommand("tp @a " + (village.center().getX() + 0.5) + " " + (village.center().getY() + 7)
-                    + " " + (village.center().getZ() + 17.5) + " 180 25");
+            singleplayer.getServer().runCommand("title @a clear");
+            singleplayer.getServer().runCommand("effect give @a minecraft:slow_falling 15 0 true");
+            singleplayer.getServer().runCommand("tp @a " + (village.center().getX() + 0.5) + " " + (village.center().getY() + 14)
+                    + " " + (village.center().getZ() + 26.5) + " 180 30");
             context.waitTicks(40);
             context.takeScreenshot("frosthain-13a-startdorf");
             singleplayer.getServer().runOnServer(server -> {

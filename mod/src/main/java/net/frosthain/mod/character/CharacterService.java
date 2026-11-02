@@ -26,15 +26,10 @@ import net.frosthain.mod.network.CharacterRejectedPayload;
 import net.frosthain.mod.network.CharacterStatePayload;
 import net.frosthain.mod.network.CreateCharacterPayload;
 import net.frosthain.mod.network.TalentActionPayload;
-import net.frosthain.ui.Theme;
+import net.frosthain.mod.Announce;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.FontDescription;
-import net.minecraft.network.chat.Style;
-import net.minecraft.network.protocol.game.ClientboundSetSubtitleTextPacket;
-import net.minecraft.network.protocol.game.ClientboundSetTitleTextPacket;
-import net.minecraft.network.protocol.game.ClientboundSetTitlesAnimationPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -223,10 +218,8 @@ public final class CharacterService {
 
     /** Title in the heading font, fanfare, golden particles and full health; the chat line stays for the record. */
     private static void celebrateLevelUp(ServerPlayer player, int level) {
-        Style heading = Style.EMPTY.withFont(new FontDescription.Resource(FrosthainMod.id("heading"))).withColor(Theme.FRAME_GOLD_BRIGHT & 0xFFFFFF);
-        player.connection.send(new ClientboundSetTitlesAnimationPacket(10, 50, 20));
-        player.connection.send(new ClientboundSetTitleTextPacket(Component.translatable("gui.frosthain.level_up.title", level).withStyle(heading)));
-        player.connection.send(new ClientboundSetSubtitleTextPacket(Component.translatable("gui.frosthain.level_up.subtitle")));
+        Announce.show(player, Announce.heading(Component.translatable("gui.frosthain.level_up.title", level)),
+                Announce.body(Component.translatable("gui.frosthain.level_up.subtitle")), 50);
         player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.PLAYER_LEVELUP, SoundSource.PLAYERS, 1.0f, 0.8f);
         player.level().sendParticles(ParticleTypes.TOTEM_OF_UNDYING, player.getX(), player.getY() + 1, player.getZ(), 60, 0.6, 1.0, 0.6, 0.3);
         player.setHealth(player.getMaxHealth());

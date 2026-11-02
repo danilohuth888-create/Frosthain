@@ -29,6 +29,8 @@ Nur getestet = fertig · Client-Test lokal nur am Phasenende, sonst GitHub Actio
 - 2026-11-02: Dorf-Commit im CI grün (Client-GameTest mit Dorf, Anschlagbrett, Kisten).
 - 2026-11-02: `FrozenCrypt` + allgemeine `defeat`-Ziele (`QuestService.onDefeat`: Entity-Typ, `#tag`, Entity-Tag `frosthain.id.<id>`). `/frosthain gruft` baut die Gruft an der eigenen Position.
 
+- 2026-11-02: CI-Fehler im Gruft-Commit: Testwelt ist flach (Oberfläche −60, Weltboden −64), Gruft lag unter der Welt, Boss fiel ins Leere. Tiefe jetzt begrenzt auf den Platz über dem Weltboden. Boss-Ansagen und Stufenaufstieg über die Titelanzeige (`Announce`), nicht mehr hinter dem Chat. Client-GameTest lokal grün (alle 4 Quests abgeschlossen), Mod in die Instanz installiert.
+
 ## Nächster Schritt
 
-CI-Ergebnis des Gruft-Commits prüfen. Danach: Stufenaufstieg sichtbar machen (MUSS 3), ChatGPT-Branch prüfen (MUSS 5), Phasenende: lokaler Test in der Instanz.
+Inhaber testet Dorf, Kisten, Gruft und Boss in einer **neuen Welt**. Danach: ChatGPT-Branch prüfen (MUSS 5), SOLL-Punkte (Talentbäume, Runenmagie, Skin).

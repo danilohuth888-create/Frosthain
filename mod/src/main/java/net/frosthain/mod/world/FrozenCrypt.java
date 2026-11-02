@@ -9,6 +9,7 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.frosthain.core.ContentId;
 import net.frosthain.core.quest.QuestLog;
+import net.frosthain.mod.Announce;
 import net.frosthain.mod.FrosthainMod;
 import net.frosthain.mod.character.QuestService;
 import net.frosthain.mod.network.QuestMarkerPayload;
@@ -56,7 +57,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * The first dungeon (M4.5/M5.3, first part): a ruined entrance south-east of the village, a stairway twelve blocks
+ * The first dungeon (M4.5/M5.3, first part): a ruined entrance south-east of the village, a stairway up to twelve blocks
  * down, a corridor with two guard rooms (strays, zombies) and the burial chamber of Hrímgar, the Frost Warden.
  * The crypt is built once per world when "Finde die Gruft" becomes a player's current objective.
  *
@@ -76,7 +77,8 @@ public final class FrozenCrypt {
     public static final String SERVANT_TAG = "frosthain.boss.servant";
     private static final int DISTANCE = 64;
     private static final double ANGLE = 110;
-    private static final int DEPTH = 12;
+    /** Chamber floor depth below the entrance; less where the world bottom is close (flat worlds). */
+    private static final int MAX_DEPTH = 12;
     private static final int DISCOVERY_RADIUS = 6;
     private static final float BOSS_HEALTH = 120;
     private static final int NOVA_TELEGRAPH_TICKS = 30;
@@ -276,7 +278,7 @@ public final class FrozenCrypt {
         level.playSound(null, spot, SoundEvents.ELDER_GUARDIAN_CURSE, SoundSource.HOSTILE, 1.0f, 0.7f);
         for (ServerPlayer player : level.players()) {
             if (crypt.chamberBox().contains(player.position())) {
-                player.sendOverlayMessage(Component.translatable("gui.frosthain.boss.awakens"));
+                Announce.line(player, Component.translatable("gui.frosthain.boss.awakens"));
             }
         }
         LOGGER.info("Frostwächter bei {} erwacht", spot.toShortString());
@@ -301,7 +303,7 @@ public final class FrozenCrypt {
             level.sendParticles(ParticleTypes.SNOWFLAKE, servant.getX(), servant.getY() + 1, servant.getZ(), 40, 0.4, 0.8, 0.4, 0.02);
         }
         level.playSound(null, boss.blockPosition(), SoundEvents.EVOKER_PREPARE_SUMMON, SoundSource.HOSTILE, 1.5f, 0.6f);
-        inside.forEach(p -> p.sendOverlayMessage(Component.translatable("gui.frosthain.boss.phase_two")));
+        inside.forEach(p -> Announce.line(p, Component.translatable("gui.frosthain.boss.phase_two")));
     }
 
     private static void onBossDefeated(ServerLevel level, LivingEntity boss) {
@@ -320,7 +322,7 @@ public final class FrozenCrypt {
         level.playSound(null, boss.blockPosition(), SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, SoundSource.HOSTILE, 1.0f, 1.0f);
         for (ServerPlayer player : level.players()) {
             if (player.distanceToSqr(boss) < 48 * 48) {
-                player.sendOverlayMessage(Component.translatable("gui.frosthain.boss.defeated"));
+                Announce.line(player, Component.translatable("gui.frosthain.boss.defeated"));
             }
         }
     }
@@ -338,21 +340,22 @@ public final class FrozenCrypt {
     public static Crypt build(ServerLevel level, int x, int z) {
         int y0 = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z);
         BlockPos e = new BlockPos(x, y0, z);
-        int floor = y0 - DEPTH;
+        int depth = Math.max(1, Math.min(MAX_DEPTH, y0 - level.getMinY() - 3));
+        int floor = y0 - depth;
         ruin(level, e);
         // Corridor, guard rooms and chamber as closed shells first, then openings and the stairway.
-        room(level, e.offset(-2, -DEPTH - 1, DEPTH + 1), e.offset(2, -DEPTH + 3, 30), Blocks.POLISHED_DEEPSLATE);
-        room(level, e.offset(-9, -DEPTH - 1, 17), e.offset(-3, -DEPTH + 3, 23), Blocks.COBBLED_DEEPSLATE);
-        room(level, e.offset(3, -DEPTH - 1, 17), e.offset(9, -DEPTH + 3, 23), Blocks.COBBLED_DEEPSLATE);
-        room(level, e.offset(-8, -DEPTH - 1, 31), e.offset(8, -DEPTH + 7, 47), Blocks.DEEPSLATE_TILES);
-        stairway(level, e);
-        air(level, e.offset(-1, -DEPTH, DEPTH + 1), e.offset(1, -DEPTH + 2, DEPTH + 1));
-        air(level, e.offset(-3, -DEPTH, 20), e.offset(-2, -DEPTH + 1, 20));
-        air(level, e.offset(2, -DEPTH, 20), e.offset(3, -DEPTH + 1, 20));
-        air(level, e.offset(-1, -DEPTH, 30), e.offset(1, -DEPTH + 2, 31));
+        room(level, e.offset(-2, -depth - 1, depth + 1), e.offset(2, -depth + 3, 30), Blocks.POLISHED_DEEPSLATE);
+        room(level, e.offset(-9, -depth - 1, 17), e.offset(-3, -depth + 3, 23), Blocks.COBBLED_DEEPSLATE);
+        room(level, e.offset(3, -depth - 1, 17), e.offset(9, -depth + 3, 23), Blocks.COBBLED_DEEPSLATE);
+        room(level, e.offset(-8, -depth - 1, 31), e.offset(8, -depth + 7, 47), Blocks.DEEPSLATE_TILES);
+        stairway(level, e, depth);
+        air(level, e.offset(-1, -depth, depth + 1), e.offset(1, -depth + 2, depth + 1));
+        air(level, e.offset(-3, -depth, 20), e.offset(-2, -depth + 1, 20));
+        air(level, e.offset(2, -depth, 20), e.offset(3, -depth + 1, 20));
+        air(level, e.offset(-1, -depth, 30), e.offset(1, -depth + 2, 31));
         BlockPos chamber = new BlockPos(x, floor, z + 39);
         decorate(level, e, chamber);
-        guards(level, e);
+        guards(level, e, floor);
         Crypt crypt = new Crypt(e, chamber);
         level.getServer().overworld().setAttached(CRYPT, crypt);
         LOGGER.info("Gefrorene Gruft bei {} errichtet, Grabkammer {}", e.toShortString(), chamber.toShortString());
@@ -381,10 +384,10 @@ public final class FrozenCrypt {
         }
     }
 
-    /** Twelve steps down towards +z, enclosed on all sides. */
-    private static void stairway(ServerLevel level, BlockPos e) {
+    /** Steps down towards +z (one per block of depth), enclosed on all sides. */
+    private static void stairway(ServerLevel level, BlockPos e, int depth) {
         BlockState stair = Blocks.STONE_BRICK_STAIRS.defaultBlockState().setValue(StairBlock.FACING, Direction.NORTH);
-        for (int i = 0; i < DEPTH; i++) {
+        for (int i = 0; i < depth; i++) {
             int z = 1 + i;
             for (int dx = -2; dx <= 2; dx++) {
                 for (int dy = -2 - i; dy <= 3 - i; dy++) {
@@ -392,7 +395,7 @@ public final class FrozenCrypt {
                 }
             }
         }
-        for (int i = 0; i < DEPTH; i++) {
+        for (int i = 0; i < depth; i++) {
             int z = 1 + i;
             air(level, e.offset(-1, -i, z), e.offset(1, 2 - i, z));
             for (int dx = -1; dx <= 1; dx++) {
@@ -407,7 +410,7 @@ public final class FrozenCrypt {
         for (int z : new int[]{16, 22, 28}) {
             level.setBlock(new BlockPos(e.getX(), floor + 2, e.getZ() + z), hanging, 3);
         }
-        for (int dz = DEPTH + 1; dz <= 30; dz += 3) {
+        for (int dz = e.getY() - floor + 1; dz <= 30; dz += 3) {
             level.setBlock(new BlockPos(e.getX() + (dz % 2 == 0 ? 1 : -1), floor - 1, e.getZ() + dz), Blocks.PACKED_ICE.defaultBlockState(), 3);
         }
         for (int side : new int[]{-6, 6}) {
@@ -447,8 +450,7 @@ public final class FrozenCrypt {
     }
 
     /** Two strays with bows in the west room, three zombies in the east room. */
-    private static void guards(ServerLevel level, BlockPos e) {
-        int floor = e.getY() - DEPTH;
+    private static void guards(ServerLevel level, BlockPos e, int floor) {
         spawnGuard(level, EntityTypes.STRAY, e.getX() - 5, floor, e.getZ() + 19, true);
         spawnGuard(level, EntityTypes.STRAY, e.getX() - 7, floor, e.getZ() + 21, true);
         for (int i = 0; i < 3; i++) {
