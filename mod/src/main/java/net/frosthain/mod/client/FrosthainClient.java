@@ -13,11 +13,13 @@ import net.frosthain.mod.client.hud.AbilityBarHud;
 import net.frosthain.mod.client.hud.CharacterHud;
 import net.frosthain.mod.client.hud.QuestTrackerHud;
 import net.frosthain.mod.client.screen.DialogueScreen;
+import net.frosthain.mod.client.screen.RuneAltarScreen;
 import net.frosthain.mod.client.screen.FrosthainTitleScreen;
 import net.frosthain.mod.client.screen.PowerDetailsScreen;
 import net.frosthain.mod.network.CharacterRejectedPayload;
 import net.frosthain.mod.network.CharacterStatePayload;
 import net.frosthain.mod.network.DialogueStatePayload;
+import net.frosthain.mod.network.RuneAltarPayload;
 import net.frosthain.mod.network.PowerStatePayload;
 import net.frosthain.mod.network.QuestLogPayload;
 import net.frosthain.mod.network.QuestMarkerPayload;
@@ -60,6 +62,8 @@ public final class FrosthainClient implements ClientModInitializer {
                 (payload, context) -> context.client().execute(() -> ClientQuests.accept(context.client(), payload)));
         ClientPlayNetworking.registerGlobalReceiver(DialogueStatePayload.TYPE,
                 (payload, context) -> context.client().execute(() -> DialogueScreen.accept(context.client(), payload)));
+        ClientPlayNetworking.registerGlobalReceiver(RuneAltarPayload.TYPE,
+                (payload, context) -> context.client().execute(() -> RuneAltarScreen.open(context.client())));
         ClientPlayNetworking.registerGlobalReceiver(PowerStatePayload.TYPE,
                 (payload, context) -> context.client().execute(() -> ClientPowers.accept(payload)));
         ClientPlayNetworking.registerGlobalReceiver(QuestMarkerPayload.TYPE,

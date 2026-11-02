@@ -1,0 +1,22 @@
+{
+  "source": "frosthain:original",
+  "effect": "frost_burst",
+  "unlock_quest": "frosthain:first_rune",
+  "materials": [
+    {
+      "item": "minecraft:amethyst_shard",
+      "count": 1
+    },
+    {
+      "item": "minecraft:snowball",
+      "count": 4
+    }
+  ],
+  "values": {
+    "radius": 5,
+    "damage_min": 2,
+    "damage_max": 4,
+    "duration_ticks": 120,
+    "amplifier": 1
+  }
+}

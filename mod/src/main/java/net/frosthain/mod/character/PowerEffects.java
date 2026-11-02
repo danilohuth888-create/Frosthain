@@ -143,7 +143,7 @@ public final class PowerEffects {
         return Optional.ofNullable(best);
     }
 
-    private static boolean isTarget(Entity entity) {
+    static boolean isTarget(Entity entity) {
         return entity instanceof LivingEntity living && living.isAlive() && !entity.isInvulnerable()
                 && entity.entityTags().stream().noneMatch(tag -> tag.startsWith("frosthain.npc."));
     }

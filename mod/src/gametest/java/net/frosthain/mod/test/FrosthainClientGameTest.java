@@ -16,6 +16,7 @@ import net.frosthain.mod.character.DialogueService;
 import net.frosthain.mod.character.PowerService;
 import net.frosthain.mod.character.QuestService;
 import net.frosthain.mod.character.QuestSites;
+import net.frosthain.mod.character.RuneService;
 import net.frosthain.mod.world.FrozenCrypt;
 import net.frosthain.mod.world.StarterVillage;
 import net.frosthain.mod.client.ClientCharacter;
@@ -35,6 +36,12 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 
+import net.frosthain.mod.client.screen.RuneAltarScreen;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.item.ItemStack;
+import java.util.Map;
 import java.util.Optional;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 
@@ -284,6 +291,66 @@ public final class FrosthainClientGameTest implements FabricClientGameTest {
             });
             context.waitTicks(10);
             context.takeScreenshot("frosthain-14d-frostwaechter-besiegt");
+
+            // Rune altar: after "Die erste Rune" the shrine's rune stone is an altar; inscribing consumes the materials.
+            singleplayer.getServer().runCommand("tp @a " + (shrine.getX() + 0.5) + " " + shrine.getY() + " " + (shrine.getZ() + 3.5) + " 180 30");
+            singleplayer.getServer().runCommand("give @a minecraft:amethyst_shard 2");
+            singleplayer.getServer().runCommand("give @a minecraft:coal 3");
+            context.waitTicks(10);
+            singleplayer.getServer().runOnServer(server -> {
+                if (!RuneService.openAltar(server.getPlayerList().getPlayers().getFirst(), shrine)) {
+                    throw new AssertionError("Runenaltar öffnet sich nicht");
+                }
+            });
+            context.waitForScreen(RuneAltarScreen.class);
+            context.waitTicks(10);
+            context.takeScreenshot("frosthain-14e-runenaltar");
+            singleplayer.getServer().runOnServer(server -> {
+                ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
+                Map<String, Integer> before = RuneService.inventoryCounts(player.getInventory());
+                if (!RuneService.inscribe(player, ContentId.of("fire"))) {
+                    throw new AssertionError("Rune des Feuers ließ sich nicht herstellen: " + before);
+                }
+                Map<String, Integer> after = RuneService.inventoryCounts(player.getInventory());
+                if (after.getOrDefault("minecraft:coal", 0) != before.get("minecraft:coal") - 3
+                        || after.getOrDefault("minecraft:amethyst_shard", 0) != before.get("minecraft:amethyst_shard") - 1) {
+                    throw new AssertionError("Materialien falsch abgezogen: " + before + " → " + after);
+                }
+                if (RuneService.inscribe(player, ContentId.of("fire"))) {
+                    throw new AssertionError("Zweite Rune ohne Kohle hergestellt");
+                }
+            });
+            context.waitTicks(15);
+            context.takeScreenshot("frosthain-14f-runensiegel");
+            context.setScreen(() -> null);
+            // Releasing the seal: the rune of fire burns and hurts a creature next to the player, the seal is used up.
+            singleplayer.getServer().runOnServer(server -> {
+                ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
+                int seal = -1;
+                for (int slot = 0; slot < player.getInventory().getContainerSize(); slot++) {
+                    if (RuneService.sealRune(player.getInventory().getItem(slot)).isPresent()) {
+                        seal = slot;
+                    }
+                }
+                if (seal < 0) {
+                    throw new AssertionError("Kein Runensiegel im Inventar");
+                }
+                ItemStack stack = player.getInventory().getItem(seal).copy();
+                player.getInventory().getItem(seal).setCount(0);
+                player.setItemInHand(InteractionHand.MAIN_HAND, stack);
+                Mob husk = EntityTypes.HUSK.create(player.level(), EntitySpawnReason.EVENT);
+                husk.snapTo(player.getX() + 2, player.getY(), player.getZ(), 0, 0);
+                husk.setNoAi(true);
+                player.level().addFreshEntity(husk);
+                if (!RuneService.useSeal(player, InteractionHand.MAIN_HAND)) {
+                    throw new AssertionError("Runensiegel wirkt nicht");
+                }
+                boolean consumed = player.hasInfiniteMaterials() || player.getMainHandItem().isEmpty();
+                if (!husk.isOnFire() || husk.getHealth() >= husk.getMaxHealth() || !consumed) {
+                    throw new AssertionError("Feuerrune: brennt " + husk.isOnFire() + ", Leben " + husk.getHealth() + ", verbraucht " + consumed);
+                }
+                husk.discard();
+            });
             singleplayer.getServer().runCommand("effect clear @a minecraft:resistance");
             singleplayer.getServer().runCommand("tp @a " + start);
             context.waitTicks(10);

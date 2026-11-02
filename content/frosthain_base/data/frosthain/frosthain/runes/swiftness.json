@@ -1,0 +1,19 @@
+{
+  "source": "frosthain:original",
+  "effect": "swiftness",
+  "unlock_quest": "frosthain:frozen_crypt",
+  "materials": [
+    {
+      "item": "minecraft:amethyst_shard",
+      "count": 1
+    },
+    {
+      "item": "minecraft:sugar",
+      "count": 4
+    }
+  ],
+  "values": {
+    "duration_ticks": 600,
+    "amplifier": 1
+  }
+}

@@ -9,6 +9,7 @@ import net.frosthain.core.content.NpcDefinition;
 import net.frosthain.core.content.PowerDefinition;
 import net.frosthain.core.content.QuestDefinition;
 import net.frosthain.core.content.ResourceDefinition;
+import net.frosthain.core.content.RuneDefinition;
 import net.frosthain.core.content.SkillDefinition;
 import net.frosthain.core.content.SourceDefinition;
 import net.frosthain.core.content.SpeciesDefinition;
@@ -59,11 +60,13 @@ public record ContentType<T extends ContentDefinition>(
             new ContentType<>("quests", QuestDefinition.class, QuestDefinition::parse);
     public static final ContentType<DialogueDefinition> DIALOGUES =
             new ContentType<>("dialogues", DialogueDefinition.class, DialogueDefinition::parse);
+    public static final ContentType<RuneDefinition> RUNES =
+            new ContentType<>("runes", RuneDefinition.class, RuneDefinition::parse);
 
     /** All content types in load order. */
     public static final List<ContentType<?>> ALL = List.of(
             SOURCES, SKILLS, RESOURCES, POWERS, SPECIES, CLASSES, SUBCLASSES, BACKGROUNDS, TALENT_TREES,
-            NPCS, QUESTS, DIALOGUES);
+            NPCS, QUESTS, DIALOGUES, RUNES);
 
     public T parse(ContentId id, JsonObjectReader json) {
         T definition = parser.apply(id, json);

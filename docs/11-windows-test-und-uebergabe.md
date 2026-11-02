@@ -95,6 +95,7 @@ Beim Start von Minecraft erscheint jetzt das FROSTHAIN-Hauptmenü, beim ersten B
 | **Nebenquest „Verlorene Vorräte“**: Anschlagbrett (Lesepult) startet, drei Vorratskisten im Wald mit Lichtsäule und Wegweiser, +80 EP | ✅ | GameTest |
 | **Gruft und Boss** („Die gefrorene Gruft“, Folgequest von „Die erste Rune“): Ruine, Treppe, Gang, zwei Wachräume, Grabkammer; Hrímgar mit Bossleiste, Frostnova mit Vorwarnung, Phase 2 bei 50 % (Bogen, zwei Diener) | ✅ | GameTest; Bilder `21_gruft_eingang.png`, `22_frostwaechter_phase2.png`; `/frosthain gruft` |
 | **Stufenaufstieg**: Titel „Stufe N“, Untertitel mit Talentbaum-Hinweis, Fanfare, Partikel, volle Gesundheit | ✅ | GameTest; Bild `19_stufenaufstieg.png` |
+| **Runenaltar**: Runenstein am Schrein nach „Die erste Rune“; fünf Runen (Feuer, Eis, Schutz, Heilung, Bewegung) aus Vanilla-Materialien, Heilung/Bewegung nach „Die gefrorene Gruft“; Runensiegel per Rechtsklick | ✅ | Kern-Tests, GameTest; Bild `23_runenaltar.png`; `/frosthain runenaltar` |
 
 **Aussehen** (Schritt 2 der Charaktererstellung, Bild `16_charaktererstellung_aussehen.png`): Körperbau (klassisch/schlank), Haut-, Augen- und Haarfarbe als Farbfelder, Frisur (6), Größe im Speziesrahmen, Spezies-Merkmale (Elfenohren, Tiefling-Hörner, Orc-Hauer, Drachenschuppen …); Vorschau als Pixel-Kopfporträt. Der Server prüft das Aussehen (`Appearance.validate`) und speichert es im Charakterbogen – GameTest prüft das gespeicherte Aussehen. Die Spielfigur trägt bis zum Skin-Editor (M2.4) weiter den Minecraft-Skin.
 

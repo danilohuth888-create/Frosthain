@@ -51,6 +51,12 @@ public record PowerDefinition(
         if (school.isPresent() && !SCHOOLS.contains(school.get())) {
             throw new ContentParseException(json.childPath("school"), "Unbekannte Schule '" + school.get() + "', erlaubt: " + SCHOOLS);
         }
+        return new PowerDefinition(id, json.id("source"), json.bool("adapted", false), kind, resource, cost, cooldown,
+                school, json.stringList("tags"), parseValues(json));
+    }
+
+    /** The optional {@code values} object of powers and runes: only {@link #VALUE_KEYS}, each 0–10000. */
+    static Map<String, Double> parseValues(JsonObjectReader json) {
         Map<String, Double> values = new TreeMap<>();
         if (json.has("values")) {
             JsonObjectReader valueJson = json.object("values");
@@ -69,8 +75,7 @@ public record PowerDefinition(
         if (values.getOrDefault("damage_min", 0.0) > values.getOrDefault("damage_max", Double.MAX_VALUE)) {
             throw new ContentParseException(json.childPath("values"), "damage_min ist größer als damage_max");
         }
-        return new PowerDefinition(id, json.id("source"), json.bool("adapted", false), kind, resource, cost, cooldown,
-                school, json.stringList("tags"), Map.copyOf(values));
+        return Map.copyOf(values);
     }
 
     /** Numbers of the in-game effect, shown in the ability details (translation key {@code ui.frosthain.power.value.<key>}). */

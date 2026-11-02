@@ -11,6 +11,7 @@ import net.frosthain.core.content.QuestDefinition;
 import net.frosthain.core.content.EngineFlags;
 import net.frosthain.core.content.Modifier;
 import net.frosthain.core.content.PowerDefinition;
+import net.frosthain.core.content.RuneDefinition;
 import net.frosthain.core.content.SourceDefinition;
 import net.frosthain.core.content.SpeciesDefinition;
 import net.frosthain.core.content.SubclassDefinition;
@@ -74,6 +75,7 @@ public final class ContentValidator {
         registry.all(ContentType.NPCS).values().forEach(this::checkNpc);
         registry.all(ContentType.QUESTS).values().forEach(this::checkQuest);
         registry.all(ContentType.DIALOGUES).values().forEach(this::checkDialogue);
+        registry.all(ContentType.RUNES).values().forEach(this::checkRune);
         checkTranslations();
         plannedFlagUsers.forEach((flag, users) -> diagnostics.add(Diagnostic.info("flag " + flag,
                 "Engine-Funktion ist spezifiziert, aber in der Mod noch nicht umgesetzt; genutzt von " + users)));
@@ -213,6 +215,10 @@ public final class ContentValidator {
                 diagnostics.add(Diagnostic.error(location, "Quest ist ihre eigene Folgequest"));
             }
         }
+    }
+
+    private void checkRune(RuneDefinition rune) {
+        rune.unlockQuest().ifPresent(quest -> requireRef(location(ContentType.RUNES, rune.id()), "unlock_quest", ContentType.QUESTS, quest));
     }
 
     private void checkDialogue(DialogueDefinition dialogue) {

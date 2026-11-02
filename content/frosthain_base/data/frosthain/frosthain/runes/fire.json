@@ -1,0 +1,21 @@
+{
+  "source": "frosthain:original",
+  "effect": "fire_burst",
+  "unlock_quest": "frosthain:first_rune",
+  "materials": [
+    {
+      "item": "minecraft:amethyst_shard",
+      "count": 1
+    },
+    {
+      "item": "minecraft:coal",
+      "count": 3
+    }
+  ],
+  "values": {
+    "radius": 5,
+    "damage_min": 3,
+    "damage_max": 5,
+    "duration_ticks": 80
+  }
+}

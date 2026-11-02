@@ -1,4 +1,4 @@
-# FROSTHAIN – Content-Vertrag (Sprint-Version 1)
+# FROSTHAIN – Content-Vertrag (Sprint-Version 2)
 
 Verbindliche Schnittstelle zwischen Inhalten (ChatGPT) und Technik (Claude Code). Maßgeblich ist der **Validator** (`core/.../validation/ContentValidator.java`, ADR 0006); dieses Dokument beschreibt ihn. Ausführliche Feldtabellen: [06-datenmodell.md](06-datenmodell.md). Schemaänderungen nur mit Eintrag unter „Migrationen“ am Ende.
 
@@ -34,6 +34,7 @@ content/frosthain_story/
 | `dialogues` | Dialoggraph | `source`, `speaker`, `start`, `nodes` | je Antwort: `next`, `conditions`, `effects`, `once` |
 | `powers` | Fähigkeit/Zauber | `source`, `kind` | `resource`, `cost`, `cooldown_ticks`, `school`, `tags`, `values` |
 | `talent_trees` | Talentbaum | `source`, `owner`, `root`, `branches`, `nodes` | siehe 06-datenmodell §6.8 |
+| `runes` | Rune am Runenaltar | `source`, `effect`, `materials` (≥1) | `unlock_quest`, `values` |
 
 Andere Typen (`classes`, `species`, `backgrounds`, `skills`, `resources`, `rules`, `sources`) nur nach Absprache.
 
@@ -54,6 +55,10 @@ Andere Typen (`classes`, `species`, `backgrounds`, `skills`, `resources`, `rules
 | `powers.cost` / `cooldown_ticks` | 0–1000 / 0–72 000 (20 Ticks = 1 s) |
 | `powers.school` | `abjuration`, `conjuration`, `divination`, `enchantment`, `evocation`, `illusion`, `necromancy`, `transmutation`, `rune`, `martial`, `nature`, `divine` |
 | `powers.values` | nur `range`, `damage_min`, `damage_max`, `knockback`, `heal_fraction`, `duration_ticks`, `amplifier`, `radius`, `dash`; je 0–10 000; `damage_min` ≤ `damage_max` |
+| `runes.effect` | `fire_burst`, `frost_burst`, `ward`, `heal`, `swiftness` (Wirkung ist programmiert; neue Wirkungen nur über die Technik) |
+| `runes.materials[]` | `item` (Minecraft-Item-ID, z. B. `minecraft:coal`), `count` 1–64 (Standard 1), jedes Item höchstens einmal |
+| `runes.unlock_quest` | Quest-ID; die Rune ist bekannt, sobald die Quest abgeschlossen ist (ohne = von Anfang an) |
+| `runes.values` | wie `powers.values` |
 
 Klassen-IDs: `frosthain:barbarian`, `bard`, `cleric`, `druid`, `fighter`, `monk`, `paladin`, `ranger`, `rogue`, `rune_mage`, `sorcerer`, `warlock`, `wizard`.
 
@@ -76,6 +81,7 @@ Klassen-IDs: `frosthain:barbarian`, `bard`, `cleric`, `druid`, `fighter`, `monk`
 | Dialog `frosthain:d` | `dialogue.frosthain.d.<knoten>` (Sprechertext), `dialogue.frosthain.d.<knoten>.choice.<antwort>` |
 | Fähigkeit `frosthain:p` | `power.frosthain.p`, `….desc` |
 | Talentbaum `frosthain:t` | `talent_tree.frosthain.t`, `….branch.<zweig>`, `talent.frosthain.t.<knoten>`, `….desc` |
+| Rune `frosthain:r` | `rune.frosthain.r`, `….desc` |
 
 Textrichtwerte für die Oberfläche: Sprechertext ≤ 300 Zeichen, Antwort ≤ 60, Questname ≤ 32, Zielbeschreibung ≤ 70, Fähigkeitsbeschreibung ≤ 140. Keine Formatcodes (`§`). Platzhalter wie `%s` nur in UI-Texten nach Absprache.
 
@@ -217,3 +223,4 @@ Prüft alle Pakete unter `content/`. Erwartet: `Ergebnis: 0 Fehler, … Warnunge
 | Version | Datum | Änderung |
 |---|---|---|
 | 1 | 2026-11-02 | Erstfassung |
+| 2 | 2026-11-02 | Neuer Inhaltstyp `runes` (rein additiv, bestehende Inhalte bleiben gültig) |
