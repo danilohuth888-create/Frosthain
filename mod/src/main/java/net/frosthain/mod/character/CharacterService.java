@@ -92,6 +92,7 @@ public final class CharacterService {
         player.setAttached(CHARACTER, CharacterSheetCodec.encode(sheet).toString());
         TalentEffects.apply(player, sheet, FrosthainMod.content());
         sendState(player);
+        PowerService.invalidate(player);
     }
 
     private static void sendState(ServerPlayer player) {

@@ -23,7 +23,17 @@ public final class TalentIcons {
             Map.entry("wave", "nautilus_shell"), Map.entry("paw", "bone"), Map.entry("book", "book"),
             Map.entry("circle", "ender_pearl"), Map.entry("snowflake", "snowball"));
 
+    private static final Map<String, String> POWER_ITEMS = Map.of(
+            "rune_strike", "amethyst_shard", "arcane_bolt", "blaze_rod", "second_wind", "golden_apple",
+            "action_surge", "sugar", "battle_cry", "goat_horn", "dodge_roll", "feather",
+            "shield_bash", "shield", "rune_ward", "prismarine_shard");
+
     private TalentIcons() {
+    }
+
+    /** Icon of a power (path of its id, e.g. "rune_strike"). */
+    public static ItemStack power(String powerPath) {
+        return new ItemStack(BuiltInRegistries.ITEM.getValue(Identifier.withDefaultNamespace(POWER_ITEMS.getOrDefault(powerPath, "book"))));
     }
 
     /** {@code icon} is the last path segment ("swords") or a full id; unknown icons fall back to a book. */

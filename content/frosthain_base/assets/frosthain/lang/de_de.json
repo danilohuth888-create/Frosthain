@@ -409,5 +409,17 @@
   "gui.frosthain.level_up": "Stufe %s erreicht! Neuer Talentpunkt – Talentbaum mit K.",
   "key.frosthain.journal": "Questjournal",
   "key.frosthain.tracker": "Questtracker ein-/ausklappen",
-  "gui.frosthain.dialogue.hint": "1–9 wählen · Enter bestätigen · Esc verlassen"
+  "gui.frosthain.dialogue.hint": "1–9 wählen · Enter bestätigen · Esc verlassen",
+  "key.frosthain.power_1": "Fähigkeit 1",
+  "key.frosthain.power_2": "Fähigkeit 2",
+  "key.frosthain.power_3": "Fähigkeit 3",
+  "key.frosthain.power_4": "Fähigkeit 4",
+  "key.frosthain.power_5": "Fähigkeit 5",
+  "key.frosthain.power_6": "Fähigkeit 6",
+  "gui.frosthain.power.resource": "%s %s/%s",
+  "gui.frosthain.power.empty_slot": "Platz %s ist noch leer – Fähigkeiten gibt es über Klasse und Talente.",
+  "gui.frosthain.power.cooldown": "%s: noch %s s Abklingzeit",
+  "gui.frosthain.power.not_enough": "Nicht genug %s",
+  "gui.frosthain.power.unavailable": "%s ist gerade nicht verfügbar",
+  "gui.frosthain.power.not_implemented": "%s wirkt noch nicht im Spiel"
 }

@@ -409,5 +409,17 @@
   "gui.frosthain.level_up": "Level %s reached! New talent point – open the talent tree with K.",
   "key.frosthain.journal": "Quest Journal",
   "key.frosthain.tracker": "Expand/collapse quest tracker",
-  "gui.frosthain.dialogue.hint": "1–9 choose · Enter confirm · Esc leave"
+  "gui.frosthain.dialogue.hint": "1–9 choose · Enter confirm · Esc leave",
+  "key.frosthain.power_1": "Ability 1",
+  "key.frosthain.power_2": "Ability 2",
+  "key.frosthain.power_3": "Ability 3",
+  "key.frosthain.power_4": "Ability 4",
+  "key.frosthain.power_5": "Ability 5",
+  "key.frosthain.power_6": "Ability 6",
+  "gui.frosthain.power.resource": "%s %s/%s",
+  "gui.frosthain.power.empty_slot": "Slot %s is still empty – powers come from your class and talents.",
+  "gui.frosthain.power.cooldown": "%s: %s s cooldown left",
+  "gui.frosthain.power.not_enough": "Not enough %s",
+  "gui.frosthain.power.unavailable": "%s is not available right now",
+  "gui.frosthain.power.not_implemented": "%s has no in-game effect yet"
 }

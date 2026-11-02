@@ -11,8 +11,10 @@ import net.frosthain.core.registry.ContentType;
 import net.frosthain.mod.FrosthainMod;
 import net.frosthain.mod.character.CharacterService;
 import net.frosthain.mod.character.DialogueService;
+import net.frosthain.mod.character.PowerService;
 import net.frosthain.mod.character.QuestService;
 import net.frosthain.mod.client.ClientCharacter;
+import net.frosthain.mod.client.ClientPowers;
 import net.frosthain.mod.client.ClientQuests;
 import net.frosthain.mod.client.screen.CharacterCreationScreen;
 import net.frosthain.mod.client.screen.DialogueScreen;
@@ -22,6 +24,7 @@ import net.frosthain.mod.client.screen.TalentTreeScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 
 /**
@@ -172,6 +175,40 @@ public final class FrosthainClientGameTest implements FabricClientGameTest {
             context.waitTicks(5);
             context.takeScreenshot("frosthain-13-questjournal-abgeschlossen");
             context.setScreen(() -> null);
+
+            // Ability bar: the rune mage starts with Runenstoß in slot 1; a golem without AI is the target.
+            context.waitFor(client -> ClientPowers.state().map(s -> s.powers().contains("frosthain:rune_strike") && s.current() == s.maximum()).orElse(false));
+            singleplayer.getServer().runCommand("execute as @a at @s run summon minecraft:iron_golem ^ ^ ^7 {NoAI:1b,Tags:[\"frosthain_test_target\"]}");
+            context.waitTicks(10);
+            context.runOnClient(client -> ClientPowers.use(client, 0));
+            context.waitFor(client -> ClientPowers.state().map(s -> s.cooldowns().getFirst() > 0).orElse(false));
+            context.waitTicks(4);
+            context.takeScreenshot("frosthain-14-runenstoss");
+            singleplayer.getServer().runOnServer(server -> {
+                ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
+                double resource = PowerService.state(player).orElseThrow().resource();
+                if (resource > 61 || resource < 59) {
+                    throw new AssertionError("Runenstoß hat nicht 40 Zauberkraft gekostet: " + resource);
+                }
+                LivingEntity golem = null;
+                for (Entity entity : player.level().getAllEntities()) {
+                    if (entity.entityTags().contains("frosthain_test_target")) {
+                        golem = (LivingEntity) entity;
+                    }
+                }
+                if (golem == null || golem.getHealth() >= golem.getMaxHealth()) {
+                    throw new AssertionError("Runenstoß hat das Ziel nicht getroffen: " + (golem == null ? "kein Ziel" : golem.getHealth()));
+                }
+            });
+            // A second use during the cooldown is refused and costs nothing.
+            context.runOnClient(client -> ClientPowers.use(client, 0));
+            context.waitTicks(10);
+            singleplayer.getServer().runOnServer(server -> {
+                double resource = PowerService.state(server.getPlayerList().getPlayers().getFirst()).orElseThrow().resource();
+                if (resource < 59) {
+                    throw new AssertionError("Fähigkeit wurde trotz Abklingzeit ausgelöst: " + resource);
+                }
+            });
         }
     }
 

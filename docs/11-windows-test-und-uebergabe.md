@@ -82,11 +82,14 @@ Beim Start von Minecraft erscheint jetzt das FROSTHAIN-Hauptmenü, beim ersten B
 | **Eldrin in der Welt**: steht als Dorfbewohner (Bibliothekar, Name „Eldrin“) drei Blöcke vor dir, sobald „Sprich mit Eldrin“ das aktuelle Ziel ist; bewegt sich nicht, unverwundbar, bleibt erhalten; `/frosthain eldrin` stellt ihn erneut auf | ✅ | GameTest prüft die Figur in der Welt |
 | **NPC-Dialog** (Rechtsklick auf Eldrin): Namensschild mit Titel, Text links, Antworten rechts (Maus, 1–9, Pfeile, Enter, Esc), HUD während des Gesprächs aus; Gespräch läuft auf dem Server, Schaden bricht ab | ✅ | GameTest: „Ich bin bereit.“ erfüllt „Sprich mit Eldrin“; Bilder `11_`/`12_dialog*.png` |
 | Weitere Questziele in der Welt (alter Schrein, Runenstein, Kisten) | ❌ | bis dahin `/frosthain quest ziel <quest> <ziel>`; Nebenquest mit `/frosthain quest start lost_supplies` |
-| Fähigkeitenleiste | ❌ nächster Schritt | Fähigkeiten als Daten vorhanden |
+| **Fähigkeitenleiste** unten rechts: 6 Plätze (Tasten **R G V Z B N**, änderbar), gesperrte Plätze mit Schloss, Abklingzeit mit Sekunden, Rot bei zu wenig Ressource, Ressourcenbalken (z. B. „Zauberkraft 60/100“) | ✅ | Bild `13_faehigkeitenleiste_runenstoss.png` |
+| Fähigkeiten wirken (serverseitig, `PowerRules` im Kern): **Runenstoß** (Runenmagier, 40 Zauberkraft, 8 s, Strahl 12 Blöcke, 8–12 magischer Schaden, Rückstoß), **Zweiter Atem** (Krieger, heilt 30 %); über Talente Arkanes Geschoss, Ausweichrolle, Schutzrune, Schlachtruf, Tatendrang, Schildstoß | ✅ | GameTest: Runenstoß trifft ein Ziel, kostet 40, zweiter Versuch während der Abklingzeit wird abgelehnt |
+| Ressource regeneriert (Zauberkraft nur außerhalb des Kampfes), Talente erhöhen Maximum/Regeneration | ✅ | Kern-Tests |
+| Fähigkeitsdetails-Ansicht, Verbesserungen I–III, Zauberbuch | ❌ | folgt |
 
 Grenzen: Aussehen-Schritt (Haare, Hautfarbe) fehlt noch, Attribute werden automatisch nach Klasse verteilt (Standardreihe), lange Namen in Kacheln werden gekürzt. Talent-Symbole sind vorerst Vanilla-Gegenstände; Fähigkeits-, Merkmals- und Resistenz-Talente werden gespeichert, wirken aber erst mit dem Fähigkeitensystem (M4.1). Auf Stufe 1 gibt es 1 Talentpunkt; EP-Quellen im Spiel folgen (M3.2).
 
-So probierst du es aus: Welt mit erlaubten Cheats öffnen, Charakter erstellen, `/frosthain ep 2000` eingeben (Stufe 4), dann **K** drücken. Quests: **J** öffnet das Journal, **U** klappt den Tracker aus. Eldrin steht nach der Charaktererstellung vor dir – Rechtsklick, „Ich bin bereit.“ wählen; danach schließt `/frosthain quest ziel awakening find_shrine` „Das Erwachen“ ab (der Schrein kommt mit dem Startdorf, M5.2).
+So probierst du es aus: Welt mit erlaubten Cheats öffnen, Charakter erstellen, `/frosthain ep 2000` eingeben (Stufe 4), dann **K** drücken. Quests: **J** öffnet das Journal, **U** klappt den Tracker aus. Eldrin steht nach der Charaktererstellung vor dir – Rechtsklick, „Ich bin bereit.“ wählen; danach schließt `/frosthain quest ziel awakening find_shrine` „Das Erwachen“ ab (der Schrein kommt mit dem Startdorf, M5.2). Als Runenmagier löst **R** den Runenstoß aus (auf ein Tier oder einen Gegner zielen).
 
 ### Installation auf dem MSI über den echten Launcher
 
