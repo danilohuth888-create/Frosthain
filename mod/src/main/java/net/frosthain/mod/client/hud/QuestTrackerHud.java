@@ -6,6 +6,7 @@ import net.frosthain.mod.FrosthainMod;
 import net.frosthain.mod.client.ClientCharacter;
 import net.frosthain.mod.client.ClientQuests;
 import net.frosthain.mod.client.gui.Ui;
+import net.frosthain.mod.network.QuestMarkerPayload;
 import net.frosthain.ui.Theme;
 import net.frosthain.ui.Translator;
 import net.frosthain.ui.quest.QuestTrackerView;
@@ -57,6 +58,30 @@ public final class QuestTrackerHud implements HudElement {
             marker(g, line.marker(), x + STYLE.padding(), ly);
             g.text(font, styled(line.text(), line.role()), lx, ly, line.color(), true);
         }
+        waypoint(g, font, minecraft, TOP + layout.height() + 3);
+    }
+
+    /** Distance and compass direction to the current objective's place (shrine, rune stone) under the tracker. */
+    private static void waypoint(GuiGraphicsExtractor g, Font font, Minecraft minecraft, int y) {
+        QuestMarkerPayload marker = ClientQuests.marker();
+        if (!marker.present() || minecraft.player == null) {
+            return;
+        }
+        double dx = marker.x() + 0.5 - minecraft.player.getX();
+        double dz = marker.z() + 0.5 - minecraft.player.getZ();
+        long distance = Math.round(Math.sqrt(dx * dx + dz * dz));
+        // 0° = north (−Z), clockwise; eight sectors of 45°.
+        double angle = (Math.toDegrees(Math.atan2(dx, -dz)) + 360) % 360;
+        String[] directions = {"n", "ne", "e", "se", "s", "sw", "w", "nw"};
+        String direction = directions[(int) Math.round(angle / 45) % 8];
+        Component text = Ui.body(Component.translatable("gui.frosthain.marker.distance", Component.translatable(marker.labelKey()),
+                distance, Component.translatable("gui.frosthain.dir." + direction)));
+        int w = font.width(text) + 16;
+        int x = g.guiWidth() - w - 4;
+        g.fill(x, y, x + w, y + font.lineHeight + 5, Theme.HUD_PANEL_BACKGROUND);
+        g.outline(x, y, w, font.lineHeight + 5, Theme.FRAME_GOLD_DIM);
+        Ui.diamond(g, x + 6, y + 6, Theme.RUNE_BLUE);
+        g.text(font, text, x + 12, y + 3, Theme.TEXT_PRIMARY, true);
     }
 
     private static Component styled(String text, Theme.FontRole role) {

@@ -15,6 +15,7 @@ import net.frosthain.mod.character.CharacterService;
 import net.frosthain.mod.character.DialogueService;
 import net.frosthain.mod.character.PowerService;
 import net.frosthain.mod.character.QuestService;
+import net.frosthain.mod.character.QuestSites;
 import net.frosthain.mod.client.ClientCharacter;
 import net.frosthain.mod.client.ClientPowers;
 import net.frosthain.mod.client.ClientQuests;
@@ -25,6 +26,7 @@ import net.frosthain.mod.client.screen.FrosthainTitleScreen;
 import net.frosthain.mod.client.screen.QuestJournalScreen;
 import net.frosthain.mod.client.screen.TalentTreeScreen;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -177,7 +179,17 @@ public final class FrosthainClientGameTest implements FabricClientGameTest {
                     throw new AssertionError("Gespräch mit Eldrin hat das Questziel nicht erfüllt: " + log);
                 }
             });
-            singleplayer.getServer().runCommand("execute as @a run frosthain quest ziel awakening find_shrine");
+            // The shrine was built north of the player when "find the old shrine" became current; walk there (teleport).
+            BlockPos shrine = singleplayer.getServer().computeOnServer(server -> QuestSites.shrine(server.getPlayerList().getPlayers().getFirst())
+                    .orElseThrow(() -> new AssertionError("Alter Schrein wurde nicht errichtet")));
+            context.waitFor(client -> ClientQuests.marker().present());
+            context.waitTicks(25);
+            context.takeScreenshot("frosthain-12a-wegweiser");
+            String start = singleplayer.getServer().computeOnServer(server -> {
+                ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
+                return player.getX() + " " + player.getY() + " " + player.getZ() + " " + player.getYRot() + " " + player.getXRot();
+            });
+            singleplayer.getServer().runCommand("tp @a " + (shrine.getX() + 0.5) + " " + shrine.getY() + " " + (shrine.getZ() + 5.5) + " 180 20");
             context.waitFor(client -> ClientQuests.log().isCompleted(AWAKENING) && ClientQuests.log().isActive(FIRST_RUNE));
             singleplayer.getServer().runOnServer(server -> {
                 ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
@@ -191,7 +203,22 @@ public final class FrosthainClientGameTest implements FabricClientGameTest {
                 }
             });
             context.waitTicks(10);
-            context.takeScreenshot("frosthain-12-folgequest");
+            context.takeScreenshot("frosthain-12-schrein-folgequest");
+            // Touching the rune stone completes "Die erste Rune" (+200 EP).
+            singleplayer.getServer().runOnServer(server -> {
+                ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
+                long before = CharacterService.sheet(player).orElseThrow().experience();
+                if (!QuestSites.touch(player, shrine)) {
+                    throw new AssertionError("Runenstein hat nicht reagiert");
+                }
+                long gained = CharacterService.sheet(player).orElseThrow().experience() - before;
+                if (!QuestService.log(player).isCompleted(FIRST_RUNE) || gained != 200) {
+                    throw new AssertionError("Die erste Rune nicht abgeschlossen oder EP falsch: " + gained);
+                }
+            });
+            context.waitFor(client -> ClientQuests.log().isCompleted(FIRST_RUNE) && !ClientQuests.marker().present());
+            singleplayer.getServer().runCommand("tp @a " + start);
+            context.waitTicks(10);
             context.setScreen(QuestJournalScreen::new);
             context.runOnClient(client -> ((QuestJournalScreen) client.gui.screen()).show(QuestJournalScreen.Category.DONE));
             context.waitTicks(5);

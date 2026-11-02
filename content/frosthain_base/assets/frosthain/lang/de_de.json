@@ -492,5 +492,16 @@
   "appearance.frosthain.scales.dragon": "Drachenschuppen",
   "appearance.frosthain.tusks.small": "Klein",
   "appearance.frosthain.tusks.large": "Groß",
-  "appearance.frosthain.markings.goliath_lines": "Steinlinien"
+  "appearance.frosthain.markings.goliath_lines": "Steinlinien",
+  "gui.frosthain.marker.shrine": "Alter Schrein",
+  "gui.frosthain.marker.rune_stone": "Runenstein",
+  "gui.frosthain.marker.distance": "%s: %s m · %s",
+  "gui.frosthain.dir.n": "Norden",
+  "gui.frosthain.dir.ne": "Nordosten",
+  "gui.frosthain.dir.e": "Osten",
+  "gui.frosthain.dir.se": "Südosten",
+  "gui.frosthain.dir.s": "Süden",
+  "gui.frosthain.dir.sw": "Südwesten",
+  "gui.frosthain.dir.w": "Westen",
+  "gui.frosthain.dir.nw": "Nordwesten"
 }

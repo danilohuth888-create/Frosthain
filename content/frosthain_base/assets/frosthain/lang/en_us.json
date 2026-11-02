@@ -492,5 +492,16 @@
   "appearance.frosthain.scales.dragon": "Dragon scales",
   "appearance.frosthain.tusks.small": "Small",
   "appearance.frosthain.tusks.large": "Large",
-  "appearance.frosthain.markings.goliath_lines": "Stone lines"
+  "appearance.frosthain.markings.goliath_lines": "Stone lines",
+  "gui.frosthain.marker.shrine": "Old shrine",
+  "gui.frosthain.marker.rune_stone": "Rune stone",
+  "gui.frosthain.marker.distance": "%s: %s m · %s",
+  "gui.frosthain.dir.n": "north",
+  "gui.frosthain.dir.ne": "north-east",
+  "gui.frosthain.dir.e": "east",
+  "gui.frosthain.dir.se": "south-east",
+  "gui.frosthain.dir.s": "south",
+  "gui.frosthain.dir.sw": "south-west",
+  "gui.frosthain.dir.w": "west",
+  "gui.frosthain.dir.nw": "north-west"
 }

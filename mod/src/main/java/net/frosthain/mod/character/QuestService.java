@@ -24,6 +24,8 @@ import net.minecraft.server.level.ServerPlayer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -154,6 +156,19 @@ public final class QuestService {
     private static void save(ServerPlayer player, QuestLog log) {
         player.setAttached(QUESTS, QuestLogCodec.encode(log).toString());
         send(player, log);
+        QuestSites.onQuestLogChanged(player);
+    }
+
+    /** Keys of the objectives the player currently works on (only the next one for sequential quests). */
+    public static List<String> currentObjectives(QuestLog log, ContentId quest) {
+        Optional<QuestDefinition> definition = FrosthainMod.content().get(ContentType.QUESTS, quest);
+        Optional<QuestLog.Progress> progress = log.progress(quest);
+        if (definition.isEmpty() || progress.isEmpty()) {
+            return List.of();
+        }
+        return new QuestRules(FrosthainMod.content()).currentObjectives(definition.get(), progress.get()).stream()
+                .map(QuestDefinition.Objective::key)
+                .toList();
     }
 
     private static void send(ServerPlayer player, QuestLog log) {

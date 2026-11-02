@@ -20,6 +20,7 @@ import net.frosthain.mod.network.CharacterStatePayload;
 import net.frosthain.mod.network.DialogueStatePayload;
 import net.frosthain.mod.network.PowerStatePayload;
 import net.frosthain.mod.network.QuestLogPayload;
+import net.frosthain.mod.network.QuestMarkerPayload;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.gui.screens.TitleScreen;
 
@@ -61,6 +62,8 @@ public final class FrosthainClient implements ClientModInitializer {
                 (payload, context) -> context.client().execute(() -> DialogueScreen.accept(context.client(), payload)));
         ClientPlayNetworking.registerGlobalReceiver(PowerStatePayload.TYPE,
                 (payload, context) -> context.client().execute(() -> ClientPowers.accept(payload)));
+        ClientPlayNetworking.registerGlobalReceiver(QuestMarkerPayload.TYPE,
+                (payload, context) -> context.client().execute(() -> ClientQuests.acceptMarker(payload)));
         ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {
             ClientCharacter.clear();
             ClientQuests.clear();
