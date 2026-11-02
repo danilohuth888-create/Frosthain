@@ -7,5 +7,9 @@
   "school": "rune",
   "tags": [
     "defense"
-  ]
+  ],
+  "values": {
+    "duration_ticks": 160,
+    "amplifier": 0
+  }
 }

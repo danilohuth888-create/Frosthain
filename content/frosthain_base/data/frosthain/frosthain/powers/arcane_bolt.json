@@ -7,5 +7,11 @@
   "school": "evocation",
   "tags": [
     "projectile"
-  ]
+  ],
+  "values": {
+    "range": 16,
+    "damage_min": 4,
+    "damage_max": 6,
+    "knockback": 0.2
+  }
 }

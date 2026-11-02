@@ -1,6 +1,6 @@
 package net.frosthain.mod.character;
 
-import net.frosthain.core.ContentId;
+import net.frosthain.core.content.PowerDefinition;
 import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
@@ -23,9 +23,9 @@ import net.minecraft.world.phys.Vec3;
 import java.util.Optional;
 
 /**
- * In-game effects of the powers in the base content (first version of the effect pipeline, M4.1). Numbers follow
- * the reference "Fähigkeitsdetails" (Runenstoß: 12 blocks, 8–12 magic damage, knockback). Effects are server-side;
- * clients see particles, sounds and the result.
+ * In-game effects of the powers in the base content (first version of the effect pipeline, M4.1). The numbers come
+ * from the power data ({@code values}: range, damage, knockback, duration …), e.g. Runenstoß 12 blocks, 8–12 magic
+ * damage as in the reference "Fähigkeitsdetails". Effects are server-side; clients see particles, sounds and the result.
  */
 public final class PowerEffects {
 
@@ -33,54 +33,57 @@ public final class PowerEffects {
     }
 
     /** @return false if the power has no in-game effect yet (cost and cooldown are then not spent) */
-    public static boolean cast(ServerPlayer player, ContentId power) {
+    public static boolean cast(ServerPlayer player, PowerDefinition power) {
         ServerLevel level = player.level();
-        switch (power.path()) {
+        int duration = (int) power.value("duration_ticks", 100);
+        int amplifier = (int) power.value("amplifier", 0);
+        switch (power.id().path()) {
             case "rune_strike" -> {
-                beam(player, 12, 8 + player.getRandom().nextInt(5), 0.9, ParticleTypes.END_ROD);
+                beam(player, power.value("range", 12), damage(player, power), power.value("knockback", 0.9), ParticleTypes.END_ROD);
                 level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.PLAYERS, 1.2f, 0.8f);
                 level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.EVOKER_CAST_SPELL, SoundSource.PLAYERS, 0.6f, 1.4f);
             }
             case "arcane_bolt" -> {
-                beam(player, 16, 4 + player.getRandom().nextInt(3), 0.2, ParticleTypes.WITCH);
+                beam(player, power.value("range", 16), damage(player, power), power.value("knockback", 0.2), ParticleTypes.WITCH);
                 level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.EVOKER_CAST_SPELL, SoundSource.PLAYERS, 0.6f, 1.8f);
             }
             case "second_wind" -> {
-                player.heal(player.getMaxHealth() * 0.3f);
+                player.heal(player.getMaxHealth() * (float) power.value("heal_fraction", 0.3));
                 burst(level, player, ParticleTypes.HEART, 6);
             }
             case "action_surge" -> {
-                effect(player, MobEffects.SPEED, 120, 1);
-                effect(player, MobEffects.HASTE, 120, 1);
+                effect(player, MobEffects.SPEED, duration, amplifier);
+                effect(player, MobEffects.HASTE, duration, amplifier);
                 burst(level, player, ParticleTypes.CRIT, 12);
             }
             case "battle_cry" -> {
-                effect(player, MobEffects.STRENGTH, 200, 0);
-                for (Entity nearby : level.getEntities(player, player.getBoundingBox().inflate(8), e -> e instanceof ServerPlayer)) {
-                    effect((ServerPlayer) nearby, MobEffects.STRENGTH, 200, 0);
+                effect(player, MobEffects.STRENGTH, duration, amplifier);
+                double radius = power.value("radius", 8);
+                for (Entity nearby : level.getEntities(player, player.getBoundingBox().inflate(radius), e -> e instanceof ServerPlayer)) {
+                    effect((ServerPlayer) nearby, MobEffects.STRENGTH, duration, amplifier);
                 }
                 level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.EVOKER_CAST_SPELL, SoundSource.PLAYERS, 1.0f, 0.6f);
             }
             case "dodge_roll" -> {
                 Vec3 look = player.getLookAngle();
                 Vec3 flat = new Vec3(look.x, 0, look.z);
-                Vec3 dash = (flat.lengthSqr() < 1e-4 ? new Vec3(0, 0, 1) : flat.normalize()).scale(1.1).add(0, 0.2, 0);
+                Vec3 dash = (flat.lengthSqr() < 1e-4 ? new Vec3(0, 0, 1) : flat.normalize()).scale(power.value("dash", 1.1)).add(0, 0.2, 0);
                 player.setDeltaMovement(dash);
                 player.connection.send(new ClientboundSetEntityMotionPacket(player));
-                effect(player, MobEffects.RESISTANCE, 10, 4);
+                effect(player, MobEffects.RESISTANCE, duration, 4);
                 burst(level, player, ParticleTypes.CLOUD, 8);
             }
             case "shield_bash" -> {
-                Optional<LivingEntity> target = firstTarget(player, 3.5);
+                Optional<LivingEntity> target = firstTarget(player, power.value("range", 3.5));
                 target.ifPresent(t -> {
-                    t.hurtServer(level, player.damageSources().playerAttack(player), 3);
-                    push(t, player.getLookAngle(), 1.2);
-                    t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 60, 1));
+                    t.hurtServer(level, player.damageSources().playerAttack(player), damage(player, power));
+                    push(t, player.getLookAngle(), power.value("knockback", 1.2));
+                    t.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, duration, 1));
                 });
                 level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.SHIELD_BLOCK, SoundSource.PLAYERS, 1.0f, 0.9f);
             }
             case "rune_ward" -> {
-                effect(player, MobEffects.RESISTANCE, 160, 0);
+                effect(player, MobEffects.RESISTANCE, duration, amplifier);
                 burst(level, player, ParticleTypes.ENCHANT, 40);
                 level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.PLAYERS, 1.0f, 1.2f);
             }
@@ -89,6 +92,13 @@ public final class PowerEffects {
             }
         }
         return true;
+    }
+
+    /** Random damage between {@code damage_min} and {@code damage_max} (inclusive, whole points). */
+    private static float damage(ServerPlayer player, PowerDefinition power) {
+        int min = (int) power.value("damage_min", 1);
+        int max = Math.max(min, (int) power.value("damage_max", min));
+        return min + player.getRandom().nextInt(max - min + 1);
     }
 
     /** Straight magic beam from the eyes; hits the first living creature (not NPCs) before a solid block. */

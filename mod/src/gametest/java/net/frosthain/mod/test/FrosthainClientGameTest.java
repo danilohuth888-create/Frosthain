@@ -18,6 +18,7 @@ import net.frosthain.mod.client.ClientPowers;
 import net.frosthain.mod.client.ClientQuests;
 import net.frosthain.mod.client.screen.CharacterCreationScreen;
 import net.frosthain.mod.client.screen.DialogueScreen;
+import net.frosthain.mod.client.screen.PowerDetailsScreen;
 import net.frosthain.mod.client.screen.FrosthainTitleScreen;
 import net.frosthain.mod.client.screen.QuestJournalScreen;
 import net.frosthain.mod.client.screen.TalentTreeScreen;
@@ -209,6 +210,29 @@ public final class FrosthainClientGameTest implements FabricClientGameTest {
                     throw new AssertionError("Fähigkeit wurde trotz Abklingzeit ausgelöst: " + resource);
                 }
             });
+
+            // Experience from combat: defeating a husk (20 health, hostile) with Runenstoß gives 20 × 2.5 = 50 EP.
+            singleplayer.getServer().runCommand("kill @e[tag=frosthain_test_target]");
+            singleplayer.getServer().runCommand("execute as @a at @s run summon minecraft:husk ^ ^ ^5 {NoAI:1b,Health:1f,Tags:[\"frosthain_test_husk\"]}");
+            long experienceBeforeFight = singleplayer.getServer().computeOnServer(server ->
+                    CharacterService.sheet(server.getPlayerList().getPlayers().getFirst()).orElseThrow().experience());
+            context.waitFor(client -> ClientPowers.state().map(s -> s.cooldowns().getFirst() == 0).orElse(false), 400);
+            context.runOnClient(client -> ClientPowers.use(client, 0));
+            singleplayer.getServer().waitFor(server -> CharacterService.sheet(server.getPlayerList().getPlayers().getFirst())
+                    .orElseThrow().experience() >= experienceBeforeFight + 50, 100);
+            singleplayer.getServer().runOnServer(server -> {
+                long gained = CharacterService.sheet(server.getPlayerList().getPlayers().getFirst()).orElseThrow().experience() - experienceBeforeFight;
+                if (gained != 50) {
+                    throw new AssertionError("Kampf-EP falsch: " + gained + " statt 50");
+                }
+            });
+            context.waitTicks(10);
+            context.takeScreenshot("frosthain-15-kampf-ep");
+
+            context.setScreen(() -> new PowerDetailsScreen(new net.minecraft.client.KeyMapping[0]));
+            context.waitTicks(5);
+            context.takeScreenshot("frosthain-16-faehigkeitsdetails");
+            context.setScreen(() -> null);
         }
     }
 

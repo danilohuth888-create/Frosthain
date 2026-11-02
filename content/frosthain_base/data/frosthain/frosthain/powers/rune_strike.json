@@ -8,5 +8,11 @@
   "tags": [
     "projectile",
     "knockback"
-  ]
+  ],
+  "values": {
+    "range": 12,
+    "damage_min": 8,
+    "damage_max": 12,
+    "knockback": 0.9
+  }
 }

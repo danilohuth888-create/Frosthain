@@ -8,5 +8,9 @@
   "school": "martial",
   "tags": [
     "buff"
-  ]
+  ],
+  "values": {
+    "duration_ticks": 120,
+    "amplifier": 1
+  }
 }

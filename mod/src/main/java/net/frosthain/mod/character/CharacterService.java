@@ -6,6 +6,7 @@ import com.mojang.serialization.Codec;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
@@ -27,6 +28,8 @@ import net.frosthain.mod.network.TalentActionPayload;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.monster.Enemy;
+import net.minecraft.world.entity.player.Player;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,6 +64,17 @@ public final class CharacterService {
         });
         ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) ->
                 sheet(newPlayer).ifPresent(sheet -> TalentEffects.apply(newPlayer, sheet, FrosthainMod.content())));
+        // Experience for defeating hostile creatures (rules/progression.json, "defeat_experience").
+        ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> {
+            if (source.getEntity() instanceof ServerPlayer player && !(entity instanceof Player)) {
+                int experience = FrosthainMod.content().progression()
+                        .map(rules -> rules.experienceForDefeat(entity.getMaxHealth(), entity instanceof Enemy))
+                        .orElse(0);
+                if (experience > 0 && addExperience(player, experience).isPresent()) {
+                    player.sendOverlayMessage(Component.translatable("gui.frosthain.experience_gained", experience));
+                }
+            }
+        });
         ServerPlayNetworking.registerGlobalReceiver(CreateCharacterPayload.TYPE,
                 (payload, context) -> context.server().execute(() -> create(context.player(), payload)));
         ServerPlayNetworking.registerGlobalReceiver(TalentActionPayload.TYPE,

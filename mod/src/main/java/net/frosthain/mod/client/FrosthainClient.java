@@ -14,6 +14,7 @@ import net.frosthain.mod.client.hud.CharacterHud;
 import net.frosthain.mod.client.hud.QuestTrackerHud;
 import net.frosthain.mod.client.screen.DialogueScreen;
 import net.frosthain.mod.client.screen.FrosthainTitleScreen;
+import net.frosthain.mod.client.screen.PowerDetailsScreen;
 import net.frosthain.mod.network.CharacterRejectedPayload;
 import net.frosthain.mod.network.CharacterStatePayload;
 import net.frosthain.mod.network.DialogueStatePayload;
@@ -41,6 +42,7 @@ public final class FrosthainClient implements ClientModInitializer {
         for (int i = 0; i < powerKeys.length; i++) {
             powerMappings[i] = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.frosthain.power_" + (i + 1), powerKeys[i], category));
         }
+        KeyMapping powersKey = KeyMappingHelper.registerKeyMapping(new KeyMapping("key.frosthain.powers", InputConstants.KEY_Y, category));
 
         // Every way back to the title screen creates a vanilla TitleScreen; replace exactly that class.
         ScreenEvents.AFTER_INIT.register((client, screen, width, height) -> {
@@ -81,6 +83,11 @@ public final class FrosthainClient implements ClientModInitializer {
             for (int i = 0; i < powerMappings.length; i++) {
                 while (powerMappings[i].consumeClick()) {
                     ClientPowers.use(client, i);
+                }
+            }
+            while (powersKey.consumeClick()) {
+                if (client.player != null && client.gui.screen() == null && ClientPowers.state().isPresent()) {
+                    client.gui.setScreen(new PowerDetailsScreen(powerMappings));
                 }
             }
         });

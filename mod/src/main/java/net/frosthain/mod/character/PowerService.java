@@ -7,6 +7,7 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.frosthain.core.ContentId;
 import net.frosthain.core.character.CharacterSheet;
 import net.frosthain.core.power.PowerRules;
+import net.frosthain.core.registry.ContentType;
 import net.frosthain.mod.FrosthainMod;
 import net.frosthain.mod.network.PowerStatePayload;
 import net.frosthain.mod.network.UsePowerPayload;
@@ -117,7 +118,7 @@ public final class PowerService {
             player.sendOverlayMessage(problemMessage(problems.getFirst(), entry, power));
             return;
         }
-        if (!PowerEffects.cast(player, power)) {
+        if (!PowerEffects.cast(player, FrosthainMod.content().get(ContentType.POWERS, power).orElseThrow())) {
             player.sendOverlayMessage(Component.translatable("gui.frosthain.power.not_implemented", powerName(power)));
             return;
         }

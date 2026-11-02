@@ -8,5 +8,10 @@
   "tags": [
     "buff",
     "area"
-  ]
+  ],
+  "values": {
+    "duration_ticks": 200,
+    "amplifier": 0,
+    "radius": 8
+  }
 }

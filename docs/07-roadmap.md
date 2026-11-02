@@ -60,7 +60,7 @@ flowchart LR
 
 | # | Meilenstein | Abnahmekriterien | Größe | Status |
 |---|---|---|---|---|
-| M4.1 | Fähigkeiten und Kampf | Ressourcenleiste ✅, Abklingzeiten ✅, Fähigkeitsleiste ✅ (serverseitig, GameTest), 8 Fähigkeiten mit erster Wirkung ✅ inkl. Ausweichrolle, Statuseffekte ✅ (Vanilla); Effektketten, Verbesserungen I–III, EP aus Kämpfen ⏳; Performance-Budget ⏳ | XL | 🔶 |
+| M4.1 | Fähigkeiten und Kampf | Ressourcenleiste ✅, Abklingzeiten ✅, Fähigkeitsleiste ✅ (serverseitig, GameTest), 8 Fähigkeiten mit erster Wirkung ✅ inkl. Ausweichrolle, Statuseffekte ✅ (Vanilla), Werte als Daten ✅, Fähigkeitsdetails ✅, EP aus Kämpfen ✅; Effektketten, Verbesserungen I–III ⏳; Performance-Budget ⏳ | XL | 🔶 |
 | M4.2 | Runenmagie | Runen, Kombinationen, klassenübergreifende Synergien; schrittweise Einführung im Spiel | L | ⏳ |
 | M4.3 | NPCs und filmische Dialoge | NPC-Entity mit `Appearance` ⏳ (Eldrin vorerst als Dorfbewohner ✅); Dialoggraphen mit Bedingungen/Folgen ✅ (serverseitig, GameTest); Ruf ⏳; HUD-Ausblendung ✅ | L | 🔶 |
 | M4.4 | Quests | Auslöser aus Spielereignissen ⏳ (Schnittstelle `QuestService.advance` ✅, Testbefehl ✅), Journal ✅, Quest-HUD (max. 3) ✅, gespeichertes Questlog ✅, EP-Belohnung ✅, Wegpunkte ⏳ | L | 🔶 |
