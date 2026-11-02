@@ -7,13 +7,16 @@ Ein eigenständiges Fantasy-RPG-Erlebnis auf Basis von Minecraft Java Edition: e
 | Bereich | Stand |
 |---|---|
 | Projektplanung (Machbarkeit, Architektur, Konzepte, Roadmap, Risiken) | ✅ [docs/](docs/) |
-| RPG-Kern ohne Minecraft: Datenmodell, Lader, Validator, Charaktererstellung, Talente, Stufen, Multiclassing, Speicherformat | ✅ gebaut, **58 Tests grün** |
-| Basisinhalte: 12 Klassen, 14 Unterklassen, 9 Spezies, 6 Hintergründe, 2 Talentbäume, Deutsch + Englisch | ✅ Validator: 0 Fehler |
-| Fabric-Mod (Minecraft 26.3) | ⏳ M0.3 – blockiert: Fabric-/Mojang-Server in der Cloud-Umgebung gesperrt |
-| Launcher (Tauri 2) | ⏳ M1.1 |
-| Im Spiel spielbar | ❌ noch nicht |
+| RPG-Kern ohne Minecraft: Datenmodell, Lader, Validator, Charaktererstellung, Talente, Stufen, Multiclassing, Quests, Dialoge, Speicherformat | ✅ **96 Tests grün** |
+| Basisinhalte: 12 SRD-Klassen + Runenmagier, 15 Unterklassen, 9 Spezies, 6 Hintergründe, 3 Talentbäume (inkl. Runenpfad), NPC Eldrin, 3 Quests, 1 Dialog, Deutsch + Englisch | ✅ Validator: 0 Fehler |
+| UI nach Referenzbildern B · D · F: Implementierungsplan, Präsentationslogik (`ui`), interaktiver Desktop-Prototyp | ✅ **30 Tests grün**, [Screenshots](docs/prototyp/) |
+| Fabric-Mod für Minecraft 26.3 | 🔶 Client und Server starten (CI und MSI-Laptop); **im Spiel sichtbar:** FROSTHAIN-Hauptmenü, Charaktererstellung (Spezies, Aussehen, Klasse, Hintergrund, serverseitig geprüft und gespeichert), HUD-Abzeichen, Taste I, **Talentbaum auf K** (Freischalten serverseitig geprüft, Attribut-Talente wirken), **Questtracker (U) und Questjournal (J)** mit gespeichertem Questlog und EP-Belohnung, **Eldrin in der Welt mit NPC-Dialog** (serverseitig, erfüllt das erste Questziel), **Fähigkeitenleiste** mit Ressource, Abklingzeit und wirksamem Runenstoß, **Fähigkeitsdetails (Y)**, **EP aus Kämpfen**, **alter Schrein und Runenstein** mit Wegweiser (Hauptquests ohne Testbefehle spielbar) – [Bilder](docs/spiel/). Startdorf folgt |
+| Windows-Installer (ohne winget/Java/Git, SHA-256, Backup/Rollback) | ✅ automatisiert getestet (PowerShell 5.1 und 7), Vorabversion `frosthain-dev` |
+| CI auf GitHub (Ubuntu + Windows) | ✅ grün |
+| Launcher (Tauri 2, Anmeldung über den offiziellen Minecraft Launcher) | ⏳ M1.1 |
+| RPG im Spiel spielbar | 🔶 Charakter erstellen, Talente vergeben, Quests verfolgen, mit Eldrin sprechen, Fähigkeiten einsetzen, durch Kämpfe aufsteigen, die Hauptquests „Das Erwachen“ und „Die erste Rune“ durchspielen ja; Startdorf und weitere Quests noch nicht – siehe [Stand und Spielanleitung](docs/11-windows-test-und-uebergabe.md) |
 
-Details: [Erster Implementierungsschritt](docs/09-erster-implementierungsschritt.md).
+Lizenz: FROSTHAIN-Eigenentwicklungen sind proprietär, alle Rechte vorbehalten ([LICENSE.md](LICENSE.md)); Drittanbieter siehe [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
 ## Dokumentation
 
@@ -26,8 +29,11 @@ Details: [Erster Implementierungsschritt](docs/09-erster-implementierungsschritt
 7. [Priorisierte Roadmap](docs/07-roadmap.md)
 8. [Risikoanalyse](docs/08-risikoanalyse.md)
 9. [Erster Implementierungsschritt](docs/09-erster-implementierungsschritt.md)
+10. [UI-Implementierungsplan B · D · F](docs/10-ui-implementierungsplan.md)
+11. [Installation, Spielanleitung, Testergebnisse, Übergabe](docs/11-windows-test-und-uebergabe.md)
+12. [Design „Immersive Fantasy 2.0“](docs/12-design-immersive-fantasy-2.md)
 
-Außerdem: [Inhaltskatalog und Lizenzen](docs/inhaltskatalog-und-lizenzen.md) · [Architekturentscheidungen (ADRs)](docs/adr/) · [Hinweise und Namensnennung](NOTICE.md)
+Außerdem: [UI-Prototyp](docs/prototyp/) · [Referenzen und Vorgaben](docs/referenzen/) · [Inhaltskatalog und Lizenzen](docs/inhaltskatalog-und-lizenzen.md) · [Architekturentscheidungen (ADRs)](docs/adr/) · [Hinweise und Namensnennung](NOTICE.md)
 
 ## Für Entwickler
 
@@ -45,11 +51,23 @@ Führt alle Tests aus und prüft alle Inhaltspakete. Unter Windows `gradlew.bat 
 
 Prüft nur die Inhalte und listet Fehler, Warnungen und Hinweise.
 
+```bash
+./gradlew :ui-prototype:run
+```
+
+Startet den interaktiven UI-Prototyp (HUD, Talentbaum, Dialog).
+
+```bash
+./gradlew :mod:build
+```
+
+Baut die Fabric-Mod (`mod/build/libs/`). Braucht Internetzugang zu `maven.fabricmc.net` und den Mojang-Servern; mit `-Pfrosthain.withMod=false` wird die Mod übersprungen.
+
 Neue Inhalte (Klassen, Spezies, Talente) sind reine JSON-Dateien – siehe [Datenmodell §6.14](docs/06-datenmodell.md#614-neue-klasse-hinzufügen-beispiel-für-erweiterbarkeit).
 
 ## Für Spieler
 
-Noch nicht verfügbar. Ziel: ein Download, ein PowerShell-Befehl, danach alles über den FROSTHAIN-Launcher – ohne Gradle oder Java-Builds.
+Entwicklungsstand installieren: [ein PowerShell-Befehl](docs/11-windows-test-und-uebergabe.md#111-installation-windows-1011-ohne-winget-ohne-java-ohne-git) (über den offiziellen Minecraft Launcher). Ziel: ein Download, ein PowerShell-Befehl, danach alles über den FROSTHAIN-Launcher – ohne Gradle oder Java-Builds.
 
 ---
 

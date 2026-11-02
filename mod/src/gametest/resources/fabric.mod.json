@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "id": "frosthain-gametest",
+  "version": "1.0.0",
+  "name": "FROSTHAIN GameTests",
+  "environment": "*",
+  "entrypoints": {
+    "fabric-client-gametest": ["net.frosthain.mod.test.FrosthainClientGameTest"]
+  },
+  "depends": {
+    "frosthain": "*"
+  }
+}

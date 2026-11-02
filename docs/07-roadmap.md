@@ -9,7 +9,7 @@ Status: ✅ erledigt und geprüft · 🔶 erledigt, aber noch nicht in Zielumgeb
 
 ```mermaid
 flowchart LR
-  A0["Inhaber-Aktionen\nRepo · Netzwerk · Azure-Antrag"] --> M03["M0.3 Mod-Skelett"]
+  A0["Inhaber-Aktionen\nRepo · Netzwerk"] --> M03["M0.3 Mod-Skelett"]
   A0 --> M04["M0.4 CI grün"]
   M03 --> M22["M2.2 Charakter im Spiel"]
   M04 --> M11["M1.1 launcher-core"]
@@ -17,8 +17,6 @@ flowchart LR
   M21["M2.1 Designentwurf\n(braucht Referenzbilder)"] --> M23["M2.3 Editor-UI"]
   M22 --> M23 --> M24["M2.4 Aussehen komplett"]
   M24 --> M3["Phase 3 RPG-Fundament"] --> M4["Phase 4 Spielsysteme"] --> M5["Phase 5 Welt\n★ Vertical Slice"]
-  A0 -.->|"Freigabe durch Mojang"| M13["M1.3 eigener Login"]
-  M12 --> M13
 ```
 
 ## Phase 0 – Technische Vorbereitung
@@ -27,26 +25,26 @@ flowchart LR
 |---|---|---|---|---|
 | M0.1 | Repository, Build, Architekturentscheidungen | Gradle 9.4 + JDK 25 baut; `./gradlew check` grün; ADRs 0001–0010 | S | ✅ |
 | M0.2 | Datenmodell, Registry, Validator, Basisinhalte | 58 Tests grün; Validator: 0 Fehler auf `content/`; Lizenz-Sperre per Test belegt | M | ✅ |
-| M0.3 | Fabric-Mod-Skelett gegen Minecraft 26.3 | Modul `:mod` baut mit `net.fabricmc.fabric-loom`; Mod startet im Dev-Client und auf dem Dedicated Server; lädt `content/` als Datapack über `core`, meldet Anzahl und Diagnosen im Log; `/reload` lädt neu; 1 GameTest headless grün; exakte Versionen von Loader, Fabric API, Loom in `libs.versions.toml` gepinnt | M | ⛔ Netzwerkzugriff auf Fabric/Mojang |
-| M0.4 | Remote-Repository und CI | GitHub-Repository; CI (Ubuntu + Windows) grün; Gradle-Wrapper-Prüfsumme gegen gradle.org gepinnt; Branch-Schutz für `main` | S | ⛔ Repository fehlt |
+| M0.3 | Fabric-Mod-Skelett gegen Minecraft 26.3 | Modul `:mod` baut mit `net.fabricmc.fabric-loom` ✅; Versionen gepinnt ✅; Inhalte werden beim Start über `core` geladen und geprüft (Code ✅, Start ⏳); Dedicated Server ✅ und Client (Client-GameTest, Welt erstellt) ✅ starten im CI mit geladenen Inhalten; Datapack-Reload ⏳; 1 GameTest headless ⏳ | M | 🔶 Teil 1 (Build im CI) erledigt |
+| M0.4 | Remote-Repository und CI | GitHub-Repository ✅; CI (Ubuntu + Windows) grün ✅; Gradle-Wrapper-Prüfsumme gegen gradle.org pinnen ⏳; Branch-Schutz für `main` ⏳ | S | 🔶 |
 
 ## Phase 1 – Launcher
 
 | # | Meilenstein | Abnahmekriterien | Größe | Status |
 |---|---|---|---|---|
 | M1.1 | `launcher-core` (Rust) | Versionsmanifest, Versions-JSON, OS-Regeln, Bibliotheken, Assets, Fabric-Profil, verifizierter Download mit Wiederaufnahme; `cargo test` mit aufgezeichneten Manifesten; CI-Job installiert 26.3 + Fabric in ein Temp-Verzeichnis, alle Prüfsummen korrekt | L | ⏳ |
-| M1.2 | Launcher-Oberfläche + Brückenmodus | Tauri-App mit Start, Einstellungen, Diagnose-Grundlagen; legt Profil im offiziellen Launcher an (vorher Backup); manueller Test auf Windows 11: Installation → Profil sichtbar → Spiel startet mit FROSTHAIN-Mod | L | ⏳ |
-| M1.3 | Eigene Microsoft-Anmeldung | PKCE-Login im Browser, Xbox/XSTS/Minecraft-Token, Besitzprüfung, Refresh; Token nur in der Anmeldeinformationsverwaltung; automatischer Test: keine Tokens in Logs/Diagnosepaket; Offline-Start mit verifiziertem Profil | M | ⛔ Mojang-Freigabe der App-ID |
-| M1.4 | Modmanager, Sicherung, Diagnose | Aktivieren/Deaktivieren/Hinzufügen (Modrinth); Abhängigkeits- und Konfliktprüfung mit Testfällen; Backup vor jedem Update, Wiederherstellung getestet; Absturzanalyse für mindestens 5 bekannte Fehlerbilder | L | ⏳ |
-| M1.5 | Installation und Updates | Installer pro Benutzer; `install.ps1` mit Prüfsummenprüfung; signierter Selbst-Update; signiertes Modpack-Manifest; Test auf frischem Windows 11 | M | ⏳ |
+| M1.2 | Launcher-Oberfläche + Brückenmodus (Hauptweg der Anmeldung) | Tauri-App mit Start, Einstellungen, Diagnose-Grundlagen; legt die Installation „FROSTHAIN“ im offiziellen Launcher an (vorher Backup, auch Store-Variante); öffnet den offiziellen Launcher; manueller Test auf Windows 11: Installation → Eintrag sichtbar → Anmeldung im offiziellen Launcher → Spiel startet mit FROSTHAIN-Mod | L | ⏳ |
+| M1.3 | ~~Eigene Microsoft-Anmeldung~~ | zurückgestellt: Azure-App funktioniert nicht (ADR 0004); Anmeldung über den offiziellen Launcher (M1.2) | – | zurückgestellt |
+| M1.4 | Modmanager, Sicherung, Diagnose, `.mrpack`-Export | Aktivieren/Deaktivieren/Hinzufügen (Modrinth); `.mrpack`-Export importierbar in Prism Launcher; Abhängigkeits- und Konfliktprüfung mit Testfällen; Backup vor jedem Update, Wiederherstellung getestet; Absturzanalyse für mindestens 5 bekannte Fehlerbilder | L | ⏳ |
+| M1.5 | Installation und Updates | 🔶 `install-frosthain.ps1` (Bridge-Modus, SHA-256, Backup/Rollback, ohne winget) im CI auf Windows getestet ✅; Installer pro Benutzer; signierter Selbst-Update; signiertes Modpack-Manifest; Test auf frischem Windows 11 | M | ⏳ |
 
 ## Phase 2 – Charaktereditor
 
 | # | Meilenstein | Abnahmekriterien | Größe | Status |
 |---|---|---|---|---|
-| M2.1 | Designentwurf (B, D, F) | Entwürfe für Editor, HUD, Talentbaum, Dialog auf Basis der Referenzbilder; vom Inhaber freigegeben | M | ⛔ Referenzbilder |
-| M2.2 | Charakter im Spiel | Spieleranhang mit `CharacterSheetCodec`; Server öffnet Editor vor dem ersten Handeln; Erstellung über Pakete, serverseitig geprüft; GameTest: ungültige Anfrage wird abgelehnt | M | ⏳ |
-| M2.3 | Editor-Oberfläche | 8 Schritte; 3D-Vorschau drehen/zoomen; Schnellstart-Held; Controller-Navigation; Client-GameTest mit Screenshots je Schritt | L | ⏳ |
+| M2.1 | Designentwurf (B, D, F) | UI-Implementierungsplan (docs/10) ✅; interaktiver Prototyp mit Screenshots (docs/prototyp) ✅; Freigabe durch den Inhaber ⏳ | M | 🔶 wartet auf Freigabe |
+| M2.2 | Charakter im Spiel | Spieleranhang mit `CharacterSheetCodec` ✅; Server öffnet Editor vor dem ersten Handeln ✅; Erstellung über Pakete, serverseitig geprüft ✅ (Client-GameTest); GameTest: ungültige Anfrage wird abgelehnt ⏳ | M | 🔶 |
+| M2.3 | Editor-Oberfläche | 5 von 8 Schritten ✅ (Spezies, Aussehen, Klasse, Hintergrund, Fertig); Vorschau: Spielermodell + Pixel-Porträt ✅, drehen/zoomen ⏳; Schnellstart-Held ✅ (Attribute automatisch); Controller-Navigation ⏳; Client-GameTest mit Screenshots je Schritt ✅ | L | 🔶 |
 | M2.4 | Aussehen komplett | `appearance_parts`; Skin-Compositing; Zusatzteile (Ohren, Hörner, Schweif, Hauer); Aussehen im Spiel änderbar; Charakter-Zusammenfassung für den Launcher | L | ⏳ |
 
 ## Phase 3 – RPG-Fundament
@@ -55,17 +53,17 @@ flowchart LR
 |---|---|---|---|---|
 | M3.1 | Inhalte prüfen und vervollständigen | SRD-Abgleich mit dem Original-PDF dokumentiert; Klassenmerkmale je Stufe als Daten | M | ⏳ |
 | M3.2 | Regeln wirken im Spiel | Modifikatoren → Attribute/Resistenzen; Engine-Funktionen `darkvision`, `lucky`, … umgesetzt (Status `IMPLEMENTED` mit GameTest); EP-Quellen; Stufenaufstieg-Dialog | L | ⏳ |
-| M3.3 | Talentbaum-Oberfläche + 6 Kernklassen | Schwenken/Zoomen, Sperrgründe, Vorschau, Bestätigung, Reset; Talentbäume für Krieger, Magier, Schurke, Kleriker, Druide, Barde | L | ⏳ (Kriegerbaum als Daten ✅) |
+| M3.3 | Talentbaum-Oberfläche + 6 Kernklassen | Schwenken/Zoomen ✅, Sperrgründe ✅, Vorschau ✅, Bestätigung ✅, Reset ✅ (Taste K, serverseitig geprüft, Client-GameTest); Talentbäume für Krieger ✅ (Daten), Magier, Schurke, Kleriker, Druide, Barde ⏳ | L | 🔶 |
 | M3.4 | Multiclassing und Unterklassen im Spiel | Auswahl-UI; Talentbäume der übrigen 6 Klassen; Validator ohne Warnungen | L | ⏳ |
 
 ## Phase 4 – Spielsysteme
 
 | # | Meilenstein | Abnahmekriterien | Größe | Status |
 |---|---|---|---|---|
-| M4.1 | Fähigkeiten und Kampf | Ressourcenleiste, Abklingzeiten, Fähigkeitsleiste, Effektketten, Ausweichrolle, Statuseffekte; Performance-Budget eingehalten | XL | ⏳ |
-| M4.2 | Runenmagie | Runen, Kombinationen, klassenübergreifende Synergien; schrittweise Einführung im Spiel | L | ⏳ |
-| M4.3 | NPCs und filmische Dialoge | NPC-Entity mit `Appearance`; Dialoggraphen mit Bedingungen/Folgen; Ruf; HUD-Ausblendung | L | ⏳ |
-| M4.4 | Quests | Auslöser aus Spielereignissen, Journal, Quest-HUD (max. 3 Ziele), Wegpunkte | L | ⏳ |
+| M4.1 | Fähigkeiten und Kampf | Ressourcenleiste ✅, Abklingzeiten ✅, Fähigkeitsleiste ✅ (serverseitig, GameTest), 8 Fähigkeiten mit erster Wirkung ✅ inkl. Ausweichrolle, Statuseffekte ✅ (Vanilla), Werte als Daten ✅, Fähigkeitsdetails ✅, EP aus Kämpfen ✅; Effektketten, Verbesserungen I–III ⏳; Performance-Budget ⏳ | XL | 🔶 |
+| M4.2 | Runenmagie | Runen als Daten ✅ (5 Runen), Runenaltar mit Herstellen ✅ (serverseitig, GameTest), Runensiegel mit Wirkung ✅; Kombinationen, Siegel/Rituale, klassenübergreifende Synergien ⏳ | L | 🔶 |
+| M4.3 | NPCs und filmische Dialoge | NPC-Entity mit `Appearance` ⏳ (Eldrin vorerst als Dorfbewohner ✅); Dialoggraphen mit Bedingungen/Folgen ✅ (serverseitig, GameTest); Ruf ⏳; HUD-Ausblendung ✅ | L | 🔶 |
+| M4.4 | Quests | Auslöser aus Spielereignissen 🔶 (Gespräch, Ort entdecken, Runenstein berühren ✅; Sammeln ⏳), Journal ✅, Quest-HUD (max. 3) ✅, gespeichertes Questlog ✅, EP-Belohnung ✅, Wegweiser mit Entfernung/Richtung ✅, Karte ⏳ | L | 🔶 |
 | M4.5 | Gegner und erster Boss | 3 Gegnertypen mit eigenem Verhalten, 1 Boss mit Phasen | L | ⏳ |
 | M4.6 | Übrige Menüs | Charakterübersicht, Zauberbuch, Weltchronik, Tastenübersicht, Einstellungen | M | ⏳ |
 

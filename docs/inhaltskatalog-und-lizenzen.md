@@ -7,7 +7,7 @@ Regel: Nur Inhalte mit einer Quelle im Status `approved` werden ausgeliefert. De
 | ID | Quelle | Lizenz | Status | Bedingungen |
 |---|---|---|---|---|
 | `frosthain:srd_5_2_1` | System Reference Document 5.2.1, Wizards of the Coast LLC | CC-BY-4.0 | ✅ approved | Namensnennung (NOTICE.md), Änderungen kennzeichnen (`adapted`), keine Markennutzung als Produktname, keine Andeutung einer Billigung |
-| `frosthain:original` | FROSTHAIN-Originalinhalte | durch Inhaber festzulegen | ✅ approved | eigene Texte, Mechaniken, Grafiken |
+| `frosthain:original` | FROSTHAIN-Originalinhalte | proprietär, alle Rechte vorbehalten (`LICENSE.md`) | ✅ approved | eigene Texte, Mechaniken, Grafiken |
 
 ## 2. Im Basispaket umgesetzt
 
@@ -62,5 +62,4 @@ Bisher wurde **keine** Community-Erweiterung geprüft; es sind daher auch keine 
 ## 5. Offene Prüfpunkte
 
 - Abgleich der übernommenen Regelelemente mit dem Original-PDF des SRD 5.2.1 (M3.1).
-- Festlegung der FROSTHAIN-eigenen Lizenz (ADR 0005).
-- Schriftarten, Sounds und Texturen: nur eigene oder frei lizenzierte Werke (z. B. SIL OFL, CC0, CC-BY), jeweils mit Eintrag im Lizenzkatalog.
+- Schriftarten, Sounds und Texturen: nur eigene oder frei lizenzierte Werke (z. B. SIL OFL, CC0, CC-BY), jeweils mit Eintrag in `THIRD_PARTY_NOTICES.md`. Aktuell enthalten: Cinzel und EB Garamond (SIL OFL 1.1).

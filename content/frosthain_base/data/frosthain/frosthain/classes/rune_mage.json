@@ -1,0 +1,38 @@
+{
+  "source": "frosthain:original",
+  "hit_die": 8,
+  "primary_abilities": [
+    "intelligence"
+  ],
+  "saving_throws": [
+    "intelligence",
+    "wisdom"
+  ],
+  "multiclass_requirements": [
+    {
+      "intelligence": 13
+    }
+  ],
+  "caster_progression": "full",
+  "resource": "frosthain:spell_power",
+  "subclass_level": 3,
+  "starting_powers": [
+    "frosthain:rune_strike"
+  ],
+  "skill_choices": {
+    "count": 2,
+    "from": [
+      "frosthain:arcana",
+      "frosthain:history",
+      "frosthain:investigation",
+      "frosthain:insight",
+      "frosthain:nature"
+    ]
+  },
+  "armor_training": [
+    "light"
+  ],
+  "weapon_proficiencies": [
+    "simple"
+  ]
+}

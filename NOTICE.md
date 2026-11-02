@@ -14,6 +14,10 @@ NOT AN OFFICIAL MINECRAFT PRODUCT. NOT APPROVED BY OR ASSOCIATED WITH MOJANG OR 
 
 FROSTHAIN verteilt keine Minecraft-Spieldateien. Der Launcher lädt sie ausschließlich von den offiziellen Mojang-Servern; zum Spielen ist ein gekauftes Minecraft: Java Edition erforderlich.
 
+## Schriften und weitere Drittanbieter
+
+Cinzel und EB Garamond stehen unter der SIL Open Font License 1.1; Lizenztexte liegen neben den Schriftdateien. Alle Drittanbieter-Komponenten mit Version, Quelle und Lizenz: [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+
 ## Weitere Inspirationen
 
 Baldur's Gate 3 (Larian Studios) dient nur als Maßstab für Tiefe und Bedienkomfort. Es werden keine Inhalte, Texte, Grafiken oder Oberflächen daraus übernommen.

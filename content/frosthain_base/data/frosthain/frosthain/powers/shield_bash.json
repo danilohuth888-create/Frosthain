@@ -7,5 +7,12 @@
   "school": "martial",
   "tags": [
     "control"
-  ]
+  ],
+  "values": {
+    "range": 3.5,
+    "damage_min": 3,
+    "damage_max": 3,
+    "knockback": 1.2,
+    "duration_ticks": 60
+  }
 }

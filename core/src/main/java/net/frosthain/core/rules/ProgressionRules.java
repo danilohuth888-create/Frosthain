@@ -20,7 +20,8 @@ public record ProgressionRules(
         List<Integer> experienceThresholds,
         int talentPointsPerLevel,
         Map<Integer, Integer> bonusTalentPoints,
-        Multiclass multiclass
+        Multiclass multiclass,
+        DefeatExperience defeatExperience
 ) {
 
     /**
@@ -64,8 +65,33 @@ public record ProgressionRules(
                 mc.integerInRange("max_classes", 3, 1, 12),
                 mc.integerInRange("minimum_level_before_multiclass", 2, 1, maxLevel));
         mc.finish();
+        DefeatExperience defeat = DefeatExperience.DEFAULT;
+        if (json.has("defeat_experience")) {
+            JsonObjectReader d = json.object("defeat_experience");
+            double perHealth = d.number("per_health", DefeatExperience.DEFAULT.perHealth());
+            if (perHealth < 0 || perHealth > 100) {
+                throw new ContentParseException(d.childPath("per_health"), "Wert zwischen 0 und 100 erwartet");
+            }
+            defeat = new DefeatExperience(perHealth, d.integerInRange("maximum", DefeatExperience.DEFAULT.maximum(), 0, 100_000));
+            d.finish();
+        }
         return new ProgressionRules(maxLevel, thresholds,
-                json.integerInRange("talent_points_per_level", 1, 0, 10), Map.copyOf(bonus), multiclass);
+                json.integerInRange("talent_points_per_level", 1, 0, 10), Map.copyOf(bonus), multiclass, defeat);
+    }
+
+    /**
+     * Experience for defeating a hostile creature: {@code perHealth} × its maximum health, at most {@code maximum}.
+     * Passive animals give nothing (no reward for farming).
+     */
+    public record DefeatExperience(double perHealth, int maximum) {
+        public static final DefeatExperience DEFAULT = new DefeatExperience(2.5, 500);
+    }
+
+    public int experienceForDefeat(double maxHealth, boolean hostile) {
+        if (!hostile || maxHealth <= 0) {
+            return 0;
+        }
+        return (int) Math.min(defeatExperience.maximum(), Math.round(maxHealth * defeatExperience.perHealth()));
     }
 
     /** Character level for a given amount of total experience (1..maxLevel). */

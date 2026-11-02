@@ -1,7 +1,7 @@
 {
   "title": "FROSTHAIN Originalinhalte",
   "publisher": "FROSTHAIN-Projekt",
-  "license": "FROSTHAIN-PROJECT",
+  "license": "FROSTHAIN-PROPRIETARY",
   "status": "approved",
-  "notes": "Eigene Inhalte des Projekts. Die Lizenz für Code und Inhalte legt der Projektinhaber fest (siehe docs/adr/0005-lizenzen-und-inhalte.md)."
+  "notes": "Eigene Inhalte des Projekts. Proprietär, alle Rechte vorbehalten (LICENSE.md, docs/adr/0005-lizenzen-und-inhalte.md)."
 }

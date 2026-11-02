@@ -1,0 +1,75 @@
+{
+  "source": "frosthain:original",
+  "speaker": "frosthain:eldrin",
+  "start": "greeting",
+  "nodes": [
+    {
+      "key": "greeting",
+      "choices": [
+        {
+          "key": "what_happened",
+          "next": "what_happened"
+        },
+        {
+          "key": "signs",
+          "next": "signs"
+        },
+        {
+          "key": "expect",
+          "next": "expect"
+        },
+        {
+          "key": "ready",
+          "next": "ready_reply",
+          "conditions": [
+            {
+              "type": "quest_state",
+              "quest": "frosthain:awakening",
+              "state": "active"
+            }
+          ],
+          "effects": [
+            {
+              "type": "advance_objective",
+              "quest": "frosthain:awakening",
+              "objective": "talk_eldrin"
+            }
+          ]
+        },
+        {
+          "key": "goodbye"
+        }
+      ]
+    },
+    {
+      "key": "what_happened",
+      "choices": [
+        {
+          "key": "back",
+          "next": "greeting"
+        }
+      ]
+    },
+    {
+      "key": "signs",
+      "choices": [
+        {
+          "key": "back",
+          "next": "greeting"
+        }
+      ]
+    },
+    {
+      "key": "expect",
+      "choices": [
+        {
+          "key": "back",
+          "next": "greeting"
+        }
+      ]
+    },
+    {
+      "key": "ready_reply"
+    }
+  ]
+}

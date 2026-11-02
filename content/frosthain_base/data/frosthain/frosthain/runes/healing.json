@@ -1,0 +1,20 @@
+{
+  "source": "frosthain:original",
+  "effect": "heal",
+  "unlock_quest": "frosthain:frozen_crypt",
+  "materials": [
+    {
+      "item": "minecraft:amethyst_shard",
+      "count": 1
+    },
+    {
+      "item": "minecraft:sweet_berries",
+      "count": 4
+    }
+  ],
+  "values": {
+    "heal_fraction": 0.4,
+    "duration_ticks": 100,
+    "amplifier": 0
+  }
+}

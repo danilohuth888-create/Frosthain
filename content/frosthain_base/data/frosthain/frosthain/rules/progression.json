@@ -35,5 +35,9 @@
     "enabled": true,
     "max_classes": 3,
     "minimum_level_before_multiclass": 3
+  },
+  "defeat_experience": {
+    "per_health": 2.5,
+    "maximum": 500
   }
 }

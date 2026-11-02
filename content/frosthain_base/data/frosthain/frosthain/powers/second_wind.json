@@ -8,5 +8,8 @@
   "school": "martial",
   "tags": [
     "healing"
-  ]
+  ],
+  "values": {
+    "heal_fraction": 0.3
+  }
 }
