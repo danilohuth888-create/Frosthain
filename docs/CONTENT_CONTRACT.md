@@ -208,7 +208,7 @@ Prüft alle Pakete unter `content/`. Erwartet: `Ergebnis: 0 Fehler, … Warnunge
 
 1. **Startdorf:** 3–4 NPCs mit Dialogen (Pfad `village/…`), Eldrin bleibt Dorfältester. Je NPC ein Satz zur Rolle im README (Schmied, Händlerin, …).
 2. **Nebenquest „Verlorene Vorräte“** (`frosthain:lost_supplies`, Ziel `find_crates`, 3× `frosthain:supply_crate`): Texte, ggf. Auftraggeber-Dialog.
-3. **Dungeon und Boss:** Hauptquest nach `first_rune` (Ziele `discover` Ruine, `defeat` Boss mit Ziel-ID `frosthain:boss/<name>`), Bossname, 2 Phasen-Ansagen als UI-Texte im README.
+3. **Dungeon und Boss:** technisch umgesetzt als Quest `frosthain:frozen_crypt` (Ziele `find_crypt`, `defeat_warden` → `frosthain:boss/crypt_warden`), Boss „Hrímgar, der Frostwächter“ (`entity.frosthain.crypt_warden`), Ansagen `gui.frosthain.boss.awakens`, `.phase_two`, `.nova`, `.defeated`. Bessere Texte dürfen diese Schlüssel in `frosthain_story` überschreiben; IDs und Zielschlüssel bleiben.
 4. Talentbäume für 2–3 weitere Klassen (`frosthain:rune_mage`, `frosthain:rogue`, `frosthain:cleric`).
 5. Tutorial- und UI-Texte als Vorschlag im README (Schlüssel vergibt die Technik).
 

@@ -507,5 +507,16 @@
   "gui.frosthain.marker.crate": "Vorratskiste",
   "gui.frosthain.board.nothing_new": "Am Anschlagbrett gibt es nichts Neues.",
   "gui.frosthain.crate.unknown": "Eine Kiste mit dem Zeichen eines Händlers.",
-  "gui.frosthain.crate.already": "Diese Kiste hast du schon geborgen."
+  "gui.frosthain.crate.already": "Diese Kiste hast du schon geborgen.",
+  "quest.frosthain.frozen_crypt": "Die gefrorene Gruft",
+  "quest.frosthain.frozen_crypt.desc": "Die Rune hat eine Spur aus Kälte freigelegt. Im Südosten des Dorfes liegt eine vergessene Gruft, und etwas darin ist erwacht.",
+  "quest.frosthain.frozen_crypt.objective.find_crypt": "Finde den Eingang der Gruft im Südosten.",
+  "quest.frosthain.frozen_crypt.objective.defeat_warden": "Besiege den Frostwächter in der Grabkammer.",
+  "entity.frosthain.crypt_warden": "Hrímgar, der Frostwächter",
+  "gui.frosthain.marker.crypt": "Gruft",
+  "gui.frosthain.marker.warden": "Grabkammer",
+  "gui.frosthain.boss.awakens": "Hrímgar erwacht aus dem Eis!",
+  "gui.frosthain.boss.phase_two": "Hrímgar ruft seine Diener aus dem Frost!",
+  "gui.frosthain.boss.nova": "Die Luft gefriert um Hrímgar …",
+  "gui.frosthain.boss.defeated": "Hrímgar zerfällt zu Eis und Staub."
 }

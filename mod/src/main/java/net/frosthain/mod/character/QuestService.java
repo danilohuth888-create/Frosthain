@@ -6,6 +6,7 @@ import com.mojang.serialization.Codec;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -19,11 +20,18 @@ import net.frosthain.mod.FrosthainMod;
 import net.frosthain.mod.network.QuestActionPayload;
 import net.frosthain.mod.network.QuestLogPayload;
 import net.minecraft.commands.Commands;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -40,6 +48,9 @@ public final class QuestService {
 
     public static final AttachmentType<String> QUESTS = AttachmentRegistry.create(FrosthainMod.id("quests"),
             builder -> builder.persistent(Codec.STRING).copyOnDeath());
+    /** Entity tag prefix naming the content id an entity counts as for "defeat" objectives. */
+    public static final String TARGET_TAG = "frosthain.id.";
+    private static final double DEFEAT_CREDIT_RADIUS = 32;
 
     private QuestService() {
     }
@@ -50,6 +61,11 @@ public final class QuestService {
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> send(handler.getPlayer(), log(handler.getPlayer())));
         ServerPlayNetworking.registerGlobalReceiver(QuestActionPayload.TYPE,
                 (payload, context) -> context.server().execute(() -> pin(context.player(), payload)));
+        ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> {
+            if (source.getEntity() instanceof ServerPlayer && entity.level() instanceof ServerLevel level) {
+                onDefeat(level, entity);
+            }
+        });
 
         // Test commands until NPCs, places and items trigger objectives (needs cheats/operator).
         CommandRegistrationCallback.EVENT.register((dispatcher, buildContext, selection) -> dispatcher.register(
@@ -63,6 +79,43 @@ public final class QuestService {
                                                 .executes(context -> advance(context.getSource().getPlayerOrException(),
                                                         ContentId.of(StringArgumentType.getString(context, "quest")),
                                                         StringArgumentType.getString(context, "ziel"), 1) ? 1 : 0)))))));
+    }
+
+    /**
+     * "Defeat" objectives. A target matches an entity type ({@code minecraft:zombie}), an entity type tag
+     * ({@code #minecraft:undead}) or a content id carried as entity tag {@code frosthain.id.<id>} (bosses).
+     * Every player near the kill whose current objective it is gets credit, so groups can fight together.
+     */
+    public static void onDefeat(ServerLevel level, LivingEntity entity) {
+        Set<String> ids = new HashSet<>();
+        ids.add(EntityType.getKey(entity.getType()).toString());
+        entity.entityTags().stream().filter(tag -> tag.startsWith(TARGET_TAG))
+                .map(tag -> tag.substring(TARGET_TAG.length())).forEach(ids::add);
+        for (ServerPlayer player : level.players()) {
+            if (player.distanceToSqr(entity) > DEFEAT_CREDIT_RADIUS * DEFEAT_CREDIT_RADIUS) {
+                continue;
+            }
+            QuestLog log = log(player);
+            for (ContentId quest : log.activeQuests()) {
+                Optional<QuestDefinition> definition = FrosthainMod.content().get(ContentType.QUESTS, quest);
+                if (definition.isEmpty()) {
+                    continue;
+                }
+                for (String key : currentObjectives(log, quest)) {
+                    definition.get().objective(key)
+                            .filter(o -> o.type() == QuestDefinition.ObjectiveType.DEFEAT && matches(o.target(), ids, entity))
+                            .ifPresent(o -> advance(player, quest, key, 1));
+                }
+            }
+        }
+    }
+
+    private static boolean matches(String target, Set<String> ids, LivingEntity entity) {
+        if (target.startsWith("#")) {
+            return entity.getType().builtInRegistryHolder()
+                    .is(TagKey.create(Registries.ENTITY_TYPE, Identifier.parse(target.substring(1))));
+        }
+        return ids.contains(target);
     }
 
     public static QuestLog log(ServerPlayer player) {

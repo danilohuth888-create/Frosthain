@@ -9,7 +9,7 @@ Start: 2026-11-02 · Branch: `claude/ui-prototyp` (kein Merge nach `main` ohne F
 | MUSS 1 | Spielbares Startdorf mit NPCs | 🔶 Dorf (Platz, Brunnen, 4 Häuser, Wege), Eldrin auf dem Platz, Plätze für 4 NPCs aus `npcs/village/*`; NPC-Inhalte von ChatGPT ausstehend |
 | MUSS 2 | Nebenquest „Verlorene Vorräte“ mit Kisten | 🔶 Anschlagbrett startet, 3 Kisten im Wald, Wegweiser, +80 EP; im Client-GameTest |
 | MUSS 3 | Stufenaufstieg | 🔶 automatisch mit Meldung vorhanden, Dialog/Effekt offen |
-| MUSS 4 | Dungeon mit Boss | ⏳ |
+| MUSS 4 | Dungeon mit Boss | 🔶 „Die gefrorene Gruft“ (Folgequest von „Die erste Rune“): Ruine, Treppe, Gang, 2 Wachräume (Strays, Zombies), Grabkammer; Boss Hrímgar mit Bossleiste, Frostnova mit Vorwarnung, Phase 2 bei 50 % (Bogen, 2 Diener); Client-GameTest im CI |
 | MUSS 5 | ChatGPT-Inhalte integriert und validiert | ⏳ wartet auf `content/chatgpt-sprint` |
 | MUSS 6 | Vorabversion über GitHub Releases | 🔶 `frosthain-dev` wird bei grünem CI automatisch erneuert |
 | SOLL 1 | Talentbäume für 2–3 weitere Klassen | ⏳ |
@@ -26,6 +26,9 @@ Nur getestet = fertig · Client-Test lokal nur am Phasenende, sonst GitHub Actio
 - 2026-11-02: Content-Vertrag erstellt, Beispiele mit Validator geprüft (0 Fehler).
 - 2026-11-02: `StarterVillage` – Dorf wird in neuen Welten beim ersten Betreten am Spawn gebaut (`/frosthain dorf` für bestehende Welten), Nebenquest mit Kisten. Kompiliert; Client-GameTest läuft im CI.
 
+- 2026-11-02: Dorf-Commit im CI grün (Client-GameTest mit Dorf, Anschlagbrett, Kisten).
+- 2026-11-02: `FrozenCrypt` + allgemeine `defeat`-Ziele (`QuestService.onDefeat`: Entity-Typ, `#tag`, Entity-Tag `frosthain.id.<id>`). `/frosthain gruft` baut die Gruft an der eigenen Position.
+
 ## Nächster Schritt
 
-CI-Ergebnis des Dorf-Commits prüfen, dann Dungeon mit Boss (MUSS 4): Ruine nach „Die erste Rune“, Bossgegner mit 2 Phasen, Hauptquest mit `defeat`-Ziel.
+CI-Ergebnis des Gruft-Commits prüfen. Danach: Stufenaufstieg sichtbar machen (MUSS 3), ChatGPT-Branch prüfen (MUSS 5), Phasenende: lokaler Test in der Instanz.

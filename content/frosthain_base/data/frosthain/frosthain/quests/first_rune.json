@@ -8,5 +8,8 @@
       "type": "custom",
       "target": "frosthain:rune_stone"
     }
+  ],
+  "follow_ups": [
+    "frosthain:frozen_crypt"
   ]
 }

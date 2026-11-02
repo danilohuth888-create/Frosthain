@@ -16,6 +16,7 @@ import net.frosthain.mod.character.DialogueService;
 import net.frosthain.mod.character.PowerService;
 import net.frosthain.mod.character.QuestService;
 import net.frosthain.mod.character.QuestSites;
+import net.frosthain.mod.world.FrozenCrypt;
 import net.frosthain.mod.world.StarterVillage;
 import net.frosthain.mod.client.ClientCharacter;
 import net.frosthain.mod.client.ClientPowers;
@@ -28,9 +29,11 @@ import net.frosthain.mod.client.screen.QuestJournalScreen;
 import net.frosthain.mod.client.screen.TalentTreeScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 
 import java.util.Optional;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -217,7 +220,68 @@ public final class FrosthainClientGameTest implements FabricClientGameTest {
                     throw new AssertionError("Die erste Rune nicht abgeschlossen oder EP falsch: " + gained);
                 }
             });
-            context.waitFor(client -> ClientQuests.log().isCompleted(FIRST_RUNE) && !ClientQuests.marker().present());
+            // Follow-up "Die gefrorene Gruft": the crypt is built south-east of the village, the waypoint leads there.
+            context.waitFor(client -> ClientQuests.log().isActive(FROZEN_CRYPT) && ClientQuests.marker().present());
+            FrozenCrypt.Crypt crypt = singleplayer.getServer().computeOnServer(server ->
+                    FrozenCrypt.crypt(server.overworld()).orElseThrow(() -> new AssertionError("Gruft wurde nicht errichtet")));
+            singleplayer.getServer().runCommand("effect give @a minecraft:resistance 600 4 true");
+            singleplayer.getServer().runCommand("tp @a " + (crypt.entrance().getX() + 0.5) + " " + crypt.entrance().getY()
+                    + " " + (crypt.entrance().getZ() - 3.5) + " 0 25");
+            context.waitFor(client -> ClientQuests.log().progress(FROZEN_CRYPT).map(p -> p.count("find_crypt") == 1).orElse(false));
+            context.waitTicks(20);
+            context.takeScreenshot("frosthain-14a-gruft-eingang");
+            // Entering the burial chamber wakes the Frost Warden (boss bar, 120 health).
+            singleplayer.getServer().runCommand("tp @a " + (crypt.chamber().getX() + 0.5) + " " + crypt.chamber().getY()
+                    + " " + (crypt.chamber().getZ() - 5.5) + " 0 5");
+            boolean awake = false;
+            for (int i = 0; i < 40 && !awake; i++) {
+                context.waitTicks(5);
+                awake = singleplayer.getServer().computeOnServer(server -> !server.overworld().getEntitiesOfClass(Mob.class,
+                        crypt.chamberBox().inflate(6), e -> e.entityTags().contains(FrozenCrypt.BOSS_TAG)).isEmpty());
+            }
+            if (!awake) {
+                throw new AssertionError("Frostwächter ist beim Betreten der Grabkammer nicht erwacht");
+            }
+            context.waitTicks(20);
+            context.takeScreenshot("frosthain-14b-frostwaechter");
+            singleplayer.getServer().runOnServer(server -> {
+                Mob boss = warden(server.overworld(), crypt);
+                if (boss.getMaxHealth() != 120) {
+                    throw new AssertionError("Frostwächter hat " + boss.getMaxHealth() + " statt 120 Leben");
+                }
+                ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
+                boss.hurtServer(server.overworld(), player.damageSources().playerAttack(player), 80);
+            });
+            context.waitTicks(15);
+            singleplayer.getServer().runOnServer(server -> {
+                Mob boss = warden(server.overworld(), crypt);
+                long servants = server.overworld().getEntitiesOfClass(Mob.class, crypt.chamberBox().inflate(6),
+                        e -> e.entityTags().contains(FrozenCrypt.SERVANT_TAG)).size();
+                if (!boss.entityTags().contains(FrozenCrypt.PHASE_TWO_TAG) || servants != 2) {
+                    throw new AssertionError("Phase 2 nicht ausgelöst (Leben " + boss.getHealth() + ", Diener " + servants + ")");
+                }
+            });
+            context.waitTicks(10);
+            context.takeScreenshot("frosthain-14c-frostwaechter-phase-2");
+            long experienceBeforeBoss = singleplayer.getServer().computeOnServer(server ->
+                    CharacterService.sheet(server.getPlayerList().getPlayers().getFirst()).orElseThrow().experience());
+            singleplayer.getServer().runOnServer(server -> {
+                ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
+                warden(server.overworld(), crypt).hurtServer(server.overworld(), player.damageSources().playerAttack(player), 1000);
+            });
+            context.waitFor(client -> ClientQuests.log().isCompleted(FROZEN_CRYPT) && !ClientQuests.marker().present());
+            singleplayer.getServer().runOnServer(server -> {
+                ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
+                long gained = CharacterService.sheet(player).orElseThrow().experience() - experienceBeforeBoss;
+                long servants = server.overworld().getEntitiesOfClass(Mob.class, crypt.chamberBox().inflate(6),
+                        e -> e.entityTags().contains(FrozenCrypt.SERVANT_TAG)).size();
+                if (gained < 300 || servants != 0) {
+                    throw new AssertionError("Boss-Belohnung " + gained + " EP (mind. 300), Diener übrig: " + servants);
+                }
+            });
+            context.waitTicks(10);
+            context.takeScreenshot("frosthain-14d-frostwaechter-besiegt");
+            singleplayer.getServer().runCommand("effect clear @a minecraft:resistance");
             singleplayer.getServer().runCommand("tp @a " + start);
             context.waitTicks(10);
             context.setScreen(QuestJournalScreen::new);
@@ -321,6 +385,12 @@ public final class FrosthainClientGameTest implements FabricClientGameTest {
     private static final ContentId AWAKENING = ContentId.of("awakening");
     private static final ContentId FIRST_RUNE = ContentId.of("first_rune");
     private static final ContentId LOST_SUPPLIES = ContentId.of("lost_supplies");
+    private static final ContentId FROZEN_CRYPT = ContentId.of("frozen_crypt");
+
+    private static Mob warden(ServerLevel level, FrozenCrypt.Crypt crypt) {
+        return level.getEntitiesOfClass(Mob.class, crypt.chamberBox().inflate(6), e -> e.entityTags().contains(FrozenCrypt.BOSS_TAG))
+                .stream().findFirst().orElseThrow(() -> new AssertionError("Frostwächter ist nicht erschienen"));
+    }
 
     private static void unlock(ClientGameTestContext context, String node) {
         TalentRef ref = new TalentRef(ContentId.of("general"), node);
