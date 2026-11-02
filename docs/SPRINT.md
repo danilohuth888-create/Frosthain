@@ -8,7 +8,7 @@ Start: 2026-11-02 · Branch: `claude/ui-prototyp` (kein Merge nach `main` ohne F
 |---|---|---|
 | MUSS 1 | Spielbares Startdorf mit NPCs | 🔶 Dorf (Platz, Brunnen, 4 Häuser, Wege), Eldrin auf dem Platz, Plätze für 4 NPCs aus `npcs/village/*`; NPC-Inhalte von ChatGPT ausstehend |
 | MUSS 2 | Nebenquest „Verlorene Vorräte“ mit Kisten | 🔶 Anschlagbrett startet, 3 Kisten im Wald, Wegweiser, +80 EP; im Client-GameTest |
-| MUSS 3 | Stufenaufstieg | 🔶 automatisch mit Meldung vorhanden, Dialog/Effekt offen |
+| MUSS 3 | Stufenaufstieg | 🔶 automatisch bei genug EP: Titel „Stufe N“ (Cinzel, Gold), Untertitel mit Talentbaum-Hinweis, Fanfare, Partikel, volle Gesundheit, Chatzeile; Screenshot im Client-GameTest |
 | MUSS 4 | Dungeon mit Boss | 🔶 „Die gefrorene Gruft“ (Folgequest von „Die erste Rune“): Ruine, Treppe, Gang, 2 Wachräume (Strays, Zombies), Grabkammer; Boss Hrímgar mit Bossleiste, Frostnova mit Vorwarnung, Phase 2 bei 50 % (Bogen, 2 Diener); Client-GameTest im CI |
 | MUSS 5 | ChatGPT-Inhalte integriert und validiert | ⏳ wartet auf `content/chatgpt-sprint` |
 | MUSS 6 | Vorabversion über GitHub Releases | 🔶 `frosthain-dev` wird bei grünem CI automatisch erneuert |

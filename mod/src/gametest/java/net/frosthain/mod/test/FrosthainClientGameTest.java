@@ -122,6 +122,9 @@ public final class FrosthainClientGameTest implements FabricClientGameTest {
             // Talent tree (K): 2000 EP = level 4 = 4 points; unlock two talents and check rules and effects on the server.
             singleplayer.getServer().runCommand("execute as @a run frosthain ep 2000");
             context.waitFor(client -> ClientCharacter.sheet().map(s -> s.characterLevel() >= 4).orElse(false));
+            // Level-up: title "Stufe 4" in the heading font, subtitle with the talent tree key.
+            context.waitTicks(15);
+            context.takeScreenshot("frosthain-08b-stufenaufstieg");
             context.setScreen(TalentTreeScreen::new);
             context.waitTicks(5);
             context.takeScreenshot("frosthain-09-talentbaum");
