@@ -127,7 +127,8 @@ public final class CharacterSheetCodec {
     public record Decoded(CharacterSheet sheet, SchemaMigrator.Outcome migration) {
     }
 
-    private static JsonObject encodeAppearance(Appearance appearance) {
+    /** Appearance alone, in the same format as inside the sheet (used by the character editor's request). */
+    public static JsonObject encodeAppearance(Appearance appearance) {
         JsonObject json = new JsonObject();
         json.addProperty("body_type", appearance.bodyType().name().toLowerCase(Locale.ROOT));
         json.addProperty("height_scale", appearance.heightScale());
@@ -152,6 +153,11 @@ public final class CharacterSheetCodec {
         }
         json.add("markings", markings);
         return json;
+    }
+
+    /** @throws net.frosthain.core.json.ContentParseException if the JSON is not a valid appearance */
+    public static Appearance decodeAppearance(JsonObject json) {
+        return decodeAppearance(new JsonObjectReader(json, "$"));
     }
 
     private static Appearance decodeAppearance(JsonObjectReader json) {

@@ -2,17 +2,23 @@ package net.frosthain.mod.client.screen;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.frosthain.core.ContentId;
+import net.frosthain.core.character.Appearance;
+import net.frosthain.core.character.AppearanceOptions;
 import net.frosthain.core.character.CharacterFactory;
+import net.frosthain.core.character.CharacterSheet;
 import net.frosthain.core.character.QuickCreation;
 import net.frosthain.core.content.AbilityScore;
 import net.frosthain.core.content.BackgroundDefinition;
 import net.frosthain.core.content.ClassDefinition;
 import net.frosthain.core.content.SpeciesDefinition;
+import net.frosthain.core.persistence.CharacterSheetCodec;
 import net.frosthain.core.registry.ContentRegistry;
 import net.frosthain.core.registry.ContentType;
 import net.frosthain.mod.FrosthainMod;
 import net.frosthain.mod.client.ClientCharacter;
 import net.frosthain.mod.client.gui.FrosthainButton;
+import net.frosthain.mod.client.gui.HeadPortrait;
+import net.frosthain.mod.client.gui.SwatchButton;
 import net.frosthain.mod.client.gui.Ui;
 import net.frosthain.mod.network.CreateCharacterPayload;
 import net.frosthain.ui.Theme;
@@ -40,7 +46,7 @@ public final class CharacterCreationScreen extends Screen {
     public enum Mode { PREVIEW, IN_WORLD, VIEW }
 
     public enum Step {
-        SPECIES("species"), CLASS("class"), BACKGROUND("background"), FINISH("finish");
+        SPECIES("species"), APPEARANCE("appearance"), CLASS("class"), BACKGROUND("background"), FINISH("finish");
 
         private final String key;
 
@@ -51,6 +57,15 @@ public final class CharacterCreationScreen extends Screen {
 
     private static final int MARGIN = 10;
     private static final int TILE_GAP = 4;
+    private static final int ROW = 17;
+    private static final int LABEL_W = 58;
+
+    /** One labelled row of the appearance step; {@code value} is shown between the arrow buttons. */
+    private record Row(int y, Component label, Component value) {
+    }
+
+    private final List<Row> rows = new java.util.ArrayList<>();
+    private Appearance appearance;
 
     private final Screen parent;
     private final Mode mode;
@@ -86,6 +101,22 @@ public final class CharacterCreationScreen extends Screen {
             });
             step = Step.FINISH;
         }
+        appearance = mode == Mode.VIEW
+                ? ClientCharacter.sheet().map(CharacterSheet::appearance).orElseGet(() -> Appearance.defaultFor(speciesDefinition()))
+                : Appearance.defaultFor(speciesDefinition());
+    }
+
+    private SpeciesDefinition speciesDefinition() {
+        return registry.get(ContentType.SPECIES, species).orElseThrow();
+    }
+
+    public Appearance appearance() {
+        return appearance;
+    }
+
+    public void setAppearance(Appearance next) {
+        appearance = next;
+        rebuildWidgets();
     }
 
     /** Minecraft names allow digits and underscores, character names do not (CharacterFactory). */
@@ -110,10 +141,15 @@ public final class CharacterCreationScreen extends Screen {
 
     public void select(ContentId id) {
         switch (step) {
-            case SPECIES -> species = id;
+            case SPECIES -> {
+                if (!id.equals(species)) {
+                    species = id;
+                    appearance = Appearance.defaultFor(speciesDefinition());
+                }
+            }
             case CLASS -> characterClass = id;
             case BACKGROUND -> background = id;
-            case FINISH -> {
+            case APPEARANCE, FINISH -> {
             }
         }
         rebuildWidgets();
@@ -125,7 +161,8 @@ public final class CharacterCreationScreen extends Screen {
         }
         waiting = true;
         problems = List.of();
-        ClientPlayNetworking.send(new CreateCharacterPayload(name.strip(), species.toString(), characterClass.toString(), background.toString()));
+        ClientPlayNetworking.send(new CreateCharacterPayload(name.strip(), species.toString(), characterClass.toString(), background.toString(),
+                CharacterSheetCodec.encodeAppearance(appearance).toString()));
         rebuildWidgets();
     }
 
@@ -161,8 +198,10 @@ public final class CharacterCreationScreen extends Screen {
             addRenderableWidget(tab);
         }
 
+        rows.clear();
         switch (step) {
             case SPECIES -> tiles(registry.all(ContentType.SPECIES).keySet(), "species", species);
+            case APPEARANCE -> appearanceControls();
             case CLASS -> tiles(registry.all(ContentType.CLASSES).keySet(), "class", characterClass);
             case BACKGROUND -> tiles(registry.all(ContentType.BACKGROUNDS).keySet(), "background", background);
             case FINISH -> {
@@ -229,6 +268,100 @@ public final class CharacterCreationScreen extends Screen {
         return prefix + "." + id.toTranslationFragment();
     }
 
+    /** Step "Aussehen" (reference "Charaktererstellung – Aussehen"): build, colours, hair, height, species features. */
+    private void appearanceControls() {
+        SpeciesDefinition s = speciesDefinition();
+        Appearance a = appearance;
+        int cx = gridX + LABEL_W;
+        int controlsW = gridW - LABEL_W;
+        int y = contentTop;
+
+        rows.add(new Row(y, Component.translatable("gui.frosthain.appearance.body"), null));
+        int bodyW = Math.min(56, controlsW / 2 - 2);
+        for (Appearance.BodyType type : Appearance.BodyType.values()) {
+            FrosthainButton button = new FrosthainButton(cx + type.ordinal() * (bodyW + 4), y, bodyW, 13,
+                    Component.translatable("gui.frosthain.appearance.body." + type.name().toLowerCase(java.util.Locale.ROOT)),
+                    FrosthainButton.Style.TAB, b -> setAppearance(AppearanceOptions.with(a, type, a.heightScale(), a.skinColor(),
+                    a.eyeColor(), a.hairStyle(), a.hairColor()))).selected(a.bodyType() == type);
+            button.active = mode != Mode.VIEW;
+            addRenderableWidget(button);
+        }
+        y += ROW;
+        y = swatches("gui.frosthain.appearance.skin", AppearanceOptions.SKIN_COLORS, a.skinColor(), cx, controlsW, y,
+                hex -> AppearanceOptions.with(a, a.bodyType(), a.heightScale(), hex, a.eyeColor(), a.hairStyle(), a.hairColor()));
+        y = swatches("gui.frosthain.appearance.eyes", AppearanceOptions.EYE_COLORS, a.eyeColor(), cx, controlsW, y,
+                hex -> AppearanceOptions.with(a, a.bodyType(), a.heightScale(), a.skinColor(), hex, a.hairStyle(), a.hairColor()));
+        y = cycleRow("gui.frosthain.appearance.hair", Component.translatable("appearance." + a.hairStyle().toTranslationFragment()), cx, controlsW, y,
+                dir -> AppearanceOptions.with(a, a.bodyType(), a.heightScale(), a.skinColor(), a.eyeColor(),
+                        AppearanceOptions.cycle(AppearanceOptions.HAIR_STYLES, a.hairStyle(), dir), a.hairColor()));
+        y = swatches("gui.frosthain.appearance.hair_color", AppearanceOptions.HAIR_COLORS, a.hairColor(), cx, controlsW, y,
+                hex -> AppearanceOptions.with(a, a.bodyType(), a.heightScale(), a.skinColor(), a.eyeColor(), a.hairStyle(), hex));
+        y = cycleRow("gui.frosthain.appearance.height",
+                Component.translatable("gui.frosthain.appearance.height_value", Math.round(a.heightScale() * 100)), cx, controlsW, y,
+                dir -> AppearanceOptions.with(a, a.bodyType(), AppearanceOptions.stepHeight(s, a.heightScale(), dir), a.skinColor(),
+                        a.eyeColor(), a.hairStyle(), a.hairColor()));
+        for (String slot : s.appearance().featureSlots().keySet()) {
+            List<java.util.Optional<ContentId>> options = AppearanceOptions.featureOptions(s, slot);
+            java.util.Optional<ContentId> current = java.util.Optional.ofNullable(a.features().get(slot));
+            Component value = current.map(part -> (Component) Component.translatable("appearance." + part.toTranslationFragment()))
+                    .orElse(Component.translatable("gui.frosthain.appearance.none"));
+            y = cycleRow("gui.frosthain.appearance.slot." + slot, value, cx, controlsW, y,
+                    dir -> AppearanceOptions.withFeature(a, slot, AppearanceOptions.cycle(options, current, dir)));
+        }
+    }
+
+    private int swatches(String labelKey, List<String> colors, String selected, int x, int width, int y,
+                         java.util.function.Function<String, Appearance> change) {
+        rows.add(new Row(y, Component.translatable(labelKey), null));
+        int size = Math.min(11, width / colors.size() - 2);
+        for (int i = 0; i < colors.size(); i++) {
+            String hex = colors.get(i);
+            SwatchButton swatch = new SwatchButton(x + i * (size + 2), y + 1, size, hex, hex.equalsIgnoreCase(selected),
+                    () -> setAppearance(change.apply(hex)));
+            swatch.active = mode != Mode.VIEW;
+            addRenderableWidget(swatch);
+        }
+        return y + ROW;
+    }
+
+    private int cycleRow(String labelKey, Component value, int x, int width, int y,
+                         java.util.function.IntFunction<Appearance> change) {
+        rows.add(new Row(y, Component.translatable(labelKey), value));
+        FrosthainButton previous = new FrosthainButton(x, y, 14, 13, Component.literal("<"), FrosthainButton.Style.MENU,
+                b -> setAppearance(change.apply(-1)));
+        FrosthainButton next = new FrosthainButton(x + width - 14, y, 14, 13, Component.literal(">"), FrosthainButton.Style.MENU,
+                b -> setAppearance(change.apply(1)));
+        previous.active = mode != Mode.VIEW;
+        next.active = mode != Mode.VIEW;
+        addRenderableWidget(previous);
+        addRenderableWidget(next);
+        return y + ROW;
+    }
+
+    private void appearanceDetails(GuiGraphicsExtractor g) {
+        for (Row row : rows) {
+            g.text(font, Ui.body(row.label()), gridX, row.y() + 3, Theme.TEXT_SECONDARY, false);
+            if (row.value() != null) {
+                int cx = gridX + LABEL_W + (gridW - LABEL_W) / 2;
+                g.centeredText(font, Ui.body(row.value()), cx, row.y() + 3, Theme.TEXT_PRIMARY);
+            }
+        }
+        int y = detailHeader(g, Component.translatable("gui.frosthain.appearance.title"), null);
+        y = Ui.paragraph(g, font, Component.translatable("gui.frosthain.appearance.hint"), detailX, y, detailW, Theme.TEXT_SECONDARY) + 8;
+        if (previewW == 0) {
+            int pixel = Math.max(4, Math.min(8, (contentBottom - y - 24) / 11));
+            HeadPortrait.draw(g, detailX + detailW / 2 - 4 * pixel, y + 2 * pixel, pixel, appearance);
+        }
+    }
+
+    /** Portrait in the preview column (instead of the player model, which still wears the Minecraft skin). */
+    private void portraitPreview(GuiGraphicsExtractor g) {
+        Ui.panel(g, previewX, contentTop, previewW, contentBottom - contentTop, 0x8017191D);
+        g.centeredText(font, Ui.heading(Component.translatable("gui.frosthain.appearance.preview")), previewX + previewW / 2, contentTop + 5, Theme.FRAME_GOLD);
+        int pixel = Math.max(3, Math.min((previewW - 24) / 8, (contentBottom - contentTop - 40) / 11));
+        HeadPortrait.draw(g, previewX + previewW / 2 - 4 * pixel, contentTop + 22 + 2 * pixel, pixel, appearance);
+    }
+
     @Override
     public void extractBackground(GuiGraphicsExtractor g, int mouseX, int mouseY, float partialTick) {
         if (minecraft.level == null) {
@@ -245,11 +378,14 @@ public final class CharacterCreationScreen extends Screen {
         Ui.ornamentTitle(g, font, title, width / 2, MARGIN + 7, 1.3f);
         switch (step) {
             case SPECIES -> speciesDetails(g);
+            case APPEARANCE -> appearanceDetails(g);
             case CLASS -> classDetails(g);
             case BACKGROUND -> backgroundDetails(g);
             case FINISH -> finish(g);
         }
-        if (previewW > 0 && minecraft.player != null) {
+        if (previewW > 0 && step == Step.APPEARANCE) {
+            portraitPreview(g);
+        } else if (previewW > 0 && minecraft.player != null) {
             Ui.panel(g, previewX, contentTop, previewW, contentBottom - contentTop, 0x8017191D);
             InventoryScreen.extractEntityInInventoryFollowsMouse(g, previewX + 2, contentTop + 2, previewX + previewW - 2,
                     contentBottom - 2, Math.max(24, (contentBottom - contentTop) / 3), 0.0625f, mouseX, mouseY, minecraft.player);

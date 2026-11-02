@@ -12,6 +12,7 @@ import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.frosthain.core.ContentId;
+import net.frosthain.core.character.Appearance;
 import net.frosthain.core.character.CharacterFactory;
 import net.frosthain.core.character.CharacterSheet;
 import net.frosthain.core.character.QuickCreation;
@@ -125,11 +126,15 @@ public final class CharacterService {
         }
         CharacterFactory.Result result;
         try {
+            Optional<Appearance> appearance = payload.appearanceJson().isBlank()
+                    ? Optional.empty()
+                    : Optional.of(CharacterSheetCodec.decodeAppearance(JsonParser.parseString(payload.appearanceJson()).getAsJsonObject()));
             result = new CharacterFactory(FrosthainMod.content()).create(QuickCreation.request(FrosthainMod.content(),
                     payload.name(), ContentId.parse(payload.species()), ContentId.parse(payload.characterClass()),
-                    ContentId.parse(payload.background())), player.getUUID());
-        } catch (IllegalArgumentException e) {
-            result = new CharacterFactory.Result.Rejected(List.of(e.getMessage()));
+                    ContentId.parse(payload.background()), appearance), player.getUUID());
+        } catch (RuntimeException e) {
+            // Unknown ids, malformed appearance JSON (ContentParseException, IllegalStateException) – never trust the client.
+            result = new CharacterFactory.Result.Rejected(List.of(String.valueOf(e.getMessage())));
         }
         switch (result) {
             case CharacterFactory.Result.Created created -> {

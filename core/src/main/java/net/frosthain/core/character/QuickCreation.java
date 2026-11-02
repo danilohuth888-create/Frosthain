@@ -34,6 +34,13 @@ public final class QuickCreation {
     /** @throws IllegalArgumentException if species, class or background are unknown */
     public static CharacterFactory.CreationRequest request(ContentRegistry registry, String name, ContentId species,
                                                            ContentId characterClass, ContentId background) {
+        return request(registry, name, species, characterClass, background, Optional.empty());
+    }
+
+    /** Same, with the appearance chosen in the editor (empty = species default). */
+    public static CharacterFactory.CreationRequest request(ContentRegistry registry, String name, ContentId species,
+                                                           ContentId characterClass, ContentId background,
+                                                           Optional<Appearance> appearance) {
         SpeciesDefinition s = registry.get(ContentType.SPECIES, species)
                 .orElseThrow(() -> new IllegalArgumentException("Unbekannte Spezies " + species));
         ClassDefinition c = registry.get(ContentType.CLASSES, characterClass)
@@ -47,7 +54,7 @@ public final class QuickCreation {
                 : Optional.empty();
         return new CharacterFactory.CreationRequest(name, species, lineage, characterClass, background,
                 AbilityScoreRules.Method.STANDARD_ARRAY, baseScores(rules.standardArray(), c.primaryAbilities()),
-                backgroundBonus(b.abilityOptions(), c.primaryAbilities()), Appearance.defaultFor(s),
+                backgroundBonus(b.abilityOptions(), c.primaryAbilities()), appearance.orElseGet(() -> Appearance.defaultFor(s)),
                 CharacterSheet.Biography.EMPTY);
     }
 

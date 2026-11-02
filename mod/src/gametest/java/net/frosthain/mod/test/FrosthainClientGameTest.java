@@ -4,6 +4,8 @@ import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
 import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
 import net.frosthain.core.ContentId;
+import net.frosthain.core.character.Appearance;
+import net.frosthain.core.character.AppearanceOptions;
 import net.frosthain.core.character.CharacterSheet;
 import net.frosthain.core.character.TalentRef;
 import net.frosthain.core.quest.QuestLog;
@@ -26,6 +28,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+
+import java.util.Optional;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 
 /**
@@ -58,6 +62,17 @@ public final class FrosthainClientGameTest implements FabricClientGameTest {
             context.runOnClient(client -> {
                 CharacterCreationScreen screen = creation(client);
                 screen.select(ContentId.of("elf"));
+                screen.show(CharacterCreationScreen.Step.APPEARANCE);
+                Appearance a = screen.appearance();
+                screen.setAppearance(AppearanceOptions.withFeature(AppearanceOptions.with(a, Appearance.BodyType.SLIM, 1.04,
+                                "#e0b08a", "#3d7a4a", ContentId.of("hair/braided"), "#d9b26a"),
+                        "ears", Optional.of(ContentId.parse("frosthain:ears/pointed_long"))));
+            });
+            context.waitTicks(2);
+            context.takeScreenshot("frosthain-03b-aussehen");
+            context.runOnClient(client -> {
+                CharacterCreationScreen screen = creation(client);
+                screen.select(ContentId.of("elf"));
                 screen.show(CharacterCreationScreen.Step.CLASS);
                 screen.select(ContentId.of("rune_mage"));
             });
@@ -85,6 +100,12 @@ public final class FrosthainClientGameTest implements FabricClientGameTest {
                         .orElseThrow(() -> new AssertionError("Server hat keinen Charakter gespeichert"));
                 if (!sheet.classLevels().containsKey(ContentId.of("rune_mage")) || !sheet.species().equals(ContentId.of("elf"))) {
                     throw new AssertionError("Gespeicherter Charakter weicht ab: " + sheet.species() + " " + sheet.classLevels());
+                }
+                Appearance stored = sheet.appearance();
+                if (!stored.hairStyle().equals(ContentId.of("hair/braided")) || !stored.hairColor().equals("#d9b26a")
+                        || stored.bodyType() != Appearance.BodyType.SLIM
+                        || !ContentId.parse("frosthain:ears/pointed_long").equals(stored.features().get("ears"))) {
+                    throw new AssertionError("Gewähltes Aussehen wurde nicht gespeichert: " + stored);
                 }
             });
 
