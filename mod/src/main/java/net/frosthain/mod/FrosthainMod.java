@@ -14,6 +14,7 @@ import net.frosthain.mod.character.DialogueService;
 import net.frosthain.mod.character.PowerService;
 import net.frosthain.mod.character.QuestService;
 import net.frosthain.mod.character.QuestSites;
+import net.frosthain.mod.world.StarterVillage;
 import net.minecraft.resources.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,6 +58,7 @@ public final class FrosthainMod implements ModInitializer {
         DialogueService.register();
         PowerService.register();
         QuestSites.register();
+        StarterVillage.register();
         LOGGER.info("FROSTHAIN geladen: {} Klassen, {} Spezies, {} Talentbäume, {} Quests, {} Dialoge – {} Fehler",
                 content.all(ContentType.CLASSES).size(), content.all(ContentType.SPECIES).size(),
                 content.all(ContentType.TALENT_TREES).size(), content.all(ContentType.QUESTS).size(),

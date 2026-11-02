@@ -503,5 +503,9 @@
   "gui.frosthain.dir.s": "Süden",
   "gui.frosthain.dir.sw": "Südwesten",
   "gui.frosthain.dir.w": "Westen",
-  "gui.frosthain.dir.nw": "Nordwesten"
+  "gui.frosthain.dir.nw": "Nordwesten",
+  "gui.frosthain.marker.crate": "Vorratskiste",
+  "gui.frosthain.board.nothing_new": "Am Anschlagbrett gibt es nichts Neues.",
+  "gui.frosthain.crate.unknown": "Eine Kiste mit dem Zeichen eines Händlers.",
+  "gui.frosthain.crate.already": "Diese Kiste hast du schon geborgen."
 }

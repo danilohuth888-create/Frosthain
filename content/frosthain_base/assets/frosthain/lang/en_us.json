@@ -503,5 +503,9 @@
   "gui.frosthain.dir.s": "south",
   "gui.frosthain.dir.sw": "south-west",
   "gui.frosthain.dir.w": "west",
-  "gui.frosthain.dir.nw": "north-west"
+  "gui.frosthain.dir.nw": "north-west",
+  "gui.frosthain.marker.crate": "Supply crate",
+  "gui.frosthain.board.nothing_new": "Nothing new on the notice board.",
+  "gui.frosthain.crate.unknown": "A crate bearing a merchant's mark.",
+  "gui.frosthain.crate.already": "You already recovered this crate."
 }

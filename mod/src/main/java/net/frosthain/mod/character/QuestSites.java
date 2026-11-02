@@ -12,6 +12,7 @@ import net.frosthain.core.ContentId;
 import net.frosthain.core.quest.QuestLog;
 import net.frosthain.mod.FrosthainMod;
 import net.frosthain.mod.network.QuestMarkerPayload;
+import net.frosthain.mod.world.StarterVillage;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -186,6 +187,7 @@ public final class QuestSites {
                 .filter(c -> isCurrent(player, AWAKENING, "find_shrine") || isCurrent(player, FIRST_RUNE, "touch_rune"))
                 .map(c -> new QuestMarkerPayload(true, isCurrent(player, FIRST_RUNE, "touch_rune")
                         ? "gui.frosthain.marker.rune_stone" : "gui.frosthain.marker.shrine", c.getX(), c.getY(), c.getZ()))
+                .or(() -> StarterVillage.marker(player))
                 .orElseGet(QuestMarkerPayload::none);
         if (!marker.equals(LAST_MARKER.get(player.getUUID()))) {
             LAST_MARKER.put(player.getUUID(), marker);

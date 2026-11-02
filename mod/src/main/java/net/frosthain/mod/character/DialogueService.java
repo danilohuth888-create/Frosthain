@@ -18,8 +18,11 @@ import net.frosthain.core.registry.ContentType;
 import net.frosthain.mod.FrosthainMod;
 import net.frosthain.mod.network.DialogueChoicePayload;
 import net.frosthain.mod.network.DialogueStatePayload;
+import net.frosthain.mod.world.StarterVillage;
 import net.minecraft.commands.Commands;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
@@ -98,8 +101,11 @@ public final class DialogueService {
                         }))));
     }
 
-    /** Places Eldrin once when talking to him is the player's current objective. */
+    /** Places Eldrin once when talking to him is the player's current objective and there is no village (he lives there). */
     public static void placeEldrinIfNeeded(ServerPlayer player) {
+        if (StarterVillage.village(player.level()).isPresent()) {
+            return;
+        }
         QuestLog log = QuestService.log(player);
         boolean waitingForEldrin = log.isActive(AWAKENING)
                 && log.progress(AWAKENING).map(p -> p.count(TALK_ELDRIN) == 0).orElse(false);
@@ -111,10 +117,6 @@ public final class DialogueService {
     /** Villager "Eldrin" three blocks in front of the player, facing them; no AI, invulnerable, never despawns. */
     public static void placeEldrin(ServerPlayer player) {
         ServerLevel level = player.level();
-        Villager eldrin = EntityTypes.VILLAGER.create(level, EntitySpawnReason.EVENT);
-        if (eldrin == null) {
-            return;
-        }
         Vec3 look = player.getLookAngle();
         Vec3 flat = new Vec3(look.x, 0, look.z);
         Vec3 dir = flat.lengthSqr() < 1e-4 ? new Vec3(0, 0, 1) : flat.normalize();
@@ -122,18 +124,27 @@ public final class DialogueService {
         double z = player.getZ() + dir.z * 3;
         int y = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, (int) Math.floor(x), (int) Math.floor(z));
         float yaw = (float) Math.toDegrees(Math.atan2(-(player.getX() - x), player.getZ() - z));
-        eldrin.snapTo(Math.floor(x) + 0.5, y, Math.floor(z) + 0.5, yaw, 0);
-        eldrin.setYHeadRot(yaw);
-        eldrin.setYBodyRot(yaw);
-        eldrin.setVillagerData(eldrin.getVillagerData().withProfession(level.registryAccess(), VillagerProfession.LIBRARIAN).withLevel(5));
-        eldrin.setCustomName(Component.translatable("npc.frosthain.eldrin"));
-        eldrin.setNoAi(true);
-        eldrin.setPersistenceRequired();
-        eldrin.setPermanentlyInvulnerable(true);
-        eldrin.addTag(NPC_TAG_PREFIX + ELDRIN.path());
-        level.addFreshEntity(eldrin);
+        spawnNpc(level, ELDRIN, BlockPos.containing(x, y, z), yaw, VillagerProfession.LIBRARIAN);
         player.setAttached(ELDRIN_PLACED, true);
-        LOGGER.info("Eldrin bei {} {} {} für {} platziert", eldrin.getX(), eldrin.getY(), eldrin.getZ(), player.getName().getString());
+    }
+
+    /** A content NPC as villager: named, no AI, invulnerable, never despawns, recognised by its entity tag. */
+    public static void spawnNpc(ServerLevel level, ContentId npc, BlockPos pos, float yaw, ResourceKey<VillagerProfession> profession) {
+        Villager villager = EntityTypes.VILLAGER.create(level, EntitySpawnReason.EVENT);
+        if (villager == null) {
+            return;
+        }
+        villager.snapTo(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, yaw, 0);
+        villager.setYHeadRot(yaw);
+        villager.setYBodyRot(yaw);
+        villager.setVillagerData(villager.getVillagerData().withProfession(level.registryAccess(), profession).withLevel(5));
+        villager.setCustomName(Component.translatable("npc." + npc.toTranslationFragment()));
+        villager.setNoAi(true);
+        villager.setPersistenceRequired();
+        villager.setPermanentlyInvulnerable(true);
+        villager.addTag(NPC_TAG_PREFIX + npc.path());
+        level.addFreshEntity(villager);
+        LOGGER.info("NPC {} bei {} platziert", npc, pos.toShortString());
     }
 
     public static void open(ServerPlayer player, ContentId npcId) {

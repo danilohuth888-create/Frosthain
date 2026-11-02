@@ -16,6 +16,7 @@ import net.frosthain.mod.character.DialogueService;
 import net.frosthain.mod.character.PowerService;
 import net.frosthain.mod.character.QuestService;
 import net.frosthain.mod.character.QuestSites;
+import net.frosthain.mod.world.StarterVillage;
 import net.frosthain.mod.client.ClientCharacter;
 import net.frosthain.mod.client.ClientPowers;
 import net.frosthain.mod.client.ClientQuests;
@@ -225,6 +226,39 @@ public final class FrosthainClientGameTest implements FabricClientGameTest {
             context.takeScreenshot("frosthain-13-questjournal-abgeschlossen");
             context.setScreen(() -> null);
 
+            // Starting village: built at the spawn; the notice board starts "Verlorene Vorräte", three crates finish it (+80 EP).
+            StarterVillage.Village village = singleplayer.getServer().computeOnServer(server ->
+                    StarterVillage.village(server.overworld()).orElseThrow(() -> new AssertionError("Startdorf wurde nicht errichtet")));
+            singleplayer.getServer().runCommand("tp @a " + (village.center().getX() + 0.5) + " " + (village.center().getY() + 7)
+                    + " " + (village.center().getZ() + 17.5) + " 180 25");
+            context.waitTicks(40);
+            context.takeScreenshot("frosthain-13a-startdorf");
+            singleplayer.getServer().runOnServer(server -> {
+                ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
+                if (!StarterVillage.use(player, village.board()) || !QuestService.log(player).isActive(LOST_SUPPLIES)) {
+                    throw new AssertionError("Anschlagbrett startet 'Verlorene Vorräte' nicht");
+                }
+            });
+            context.waitFor(client -> ClientQuests.log().isActive(LOST_SUPPLIES) && ClientQuests.marker().present());
+            context.waitTicks(10);
+            context.takeScreenshot("frosthain-13b-vorraete-wegweiser");
+            singleplayer.getServer().runOnServer(server -> {
+                ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
+                long before = CharacterService.sheet(player).orElseThrow().experience();
+                for (BlockPos crate : village.crates()) {
+                    if (!StarterVillage.use(player, crate)) {
+                        throw new AssertionError("Vorratskiste reagiert nicht: " + crate);
+                    }
+                }
+                long gained = CharacterService.sheet(player).orElseThrow().experience() - before;
+                if (!QuestService.log(player).isCompleted(LOST_SUPPLIES) || gained != 80) {
+                    throw new AssertionError("'Verlorene Vorräte' nicht abgeschlossen oder EP falsch: " + gained);
+                }
+            });
+            context.waitFor(client -> ClientQuests.log().isCompleted(LOST_SUPPLIES) && !ClientQuests.marker().present());
+            singleplayer.getServer().runCommand("tp @a " + start);
+            context.waitTicks(10);
+
             // Ability bar: the rune mage starts with Runenstoß in slot 1; a golem without AI is the target.
             context.waitFor(client -> ClientPowers.state().map(s -> s.powers().contains("frosthain:rune_strike") && s.current() == s.maximum()).orElse(false));
             singleplayer.getServer().runCommand("execute as @a at @s run summon minecraft:iron_golem ^ ^ ^7 {NoAI:1b,Tags:[\"frosthain_test_target\"]}");
@@ -286,6 +320,7 @@ public final class FrosthainClientGameTest implements FabricClientGameTest {
 
     private static final ContentId AWAKENING = ContentId.of("awakening");
     private static final ContentId FIRST_RUNE = ContentId.of("first_rune");
+    private static final ContentId LOST_SUPPLIES = ContentId.of("lost_supplies");
 
     private static void unlock(ClientGameTestContext context, String node) {
         TalentRef ref = new TalentRef(ContentId.of("general"), node);
