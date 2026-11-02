@@ -408,5 +408,6 @@
   "gui.frosthain.journal.tracker_collapse": "Collapse tracker",
   "gui.frosthain.level_up": "Level %s reached! New talent point – open the talent tree with K.",
   "key.frosthain.journal": "Quest Journal",
-  "key.frosthain.tracker": "Expand/collapse quest tracker"
+  "key.frosthain.tracker": "Expand/collapse quest tracker",
+  "gui.frosthain.dialogue.hint": "1–9 choose · Enter confirm · Esc leave"
 }

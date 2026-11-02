@@ -120,6 +120,7 @@ public final class CharacterService {
             case CharacterFactory.Result.Created created -> {
                 save(player, created.sheet());
                 QuestService.onCharacterCreated(player);
+                DialogueService.placeEldrinIfNeeded(player);
                 LOGGER.info("Charakter erstellt: {} ({}, {}) für {}", created.sheet().name(), created.sheet().species(),
                         payload.characterClass(), player.getName().getString());
             }

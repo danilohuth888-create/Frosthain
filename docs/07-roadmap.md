@@ -62,7 +62,7 @@ flowchart LR
 |---|---|---|---|---|
 | M4.1 | Fähigkeiten und Kampf | Ressourcenleiste, Abklingzeiten, Fähigkeitsleiste, Effektketten, Ausweichrolle, Statuseffekte; Performance-Budget eingehalten | XL | ⏳ |
 | M4.2 | Runenmagie | Runen, Kombinationen, klassenübergreifende Synergien; schrittweise Einführung im Spiel | L | ⏳ |
-| M4.3 | NPCs und filmische Dialoge | NPC-Entity mit `Appearance`; Dialoggraphen mit Bedingungen/Folgen; Ruf; HUD-Ausblendung | L | ⏳ |
+| M4.3 | NPCs und filmische Dialoge | NPC-Entity mit `Appearance` ⏳ (Eldrin vorerst als Dorfbewohner ✅); Dialoggraphen mit Bedingungen/Folgen ✅ (serverseitig, GameTest); Ruf ⏳; HUD-Ausblendung ✅ | L | 🔶 |
 | M4.4 | Quests | Auslöser aus Spielereignissen ⏳ (Schnittstelle `QuestService.advance` ✅, Testbefehl ✅), Journal ✅, Quest-HUD (max. 3) ✅, gespeichertes Questlog ✅, EP-Belohnung ✅, Wegpunkte ⏳ | L | 🔶 |
 | M4.5 | Gegner und erster Boss | 3 Gegnertypen mit eigenem Verhalten, 1 Boss mit Phasen | L | ⏳ |
 | M4.6 | Übrige Menüs | Charakterübersicht, Zauberbuch, Weltchronik, Tastenübersicht, Einstellungen | M | ⏳ |

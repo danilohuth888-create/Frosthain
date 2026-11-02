@@ -10,15 +10,18 @@ import net.frosthain.core.quest.QuestLog;
 import net.frosthain.core.registry.ContentType;
 import net.frosthain.mod.FrosthainMod;
 import net.frosthain.mod.character.CharacterService;
+import net.frosthain.mod.character.DialogueService;
 import net.frosthain.mod.character.QuestService;
 import net.frosthain.mod.client.ClientCharacter;
 import net.frosthain.mod.client.ClientQuests;
 import net.frosthain.mod.client.screen.CharacterCreationScreen;
+import net.frosthain.mod.client.screen.DialogueScreen;
 import net.frosthain.mod.client.screen.FrosthainTitleScreen;
 import net.frosthain.mod.client.screen.QuestJournalScreen;
 import net.frosthain.mod.client.screen.TalentTreeScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 
 /**
@@ -116,7 +119,39 @@ public final class FrosthainClientGameTest implements FabricClientGameTest {
             context.setScreen(() -> null);
             long experienceBefore = singleplayer.getServer().computeOnServer(server ->
                     CharacterService.sheet(server.getPlayerList().getPlayers().getFirst()).orElseThrow().experience());
-            singleplayer.getServer().runCommand("execute as @a run frosthain quest ziel awakening talk_eldrin");
+            // Eldrin stands in the world; talking to him (server-side session) fulfils the first objective.
+            singleplayer.getServer().runOnServer(server -> {
+                ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
+                boolean eldrinPresent = false;
+                for (Entity entity : player.level().getAllEntities()) {
+                    eldrinPresent |= entity.entityTags().contains("frosthain.npc.eldrin");
+                }
+                if (!eldrinPresent) {
+                    throw new AssertionError("Eldrin wurde nicht in der Welt platziert");
+                }
+                DialogueService.open(player, ContentId.of("eldrin"));
+            });
+            context.waitForScreen(DialogueScreen.class);
+            context.waitTicks(5);
+            context.takeScreenshot("frosthain-11b-dialog-eldrin");
+            context.runOnClient(client -> {
+                DialogueScreen screen = (DialogueScreen) client.gui.screen();
+                int ready = screen.state().choices().indexOf("ready");
+                if (ready < 0) {
+                    throw new AssertionError("Antwort 'Ich bin bereit' fehlt: " + screen.state().choices());
+                }
+                screen.choose(ready);
+            });
+            context.waitFor(client -> client.gui.screen() instanceof DialogueScreen screen && screen.state().atEnd());
+            context.takeScreenshot("frosthain-11c-dialog-antwort");
+            context.runOnClient(client -> ((DialogueScreen) client.gui.screen()).choose(0));
+            context.waitFor(client -> client.gui.screen() == null);
+            singleplayer.getServer().runOnServer(server -> {
+                QuestLog log = QuestService.log(server.getPlayerList().getPlayers().getFirst());
+                if (log.progress(AWAKENING).map(p -> p.count("talk_eldrin")).orElse(0) != 1) {
+                    throw new AssertionError("Gespräch mit Eldrin hat das Questziel nicht erfüllt: " + log);
+                }
+            });
             singleplayer.getServer().runCommand("execute as @a run frosthain quest ziel awakening find_shrine");
             context.waitFor(client -> ClientQuests.log().isCompleted(AWAKENING) && ClientQuests.log().isActive(FIRST_RUNE));
             singleplayer.getServer().runOnServer(server -> {

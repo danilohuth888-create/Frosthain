@@ -10,11 +10,11 @@ Ein eigenständiges Fantasy-RPG-Erlebnis auf Basis von Minecraft Java Edition: e
 | RPG-Kern ohne Minecraft: Datenmodell, Lader, Validator, Charaktererstellung, Talente, Stufen, Multiclassing, Quests, Dialoge, Speicherformat | ✅ **84 Tests grün** |
 | Basisinhalte: 12 SRD-Klassen + Runenmagier, 15 Unterklassen, 9 Spezies, 6 Hintergründe, 3 Talentbäume (inkl. Runenpfad), NPC Eldrin, 3 Quests, 1 Dialog, Deutsch + Englisch | ✅ Validator: 0 Fehler |
 | UI nach Referenzbildern B · D · F: Implementierungsplan, Präsentationslogik (`ui`), interaktiver Desktop-Prototyp | ✅ **30 Tests grün**, [Screenshots](docs/prototyp/) |
-| Fabric-Mod für Minecraft 26.3 | 🔶 Client und Server starten (CI und MSI-Laptop); **im Spiel sichtbar:** FROSTHAIN-Hauptmenü, Charaktererstellung (Spezies, Klasse, Hintergrund, serverseitig geprüft und gespeichert), HUD-Abzeichen, Taste I, **Talentbaum auf K** (Freischalten serverseitig geprüft, Attribut-Talente wirken), **Questtracker (U) und Questjournal (J)** mit gespeichertem Questlog und EP-Belohnung – [Bilder](docs/spiel/). NPC-Dialog, Questziele in der Welt, Fähigkeiten folgen |
+| Fabric-Mod für Minecraft 26.3 | 🔶 Client und Server starten (CI und MSI-Laptop); **im Spiel sichtbar:** FROSTHAIN-Hauptmenü, Charaktererstellung (Spezies, Klasse, Hintergrund, serverseitig geprüft und gespeichert), HUD-Abzeichen, Taste I, **Talentbaum auf K** (Freischalten serverseitig geprüft, Attribut-Talente wirken), **Questtracker (U) und Questjournal (J)** mit gespeichertem Questlog und EP-Belohnung, **Eldrin in der Welt mit NPC-Dialog** (serverseitig, erfüllt das erste Questziel) – [Bilder](docs/spiel/). Weitere Questorte, Fähigkeiten folgen |
 | Windows-Installer (ohne winget/Java/Git, SHA-256, Backup/Rollback) | ✅ automatisiert getestet (PowerShell 5.1 und 7), Vorabversion `frosthain-dev` |
 | CI auf GitHub (Ubuntu + Windows) | ✅ grün |
 | Launcher (Tauri 2, Anmeldung über den offiziellen Minecraft Launcher) | ⏳ M1.1 |
-| RPG im Spiel spielbar | 🔶 Charakter erstellen, Talente vergeben, Quests verfolgen ja; Questziele in der Welt, Dialoge, EP aus Kämpfen noch nicht – siehe [Stand und Spielanleitung](docs/11-windows-test-und-uebergabe.md) |
+| RPG im Spiel spielbar | 🔶 Charakter erstellen, Talente vergeben, Quests verfolgen, mit Eldrin sprechen ja; weitere Questorte, EP aus Kämpfen, Fähigkeiten noch nicht – siehe [Stand und Spielanleitung](docs/11-windows-test-und-uebergabe.md) |
 
 Lizenz: FROSTHAIN-Eigenentwicklungen sind proprietär, alle Rechte vorbehalten ([LICENSE.md](LICENSE.md)); Drittanbieter siehe [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 

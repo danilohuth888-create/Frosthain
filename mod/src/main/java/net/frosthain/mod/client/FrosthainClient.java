@@ -11,9 +11,11 @@ import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.frosthain.mod.FrosthainMod;
 import net.frosthain.mod.client.hud.CharacterHud;
 import net.frosthain.mod.client.hud.QuestTrackerHud;
+import net.frosthain.mod.client.screen.DialogueScreen;
 import net.frosthain.mod.client.screen.FrosthainTitleScreen;
 import net.frosthain.mod.network.CharacterRejectedPayload;
 import net.frosthain.mod.network.CharacterStatePayload;
+import net.frosthain.mod.network.DialogueStatePayload;
 import net.frosthain.mod.network.QuestLogPayload;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.gui.screens.TitleScreen;
@@ -45,6 +47,8 @@ public final class FrosthainClient implements ClientModInitializer {
                 (payload, context) -> context.client().execute(() -> ClientCharacter.rejected(context.client(), payload)));
         ClientPlayNetworking.registerGlobalReceiver(QuestLogPayload.TYPE,
                 (payload, context) -> context.client().execute(() -> ClientQuests.accept(context.client(), payload)));
+        ClientPlayNetworking.registerGlobalReceiver(DialogueStatePayload.TYPE,
+                (payload, context) -> context.client().execute(() -> DialogueScreen.accept(context.client(), payload)));
         ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {
             ClientCharacter.clear();
             ClientQuests.clear();

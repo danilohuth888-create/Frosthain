@@ -408,5 +408,6 @@
   "gui.frosthain.journal.tracker_collapse": "Tracker einklappen",
   "gui.frosthain.level_up": "Stufe %s erreicht! Neuer Talentpunkt – Talentbaum mit K.",
   "key.frosthain.journal": "Questjournal",
-  "key.frosthain.tracker": "Questtracker ein-/ausklappen"
+  "key.frosthain.tracker": "Questtracker ein-/ausklappen",
+  "gui.frosthain.dialogue.hint": "1–9 wählen · Enter bestätigen · Esc verlassen"
 }

@@ -79,12 +79,14 @@ Beim Start von Minecraft erscheint jetzt das FROSTHAIN-Hauptmenü, beim ersten B
 | **Questtracker** rechts im HUD, standardmäßig eingeklappt („Quests (1)“), Taste **U** klappt aus (Hauptquest, Ziele mit Kästchen, max. 3 verfolgte Quests) | ✅ | Bilder `05_hud.png`, `08_questtracker.png` |
 | **Questjournal (J)**: Hauptquests/Nebenquests/Abgeschlossen mit Zählern, Pergamentseite mit Beschreibung, Checkliste, Belohnungen, „Im HUD verfolgen“ | ✅ | Bilder `09_`/`10_questjournal*.png` |
 | Questlog als Spieleranhang (`QuestLogCodec`, versioniert); „Das Erwachen“ startet mit dem Charakter; Abschluss gibt EP (Stufenaufstieg → Talentpunkt) und startet die Folgequest | ✅ | Client-GameTest: Abschluss, +150 EP, „Die erste Rune“ aktiv – auf dem Server geprüft |
-| Questziele in der Welt (Eldrin ansprechen, alten Schrein finden, Runenstein, Kisten) | ❌ | Ziele lassen sich bis dahin mit `/frosthain quest ziel <quest> <ziel>` erfüllen; Nebenquest mit `/frosthain quest start lost_supplies` |
-| NPC-Dialog, Fähigkeitenleiste | ❌ nächste Schritte | Logik in `core`/`ui` vorhanden |
+| **Eldrin in der Welt**: steht als Dorfbewohner (Bibliothekar, Name „Eldrin“) drei Blöcke vor dir, sobald „Sprich mit Eldrin“ das aktuelle Ziel ist; bewegt sich nicht, unverwundbar, bleibt erhalten; `/frosthain eldrin` stellt ihn erneut auf | ✅ | GameTest prüft die Figur in der Welt |
+| **NPC-Dialog** (Rechtsklick auf Eldrin): Namensschild mit Titel, Text links, Antworten rechts (Maus, 1–9, Pfeile, Enter, Esc), HUD während des Gesprächs aus; Gespräch läuft auf dem Server, Schaden bricht ab | ✅ | GameTest: „Ich bin bereit.“ erfüllt „Sprich mit Eldrin“; Bilder `11_`/`12_dialog*.png` |
+| Weitere Questziele in der Welt (alter Schrein, Runenstein, Kisten) | ❌ | bis dahin `/frosthain quest ziel <quest> <ziel>`; Nebenquest mit `/frosthain quest start lost_supplies` |
+| Fähigkeitenleiste | ❌ nächster Schritt | Fähigkeiten als Daten vorhanden |
 
 Grenzen: Aussehen-Schritt (Haare, Hautfarbe) fehlt noch, Attribute werden automatisch nach Klasse verteilt (Standardreihe), lange Namen in Kacheln werden gekürzt. Talent-Symbole sind vorerst Vanilla-Gegenstände; Fähigkeits-, Merkmals- und Resistenz-Talente werden gespeichert, wirken aber erst mit dem Fähigkeitensystem (M4.1). Auf Stufe 1 gibt es 1 Talentpunkt; EP-Quellen im Spiel folgen (M3.2).
 
-So probierst du es aus: Welt mit erlaubten Cheats öffnen, Charakter erstellen, `/frosthain ep 2000` eingeben (Stufe 4), dann **K** drücken. Quests: **J** öffnet das Journal, **U** klappt den Tracker aus; `/frosthain quest ziel awakening talk_eldrin` und danach `… find_shrine` schließen „Das Erwachen“ ab.
+So probierst du es aus: Welt mit erlaubten Cheats öffnen, Charakter erstellen, `/frosthain ep 2000` eingeben (Stufe 4), dann **K** drücken. Quests: **J** öffnet das Journal, **U** klappt den Tracker aus. Eldrin steht nach der Charaktererstellung vor dir – Rechtsklick, „Ich bin bereit.“ wählen; danach schließt `/frosthain quest ziel awakening find_shrine` „Das Erwachen“ ab (der Schrein kommt mit dem Startdorf, M5.2).
 
 ### Installation auf dem MSI über den echten Launcher
 
