@@ -1,0 +1,215 @@
+{
+  "source": "frosthain:original",
+  "owner": {
+    "type": "class",
+    "class": "frosthain:bard"
+  },
+  "root": "first_verse",
+  "branches": [
+    "song",
+    "charm",
+    "travel"
+  ],
+  "nodes": [
+    {
+      "key": "first_verse",
+      "kind": "root",
+      "position": [
+        0,
+        0
+      ],
+      "icon": "frosthain:icon/horn"
+    },
+    {
+      "key": "resonance",
+      "kind": "passive",
+      "position": [
+        -1,
+        0
+      ],
+      "branch": "song",
+      "requires": [
+        "first_verse"
+      ],
+      "max_rank": 3,
+      "effects": [
+        {
+          "type": "attribute",
+          "attribute": "frosthain:spell_power_max",
+          "operation": "add_value",
+          "amount": 5
+        }
+      ],
+      "icon": "frosthain:icon/horn"
+    },
+    {
+      "key": "rhythm",
+      "kind": "passive",
+      "position": [
+        -2,
+        0
+      ],
+      "branch": "song",
+      "requires": [
+        "resonance"
+      ],
+      "max_rank": 2,
+      "required_class_level": 3,
+      "effects": [
+        {
+          "type": "attribute",
+          "attribute": "frosthain:spell_power_regen",
+          "operation": "add_multiplied_base",
+          "amount": 0.1
+        }
+      ],
+      "icon": "frosthain:icon/drop"
+    },
+    {
+      "key": "showstopper",
+      "kind": "passive",
+      "position": [
+        -3,
+        0
+      ],
+      "branch": "song",
+      "requires": [
+        "rhythm"
+      ],
+      "required_class_level": 5,
+      "effects": [
+        {
+          "type": "skill_proficiency",
+          "skill": "frosthain:performance"
+        }
+      ],
+      "icon": "frosthain:icon/star"
+    },
+    {
+      "key": "smooth_talker",
+      "kind": "passive",
+      "position": [
+        0,
+        1
+      ],
+      "branch": "charm",
+      "requires": [
+        "first_verse"
+      ],
+      "effects": [
+        {
+          "type": "skill_proficiency",
+          "skill": "frosthain:persuasion"
+        }
+      ],
+      "icon": "frosthain:icon/crown"
+    },
+    {
+      "key": "good_fortune",
+      "kind": "passive",
+      "position": [
+        0,
+        2
+      ],
+      "branch": "charm",
+      "requires": [
+        "smooth_talker"
+      ],
+      "max_rank": 2,
+      "required_class_level": 3,
+      "effects": [
+        {
+          "type": "attribute",
+          "attribute": "minecraft:luck",
+          "operation": "add_value",
+          "amount": 0.5
+        }
+      ],
+      "icon": "frosthain:icon/star"
+    },
+    {
+      "key": "encore",
+      "kind": "passive",
+      "position": [
+        0,
+        3
+      ],
+      "branch": "charm",
+      "requires": [
+        "good_fortune"
+      ],
+      "required_class_level": 5,
+      "effects": [
+        {
+          "type": "attribute",
+          "attribute": "minecraft:max_health",
+          "operation": "add_value",
+          "amount": 2
+        }
+      ],
+      "icon": "frosthain:icon/heart"
+    },
+    {
+      "key": "light_step",
+      "kind": "passive",
+      "position": [
+        1,
+        0
+      ],
+      "branch": "travel",
+      "requires": [
+        "first_verse"
+      ],
+      "max_rank": 2,
+      "effects": [
+        {
+          "type": "attribute",
+          "attribute": "minecraft:movement_speed",
+          "operation": "add_multiplied_base",
+          "amount": 0.03
+        }
+      ],
+      "icon": "frosthain:icon/boot"
+    },
+    {
+      "key": "well_read",
+      "kind": "passive",
+      "position": [
+        2,
+        0
+      ],
+      "branch": "travel",
+      "requires": [
+        "light_step"
+      ],
+      "required_class_level": 2,
+      "effects": [
+        {
+          "type": "skill_proficiency",
+          "skill": "frosthain:history"
+        }
+      ],
+      "icon": "frosthain:icon/book"
+    },
+    {
+      "key": "acrobat",
+      "kind": "passive",
+      "position": [
+        3,
+        0
+      ],
+      "branch": "travel",
+      "requires": [
+        "well_read"
+      ],
+      "required_class_level": 4,
+      "effects": [
+        {
+          "type": "skill_proficiency",
+          "skill": "frosthain:acrobatics"
+        }
+      ],
+      "icon": "frosthain:icon/wave"
+    }
+  ]
+}

@@ -80,8 +80,15 @@ class TalentTreeViewTest {
     void pathListShowsGeneralRuneAndClassTreesWithPreview() {
         List<TalentTreeView.PathEntry> fighterPaths = TalentTreeView.paths(UiTestContent.registry(), allocator,
                 UiTestContent.german(), UiTestContent.character("fighter"));
+        // Own paths first, then the other class trees as locked preview, sorted by name.
         assertEquals(List.of("Pfad der Legende", "Runenpfad", "Weg des Kriegers"),
-                fighterPaths.stream().map(TalentTreeView.PathEntry::name).toList());
+                fighterPaths.stream().limit(3).map(TalentTreeView.PathEntry::name).toList());
+        assertTrue(fighterPaths.stream().limit(3).allMatch(TalentTreeView.PathEntry::accessible));
+        List<TalentTreeView.PathEntry> previews = fighterPaths.subList(3, fighterPaths.size());
+        assertFalse(previews.isEmpty());
+        assertTrue(previews.stream().noneMatch(TalentTreeView.PathEntry::accessible));
+        assertEquals(previews.stream().map(TalentTreeView.PathEntry::name).sorted().toList(),
+                previews.stream().map(TalentTreeView.PathEntry::name).toList());
         assertEquals(TalentTreeDefinition.Category.RUNE, fighterPaths.get(1).category());
 
         CharacterSheet wizard = UiTestContent.character("wizard");
