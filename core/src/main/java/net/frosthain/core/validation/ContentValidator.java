@@ -5,9 +5,13 @@ import net.frosthain.core.content.AbilityScore;
 import net.frosthain.core.content.BackgroundDefinition;
 import net.frosthain.core.content.ClassDefinition;
 import net.frosthain.core.content.ContentDefinition;
+import net.frosthain.core.content.DialogueDefinition;
+import net.frosthain.core.content.NpcDefinition;
+import net.frosthain.core.content.QuestDefinition;
 import net.frosthain.core.content.EngineFlags;
 import net.frosthain.core.content.Modifier;
 import net.frosthain.core.content.PowerDefinition;
+import net.frosthain.core.content.RuneDefinition;
 import net.frosthain.core.content.SourceDefinition;
 import net.frosthain.core.content.SpeciesDefinition;
 import net.frosthain.core.content.SubclassDefinition;
@@ -68,6 +72,10 @@ public final class ContentValidator {
         registry.all(ContentType.BACKGROUNDS).values().forEach(this::checkBackground);
         registry.all(ContentType.POWERS).values().forEach(this::checkPower);
         registry.all(ContentType.TALENT_TREES).values().forEach(this::checkTalentTree);
+        registry.all(ContentType.NPCS).values().forEach(this::checkNpc);
+        registry.all(ContentType.QUESTS).values().forEach(this::checkQuest);
+        registry.all(ContentType.DIALOGUES).values().forEach(this::checkDialogue);
+        registry.all(ContentType.RUNES).values().forEach(this::checkRune);
         checkTranslations();
         plannedFlagUsers.forEach((flag, users) -> diagnostics.add(Diagnostic.info("flag " + flag,
                 "Engine-Funktion ist spezifiziert, aber in der Mod noch nicht umgesetzt; genutzt von " + users)));
@@ -181,6 +189,83 @@ public final class ContentValidator {
     private void checkPower(PowerDefinition power) {
         String location = location(ContentType.POWERS, power.id());
         power.resource().ifPresent(resource -> requireRef(location, "resource", ContentType.RESOURCES, resource));
+    }
+
+    // ---- story: npcs, quests, dialogues ---------------------------------------------------------------
+
+    private void checkNpc(NpcDefinition npc) {
+        String location = location(ContentType.NPCS, npc.id());
+        npc.dialogue().ifPresent(dialogueId -> registry.get(ContentType.DIALOGUES, dialogueId).ifPresentOrElse(dialogue -> {
+            if (!dialogue.speaker().equals(npc.id())) {
+                diagnostics.add(Diagnostic.error(location, "Dialog " + dialogueId + " hat einen anderen Sprecher (" + dialogue.speaker() + ")"));
+            }
+        }, () -> missing(location, "dialogue", ContentType.DIALOGUES, dialogueId)));
+    }
+
+    private void checkQuest(QuestDefinition quest) {
+        String location = location(ContentType.QUESTS, quest.id());
+        for (QuestDefinition.Objective objective : quest.objectives()) {
+            if (objective.type() == QuestDefinition.ObjectiveType.TALK) {
+                requireRef(location + " objective " + objective.key(), "target", ContentType.NPCS, ContentId.parse(objective.target()));
+            }
+        }
+        for (ContentId followUp : quest.followUps()) {
+            requireRef(location, "follow_ups", ContentType.QUESTS, followUp);
+            if (followUp.equals(quest.id())) {
+                diagnostics.add(Diagnostic.error(location, "Quest ist ihre eigene Folgequest"));
+            }
+        }
+    }
+
+    private void checkRune(RuneDefinition rune) {
+        rune.unlockQuest().ifPresent(quest -> requireRef(location(ContentType.RUNES, rune.id()), "unlock_quest", ContentType.QUESTS, quest));
+    }
+
+    private void checkDialogue(DialogueDefinition dialogue) {
+        String location = location(ContentType.DIALOGUES, dialogue.id());
+        requireRef(location, "speaker", ContentType.NPCS, dialogue.speaker());
+        Set<String> reachable = new HashSet<>();
+        Deque<String> queue = new ArrayDeque<>(List.of(dialogue.start()));
+        while (!queue.isEmpty()) {
+            String key = queue.poll();
+            if (!reachable.add(key)) {
+                continue;
+            }
+            for (DialogueDefinition.Choice choice : dialogue.nodes().get(key).choices()) {
+                choice.next().ifPresent(queue::add);
+            }
+        }
+        Set<String> unreachable = new TreeSet<>(dialogue.nodes().keySet());
+        unreachable.removeAll(reachable);
+        if (!unreachable.isEmpty()) {
+            diagnostics.add(Diagnostic.warning(location, "Nicht erreichbare Dialogknoten: " + unreachable));
+        }
+        for (DialogueDefinition.Node node : dialogue.nodes().values()) {
+            for (DialogueDefinition.Choice choice : node.choices()) {
+                String choiceLocation = location + " " + node.key() + "." + choice.key();
+                for (DialogueDefinition.Condition condition : choice.conditions()) {
+                    switch (condition) {
+                        case DialogueDefinition.Condition.QuestStateIs(ContentId quest, DialogueDefinition.QuestState state) ->
+                                requireRef(choiceLocation, "conditions", ContentType.QUESTS, quest);
+                    }
+                }
+                for (DialogueDefinition.Effect effect : choice.effects()) {
+                    switch (effect) {
+                        case DialogueDefinition.Effect.StartQuest(ContentId quest) ->
+                                requireRef(choiceLocation, "effects", ContentType.QUESTS, quest);
+                        case DialogueDefinition.Effect.AdvanceObjective(ContentId quest, String objective, int amount) ->
+                                registry.get(ContentType.QUESTS, quest).ifPresentOrElse(q -> {
+                                    if (q.objective(objective).isEmpty()) {
+                                        diagnostics.add(Diagnostic.error(choiceLocation, "Quest " + quest + " hat kein Ziel '" + objective + "'"));
+                                    }
+                                }, () -> missing(choiceLocation, "effects", ContentType.QUESTS, quest));
+                        case DialogueDefinition.Effect.GrantExperience(int amount) -> {
+                            // range checked by the parser
+                        }
+                    }
+                }
+            }
+        }
     }
 
     // ---- talent trees ---------------------------------------------------------------------------------

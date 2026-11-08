@@ -1,0 +1,18 @@
+{
+  "source": "frosthain:original",
+  "kind": "main",
+  "sequential": true,
+  "experience": 300,
+  "objectives": [
+    {
+      "key": "find_crypt",
+      "type": "discover",
+      "target": "frosthain:frozen_crypt"
+    },
+    {
+      "key": "defeat_warden",
+      "type": "defeat",
+      "target": "frosthain:boss/crypt_warden"
+    }
+  ]
+}

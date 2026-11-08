@@ -4,7 +4,8 @@ Wahrscheinlichkeit (W) und Auswirkung (A): niedrig · mittel · hoch.
 
 | # | Risiko | W | A | Gegenmaßnahme | Frühwarnzeichen |
 |---|---|---|---|---|---|
-| R1 | **Mojang gibt die Azure-App-ID nicht oder erst spät frei** – kein eigener Login | mittel | hoch | Antrag sofort stellen; Brückenmodus über den offiziellen Launcher als vollwertiger Fallback; Login-Code bleibt austauschbar | keine Antwort nach 4 Wochen |
+| R1 | **Kein eigener Login möglich** – *eingetreten am 01.11.2026* (Azure-App funktioniert nicht) | eingetreten | mittel | Brückenmodus über den offiziellen Launcher als Hauptweg, `.mrpack`-Export als Zweitweg (ADR 0004); Login-Baustein bleibt austauschbar | – |
+| R1b | **Profilformat des offiziellen Launchers ändert sich** | niedrig | mittel | Formatprüfung vor dem Schreiben, Backup, Anleitung für manuelles Anlegen als Rückfall | Lesefehler beim Profilimport |
 | R2 | **Minecraft-Drops ändern APIs tiefgreifend** (26.1 GUI, 26.2 Vulkan) | hoch | hoch | eine MC-Version je Release pinnen; Regeln im `core`; dünne Adapter; Rendering nur über Vanilla-Abstraktionen; Update-Fenster einplanen | Fabric-Ankündigung „largest changes“; Snapshot-Changelogs |
 | R3 | **Lizenzverstoß** durch übernommene geschützte Inhalte (D&D außerhalb SRD, BG3) | mittel | hoch | Lizenz-Sperre im Validator; Pflicht-Quelle je Definition; eigene Texte; Inhaltskatalog mit Ausschlussliste; keine Marken im Produktnamen | Inhalte ohne nachvollziehbare Quelle; Namen bekannter Nicht-SRD-Optionen |
 | R4 | **Umfang übersteigt Kapazität** (mehrjähriges Projekt) | hoch | hoch | Vertical Slice vor Breite; Meilensteine mit Abnahmekriterien; kuratierte statt vollständige Fähigkeitenlisten | Meilensteine dauern doppelt so lange wie geschätzt |

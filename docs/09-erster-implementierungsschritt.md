@@ -68,7 +68,7 @@ Sobald Netzwerkzugriff besteht (oder auf dem Windows-Rechner bzw. im CI):
 5. Ein GameTest: Server startet, Inhalte geladen, 12 Klassen vorhanden.
 6. Abnahme: Dev-Client und Dedicated Server starten fehlerfrei; GameTest grün im CI.
 
-## 9.7 Was der Projektinhaber jetzt tun sollte
+## 9.7 Was der Projektinhaber jetzt tun sollte (Stand der ersten Sitzung – inzwischen erledigt: Repository, Referenzbilder, Lizenz; Azure siehe ADR 0004)
 
 1. **GitHub-Repository anlegen** und in dieser Umgebung freigeben, damit gepusht werden kann. *Bis dahin liegt der Stand nur in diesem flüchtigen Cloud-Container.*
 2. **Netzwerkfreigaben** in den Umgebungseinstellungen ergänzen: `piston-meta.mojang.com`, `piston-data.mojang.com`, `launchermeta.mojang.com`, `libraries.minecraft.net`, `resources.download.minecraft.net`, `meta.fabricmc.net`, `maven.fabricmc.net`, `fabricmc.net`, `docs.fabricmc.net` (Anleitung: https://code.claude.com/docs/en/cloud-environments#network-access).

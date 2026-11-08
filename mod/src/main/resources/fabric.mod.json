@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "frosthain",
+  "version": "${version}",
+  "name": "FROSTHAIN",
+  "description": "Fantasy-RPG-Erweiterung: Charaktere, Klassen, Talente, Quests und Dialoge.",
+  "authors": ["FROSTHAIN-Projekt"],
+  "license": "LicenseRef-All-Rights-Reserved",
+  "environment": "*",
+  "entrypoints": {
+    "main": ["net.frosthain.mod.FrosthainMod"],
+    "client": ["net.frosthain.mod.client.FrosthainClient"]
+  },
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "minecraft": "~${minecraft_version}",
+    "java": ">=25",
+    "fabric-api": "*"
+  }
+}

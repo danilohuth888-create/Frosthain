@@ -1,0 +1,15 @@
+{
+  "source": "frosthain:original",
+  "kind": "main",
+  "experience": 200,
+  "objectives": [
+    {
+      "key": "touch_rune",
+      "type": "custom",
+      "target": "frosthain:rune_stone"
+    }
+  ],
+  "follow_ups": [
+    "frosthain:frozen_crypt"
+  ]
+}

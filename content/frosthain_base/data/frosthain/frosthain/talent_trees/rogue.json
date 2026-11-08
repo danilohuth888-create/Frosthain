@@ -1,0 +1,217 @@
+{
+  "source": "frosthain:original",
+  "owner": {
+    "type": "class",
+    "class": "frosthain:rogue"
+  },
+  "root": "shadow_step",
+  "branches": [
+    "stealth",
+    "blades",
+    "cunning"
+  ],
+  "nodes": [
+    {
+      "key": "shadow_step",
+      "kind": "root",
+      "position": [
+        0,
+        0
+      ],
+      "icon": "frosthain:icon/eye"
+    },
+    {
+      "key": "silent_feet",
+      "kind": "passive",
+      "position": [
+        -1,
+        0
+      ],
+      "branch": "stealth",
+      "requires": [
+        "shadow_step"
+      ],
+      "max_rank": 2,
+      "effects": [
+        {
+          "type": "attribute",
+          "attribute": "minecraft:sneaking_speed",
+          "operation": "add_multiplied_base",
+          "amount": 0.1
+        }
+      ],
+      "icon": "frosthain:icon/boot"
+    },
+    {
+      "key": "hidden",
+      "kind": "passive",
+      "position": [
+        -2,
+        0
+      ],
+      "branch": "stealth",
+      "requires": [
+        "silent_feet"
+      ],
+      "required_class_level": 2,
+      "effects": [
+        {
+          "type": "skill_proficiency",
+          "skill": "frosthain:stealth"
+        }
+      ],
+      "icon": "frosthain:icon/leaf"
+    },
+    {
+      "key": "light_fall",
+      "kind": "passive",
+      "position": [
+        -3,
+        0
+      ],
+      "branch": "stealth",
+      "requires": [
+        "hidden"
+      ],
+      "required_class_level": 4,
+      "effects": [
+        {
+          "type": "attribute",
+          "attribute": "minecraft:safe_fall_distance",
+          "operation": "add_value",
+          "amount": 2
+        }
+      ],
+      "icon": "frosthain:icon/wave"
+    },
+    {
+      "key": "precise_strikes",
+      "kind": "passive",
+      "position": [
+        0,
+        1
+      ],
+      "branch": "blades",
+      "requires": [
+        "shadow_step"
+      ],
+      "max_rank": 3,
+      "effects": [
+        {
+          "type": "attribute",
+          "attribute": "minecraft:attack_damage",
+          "operation": "add_value",
+          "amount": 0.5
+        }
+      ],
+      "icon": "frosthain:icon/sword"
+    },
+    {
+      "key": "quick_hands",
+      "kind": "passive",
+      "position": [
+        0,
+        2
+      ],
+      "branch": "blades",
+      "requires": [
+        "precise_strikes"
+      ],
+      "max_rank": 2,
+      "required_class_level": 3,
+      "effects": [
+        {
+          "type": "attribute",
+          "attribute": "minecraft:attack_speed",
+          "operation": "add_multiplied_base",
+          "amount": 0.05
+        }
+      ],
+      "icon": "frosthain:icon/bolt"
+    },
+    {
+      "key": "lucky_strike",
+      "kind": "passive",
+      "position": [
+        0,
+        3
+      ],
+      "branch": "blades",
+      "requires": [
+        "quick_hands"
+      ],
+      "required_class_level": 5,
+      "effects": [
+        {
+          "type": "attribute",
+          "attribute": "minecraft:luck",
+          "operation": "add_value",
+          "amount": 0.5
+        }
+      ],
+      "icon": "frosthain:icon/star"
+    },
+    {
+      "key": "nimble",
+      "kind": "passive",
+      "position": [
+        1,
+        0
+      ],
+      "branch": "cunning",
+      "requires": [
+        "shadow_step"
+      ],
+      "max_rank": 2,
+      "effects": [
+        {
+          "type": "attribute",
+          "attribute": "minecraft:movement_speed",
+          "operation": "add_multiplied_base",
+          "amount": 0.03
+        }
+      ],
+      "icon": "frosthain:icon/boot"
+    },
+    {
+      "key": "light_fingers",
+      "kind": "passive",
+      "position": [
+        2,
+        0
+      ],
+      "branch": "cunning",
+      "requires": [
+        "nimble"
+      ],
+      "required_class_level": 2,
+      "effects": [
+        {
+          "type": "skill_proficiency",
+          "skill": "frosthain:sleight_of_hand"
+        }
+      ],
+      "icon": "frosthain:icon/paw"
+    },
+    {
+      "key": "silver_tongue",
+      "kind": "passive",
+      "position": [
+        3,
+        0
+      ],
+      "branch": "cunning",
+      "requires": [
+        "light_fingers"
+      ],
+      "required_class_level": 4,
+      "effects": [
+        {
+          "type": "skill_proficiency",
+          "skill": "frosthain:deception"
+        }
+      ],
+      "icon": "frosthain:icon/crown"
+    }
+  ]
+}

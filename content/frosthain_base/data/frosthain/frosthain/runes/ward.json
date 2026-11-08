@@ -1,0 +1,19 @@
+{
+  "source": "frosthain:original",
+  "effect": "ward",
+  "unlock_quest": "frosthain:first_rune",
+  "materials": [
+    {
+      "item": "minecraft:amethyst_shard",
+      "count": 1
+    },
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 3
+    }
+  ],
+  "values": {
+    "duration_ticks": 1200,
+    "amplifier": 0
+  }
+}

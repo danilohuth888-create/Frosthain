@@ -1,0 +1,19 @@
+# Third-party notices
+
+Stand: 01.11.2026. Nur Komponenten, die im Repository tatsächlich enthalten sind oder von ausgelieferten Teilen genutzt werden. Jede Angabe wurde an der genannten Quelle geprüft; nichts ist pauschal eingetragen. Vor jeder Veröffentlichung aktualisieren (Vorlage: `docs/lizenzen/RECHTE_UND_LIZENZEN.md`).
+
+| Komponente | Version | Rechteinhaber | Quelle | Lizenz (geprüft an) | Änderungen | Verwendung / Pflichten |
+|---|---|---|---|---|---|---|
+| System Reference Document 5.2.1 | 5.2.1 | Wizards of the Coast LLC | https://www.dndbeyond.com/srd | CC-BY-4.0 (Lizenzhinweis des SRD) | Regelelemente angepasst, Texte neu formuliert, gekennzeichnet mit `"adapted": true` | Namensnennung siehe `NOTICE.md`; keine Andeutung einer Billigung |
+| Cinzel (Schrift) | Variable Font aus google/fonts, abgerufen 01.11.2026; Upstream-Commit `8271e162a7c6` | The Cinzel Project Authors (Natanael Gama) | https://github.com/NDISCOVER/Cinzel | SIL Open Font License 1.1 (`content/frosthain_base/assets/frosthain/font/cinzel_ofl.txt`); keine Reserved Font Names | keine | Lizenztext mitliefern; Schrift nicht einzeln verkaufen |
+| EB Garamond (Schrift, normal und kursiv) | Variable Fonts aus google/fonts, abgerufen 01.11.2026; Upstream-Commit `106a4a6d3779` | The EB Garamond Project Authors (Georg Duffner, Octavio Pardo) | https://github.com/octaviopardo/EBGaramond12 | SIL Open Font License 1.1 (`…/font/eb_garamond_ofl.txt`); keine Reserved Font Names | keine | wie oben |
+| Gson | 2.13.2 | Google LLC | https://github.com/google/gson | Apache-2.0 (`gson-parent-2.13.2.pom`, Maven Central) | keine | Wird zur Laufzeit von Minecraft bereitgestellt; vom Prototyp mitgeliefert → Apache-2.0-Hinweis beilegen |
+| Gradle Wrapper | 9.8.2 (Distribution), `gradle-wrapper.jar` im Repository | Gradle Inc. | https://gradle.org | Apache-2.0 (`META-INF/LICENSE` im JAR) | keine | nur Build-Werkzeug, nicht Teil des Spiels |
+| JUnit | 6.1.3 | JUnit-Team | https://junit.org | EPL-2.0 (`junit-bom-6.1.3.pom`) | keine | nur Tests, wird nicht ausgeliefert |
+| Fabric Loader | 0.20.1 | FabricMC | https://github.com/FabricMC/fabric-loader | Apache-2.0 (`LICENSE` im Repository, abgerufen 01.11.2026) | keine | Laufzeitvoraussetzung der Mod; nicht im Mod-Jar enthalten. Bei späterer Auslieferung durch den Launcher Lizenzhinweis beilegen |
+| Fabric API | 0.165.0+26.3 | FabricMC | https://github.com/FabricMC/fabric | Apache-2.0 (`LICENSE` im Repository, abgerufen 01.11.2026) | keine | wie Fabric Loader |
+| Fabric Loom (Gradle-Plugin) | 1.19.3 | FabricMC | https://github.com/FabricMC/fabric-loom | MIT (`LICENSE` im Repository, abgerufen 01.11.2026) | keine | nur Build-Werkzeug, nicht Teil des Spiels |
+
+## Noch nicht enthalten, aber geplant (vor Aufnahme prüfen)
+
+Tauri und alle npm-/Cargo-Abhängigkeiten des Launchers. Einträge erst nach Prüfung der konkret verwendeten Version.

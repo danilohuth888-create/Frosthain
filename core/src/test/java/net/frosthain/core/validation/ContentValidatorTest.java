@@ -144,4 +144,40 @@ class ContentValidatorTest {
                 .translate("species.frosthain.ghost", "species.frosthain.ghost.desc");
         assertTrue(contains(errors(pack), "Unbekannte Engine-Funktion frosthain:fly"));
     }
+
+    @Test
+    void storyReferencesAreChecked() {
+        TestContent.Pack pack = new TestContent.Pack()
+                .file("npcs/mira", """
+                        {"source": "frosthain:original", "dialogue": "frosthain:mira/hello"}""")
+                .file("quests/errand", """
+                        {"source": "frosthain:original", "kind": "npc",
+                         "objectives": [{"key": "talk", "type": "talk", "target": "frosthain:nobody"}]}""")
+                .file("dialogues/mira/hello", """
+                        {"source": "frosthain:original", "speaker": "frosthain:mira", "start": "hi",
+                         "nodes": [{"key": "hi", "choices": [{"key": "ok", "effects": [
+                            {"type": "advance_objective", "quest": "frosthain:errand", "objective": "missing"}]}]},
+                                   {"key": "orphan"}]}""")
+                .translate("npc.frosthain.mira", "npc.frosthain.mira.title", "quest.frosthain.errand",
+                        "quest.frosthain.errand.desc", "quest.frosthain.errand.objective.talk",
+                        "dialogue.frosthain.mira.hello.hi", "dialogue.frosthain.mira.hello.hi.choice.ok",
+                        "dialogue.frosthain.mira.hello.orphan");
+        ContentLoader.Result result = pack.load();
+        assertFalse(result.hasErrors(), result.diagnostics()::toString);
+        List<Diagnostic> all = ContentValidator.validate(result.registry());
+        assertTrue(contains(all, "npcs frosthain:nobody existiert nicht"), all::toString);
+        assertTrue(contains(all, "hat kein Ziel 'missing'"), all::toString);
+        assertTrue(contains(all, "Nicht erreichbare Dialogknoten: [orphan]"), all::toString);
+    }
+
+    @Test
+    void dialogueLinksToUnknownNodesAreRejectedWhileLoading() {
+        ContentLoader.Result result = new TestContent.Pack()
+                .file("dialogues/broken", """
+                        {"source": "frosthain:original", "speaker": "frosthain:x", "start": "a",
+                         "nodes": [{"key": "a", "choices": [{"key": "go", "next": "nowhere"}]}]}""")
+                .load();
+        assertTrue(result.diagnostics().stream().anyMatch(d -> d.message().contains("unbekannten Knoten 'nowhere'")),
+                result.diagnostics()::toString);
+    }
 }

@@ -38,5 +38,6 @@
   "weapon_proficiencies": [
     "simple"
   ],
-  "_comment": "Waffenkategorien sind vorerst grob (simple/martial). Feinere Waffeneigenschaften (finesse, light) folgen mit dem Kampfsystem in Phase 4."
+  "_comment": "Waffenkategorien sind vorerst grob (simple/martial). Feinere Waffeneigenschaften (finesse, light) folgen mit dem Kampfsystem in Phase 4.",
+  "talent_tree": "frosthain:rogue"
 }

@@ -37,7 +37,9 @@ frosthain/
 │       │   └── talent_trees/
 │       └── assets/frosthain/lang/ de_de.json, en_us.json
 │
-├── mod/                           ⏳ Fabric-Mod (ab M0.3; braucht Zugriff auf Fabric-/Mojang-Server)
+├── ui/                            ✅ Präsentationslogik der Oberflächen (ohne Minecraft)
+├── tools/ui-prototype/            ✅ Desktop-Prototyp B · D · F (Java2D), Screenshots headless
+├── mod/                           🔶 Fabric-Mod: Skelett baut gegen 26.3 (CI); Start im Spiel offen
 │   ├── build.gradle.kts           Plugin net.fabricmc.fabric-loom, bindet :core ein
 │   └── src/
 │       ├── main/java/net/frosthain/mod/        Server/gemeinsam

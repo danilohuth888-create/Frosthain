@@ -17,7 +17,8 @@
       "position": [
         0,
         0
-      ]
+      ],
+      "icon": "frosthain:icon/swords"
     },
     {
       "key": "weapon_focus",
@@ -38,7 +39,8 @@
           "operation": "add_value",
           "amount": 0.5
         }
-      ]
+      ],
+      "icon": "frosthain:icon/sword"
     },
     {
       "key": "swift_strikes",
@@ -60,7 +62,8 @@
           "operation": "add_multiplied_base",
           "amount": 0.05
         }
-      ]
+      ],
+      "icon": "frosthain:icon/bolt"
     },
     {
       "key": "action_surge",
@@ -79,7 +82,8 @@
           "type": "grant_power",
           "power": "frosthain:action_surge"
         }
-      ]
+      ],
+      "icon": "frosthain:icon/flame"
     },
     {
       "key": "shield_training",
@@ -100,7 +104,8 @@
           "operation": "add_value",
           "amount": 1
         }
-      ]
+      ],
+      "icon": "frosthain:icon/shield"
     },
     {
       "key": "shield_bash",
@@ -118,7 +123,8 @@
           "type": "grant_power",
           "power": "frosthain:shield_bash"
         }
-      ]
+      ],
+      "icon": "frosthain:icon/shield"
     },
     {
       "key": "unbreakable",
@@ -146,7 +152,8 @@
           "operation": "add_value",
           "amount": 2
         }
-      ]
+      ],
+      "icon": "frosthain:icon/mountain"
     },
     {
       "key": "battle_cry",
@@ -164,7 +171,8 @@
           "type": "grant_power",
           "power": "frosthain:battle_cry"
         }
-      ]
+      ],
+      "icon": "frosthain:icon/horn"
     },
     {
       "key": "tactician",
@@ -183,7 +191,8 @@
           "type": "skill_proficiency",
           "skill": "frosthain:insight"
         }
-      ]
+      ],
+      "icon": "frosthain:icon/eye"
     },
     {
       "key": "sweeping_strikes",
@@ -211,7 +220,8 @@
           "operation": "add_multiplied_total",
           "amount": 0.05
         }
-      ]
+      ],
+      "icon": "frosthain:icon/swords"
     }
   ]
 }

@@ -32,7 +32,7 @@ class CharacterSheetCodecTest {
         sheet = leveling.levelUp(sheet, ContentId.of("fighter"));
         sheet = leveling.levelUp(sheet, ContentId.of("fighter"));
         sheet = leveling.chooseSubclass(sheet, ContentId.of("fighter/rune_warden"));
-        sheet = talents.allocate(sheet, new TalentRef(ContentId.of("general"), "toughness"));
+        sheet = talents.allocate(sheet, new TalentRef(ContentId.of("general"), "combat_stance"));
         sheet = talents.allocate(sheet, new TalentRef(ContentId.of("fighter"), "weapon_focus"));
         Appearance base = sheet.appearance();
         Appearance appearance = new Appearance(Appearance.BodyType.SLIM, 1.03, "#a0405a", Optional.of(ContentId.of("skin/freckles")),
@@ -99,9 +99,9 @@ class CharacterSheetCodecTest {
     @Test
     void talentReferencesUseStableTextFormat() {
         JsonObject json = CharacterSheetCodec.encode(richCharacter());
-        assertEquals(Map.of("frosthain:fighter#weapon_focus", 1, "frosthain:general#toughness", 1),
+        assertEquals(Map.of("frosthain:fighter#weapon_focus", 1, "frosthain:general#combat_stance", 1),
                 Map.of("frosthain:fighter#weapon_focus", json.getAsJsonObject("talents").get("frosthain:fighter#weapon_focus").getAsInt(),
-                        "frosthain:general#toughness", json.getAsJsonObject("talents").get("frosthain:general#toughness").getAsInt()));
+                        "frosthain:general#combat_stance", json.getAsJsonObject("talents").get("frosthain:general#combat_stance").getAsInt()));
         assertEquals(2, json.getAsJsonObject("talents").size());
     }
 }

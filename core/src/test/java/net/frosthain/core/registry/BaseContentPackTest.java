@@ -9,8 +9,13 @@ import net.frosthain.core.validation.ContentValidator;
 import net.frosthain.core.validation.Diagnostic;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -29,13 +34,14 @@ class BaseContentPackTest {
     }
 
     @Test
-    void containsAllTwelveSrdClassesAndNineSpecies() {
+    void containsAllTwelveSrdClassesTheRuneMageAndNineSpecies() {
         Set<String> classes = Set.of("barbarian", "bard", "cleric", "druid", "fighter", "monk", "paladin", "ranger", "rogue",
                 "sorcerer", "warlock", "wizard");
         for (String clazz : classes) {
             assertTrue(registry.contains(ContentType.CLASSES, ContentId.of(clazz)), clazz);
         }
-        assertEquals(12, registry.all(ContentType.CLASSES).size());
+        assertTrue(registry.contains(ContentType.CLASSES, ContentId.of("rune_mage")), "Runenmagier (FROSTHAIN-Klasse)");
+        assertEquals(13, registry.all(ContentType.CLASSES).size());
         assertEquals(9, registry.all(ContentType.SPECIES).size());
     }
 
@@ -66,6 +72,21 @@ class BaseContentPackTest {
         assertEquals(List.of("horns", "tail"), tiefling.appearance().requiredSlots());
         assertTrue(tiefling.lineageRequired());
         assertEquals(3, tiefling.lineages().size());
+    }
+
+    @Test
+    void everyPackFileHasAPathMinecraftAccepts() throws IOException {
+        // Minecraft ignores resources whose path is not [a-z0-9/._-] (e.g. "Cinzel.ttf" was silently dropped in game).
+        Pattern valid = Pattern.compile("[a-z0-9/._-]+");
+        Path root = TestContent.contentRoot();
+        List<String> invalid;
+        try (Stream<Path> files = Files.walk(root)) {
+            invalid = files.filter(Files::isRegularFile)
+                    .map(file -> root.relativize(file).toString().replace('\\', '/'))
+                    .filter(path -> !valid.matcher(path).matches())
+                    .toList();
+        }
+        assertEquals(List.of(), invalid);
     }
 
     @Test

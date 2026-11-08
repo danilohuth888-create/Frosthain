@@ -1,0 +1,13 @@
+{
+  "source": "frosthain:original",
+  "kind": "side",
+  "experience": 80,
+  "objectives": [
+    {
+      "key": "find_crates",
+      "type": "collect",
+      "target": "frosthain:supply_crate",
+      "count": 3
+    }
+  ]
+}
