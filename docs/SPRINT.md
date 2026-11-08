@@ -12,7 +12,7 @@ Start: 2026-11-02 · Branch: `claude/ui-prototyp` (kein Merge nach `main` ohne F
 | MUSS 4 | Dungeon mit Boss | 🔶 „Die gefrorene Gruft“ (Folgequest von „Die erste Rune“): Ruine, Treppe, Gang, 2 Wachräume (Strays, Zombies), Grabkammer; Boss Hrímgar mit Bossleiste, Frostnova mit Vorwarnung, Phase 2 bei 50 % (Bogen, 2 Diener); Client-GameTest im CI |
 | MUSS 5 | ChatGPT-Inhalte integriert und validiert | ⏳ wartet auf `content/chatgpt-sprint` |
 | MUSS 6 | Vorabversion über GitHub Releases | 🔶 `frosthain-dev` wird bei grünem CI automatisch erneuert |
-| SOLL 1 | Talentbäume für 2–3 weitere Klassen | ⏳ |
+| SOLL 1 | Talentbäume für 2–3 weitere Klassen | 🔶 fünf Bäume als Daten (Magier, Schurke, Kleriker, Druide, Barde), Validator im CI; im Spiel noch nicht angesehen |
 | SOLL 2 | Runenmagie (Grundlage) | 🔶 Inhaltstyp `runes` (5 Runen), Runenaltar am Schrein nach „Die erste Rune“, Herstellen serverseitig geprüft, Runensiegel mit Wirkung (Feuer, Eis, Schutz, Heilung, Bewegung); Kern-Tests + Client-GameTest; Siegel/Rituale-Reiter noch nicht |
 | SOLL 3 | Skin auf der Spielfigur | ⏳ |
 | KANN 1 | Eigenständiger Launcher | ⏳ |

@@ -34,5 +34,6 @@
   ],
   "weapon_proficiencies": [
     "simple"
-  ]
+  ],
+  "talent_tree": "frosthain:cleric"
 }

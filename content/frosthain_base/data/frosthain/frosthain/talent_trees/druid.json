@@ -1,0 +1,218 @@
+{
+  "source": "frosthain:original",
+  "owner": {
+    "type": "class",
+    "class": "frosthain:druid"
+  },
+  "root": "wild_heart",
+  "branches": [
+    "nature",
+    "beast",
+    "wanderer"
+  ],
+  "nodes": [
+    {
+      "key": "wild_heart",
+      "kind": "root",
+      "position": [
+        0,
+        0
+      ],
+      "icon": "frosthain:icon/tree"
+    },
+    {
+      "key": "green_magic",
+      "kind": "passive",
+      "position": [
+        -1,
+        0
+      ],
+      "branch": "nature",
+      "requires": [
+        "wild_heart"
+      ],
+      "max_rank": 3,
+      "effects": [
+        {
+          "type": "attribute",
+          "attribute": "frosthain:spell_power_max",
+          "operation": "add_value",
+          "amount": 5
+        }
+      ],
+      "icon": "frosthain:icon/leaf"
+    },
+    {
+      "key": "sap_flow",
+      "kind": "passive",
+      "position": [
+        -2,
+        0
+      ],
+      "branch": "nature",
+      "requires": [
+        "green_magic"
+      ],
+      "max_rank": 2,
+      "required_class_level": 3,
+      "effects": [
+        {
+          "type": "attribute",
+          "attribute": "frosthain:spell_power_regen",
+          "operation": "add_multiplied_base",
+          "amount": 0.1
+        }
+      ],
+      "icon": "frosthain:icon/drop"
+    },
+    {
+      "key": "lore_of_wilds",
+      "kind": "passive",
+      "position": [
+        -3,
+        0
+      ],
+      "branch": "nature",
+      "requires": [
+        "sap_flow"
+      ],
+      "required_class_level": 5,
+      "effects": [
+        {
+          "type": "skill_proficiency",
+          "skill": "frosthain:nature"
+        }
+      ],
+      "icon": "frosthain:icon/tree"
+    },
+    {
+      "key": "thick_hide",
+      "kind": "passive",
+      "position": [
+        0,
+        1
+      ],
+      "branch": "beast",
+      "requires": [
+        "wild_heart"
+      ],
+      "max_rank": 2,
+      "effects": [
+        {
+          "type": "attribute",
+          "attribute": "minecraft:armor",
+          "operation": "add_value",
+          "amount": 1
+        }
+      ],
+      "icon": "frosthain:icon/paw"
+    },
+    {
+      "key": "bounding",
+      "kind": "passive",
+      "position": [
+        0,
+        2
+      ],
+      "branch": "beast",
+      "requires": [
+        "thick_hide"
+      ],
+      "max_rank": 2,
+      "required_class_level": 3,
+      "effects": [
+        {
+          "type": "attribute",
+          "attribute": "minecraft:jump_strength",
+          "operation": "add_value",
+          "amount": 0.05
+        }
+      ],
+      "icon": "frosthain:icon/boot"
+    },
+    {
+      "key": "beast_friend",
+      "kind": "passive",
+      "position": [
+        0,
+        3
+      ],
+      "branch": "beast",
+      "requires": [
+        "bounding"
+      ],
+      "required_class_level": 5,
+      "effects": [
+        {
+          "type": "skill_proficiency",
+          "skill": "frosthain:animal_handling"
+        }
+      ],
+      "icon": "frosthain:icon/paw"
+    },
+    {
+      "key": "trailblazer",
+      "kind": "passive",
+      "position": [
+        1,
+        0
+      ],
+      "branch": "wanderer",
+      "requires": [
+        "wild_heart"
+      ],
+      "max_rank": 2,
+      "effects": [
+        {
+          "type": "attribute",
+          "attribute": "minecraft:movement_speed",
+          "operation": "add_multiplied_base",
+          "amount": 0.03
+        }
+      ],
+      "icon": "frosthain:icon/boot"
+    },
+    {
+      "key": "deep_breath",
+      "kind": "passive",
+      "position": [
+        2,
+        0
+      ],
+      "branch": "wanderer",
+      "requires": [
+        "trailblazer"
+      ],
+      "required_class_level": 2,
+      "effects": [
+        {
+          "type": "attribute",
+          "attribute": "minecraft:oxygen_bonus",
+          "operation": "add_value",
+          "amount": 1
+        }
+      ],
+      "icon": "frosthain:icon/wave"
+    },
+    {
+      "key": "survivor",
+      "kind": "passive",
+      "position": [
+        3,
+        0
+      ],
+      "branch": "wanderer",
+      "requires": [
+        "deep_breath"
+      ],
+      "required_class_level": 4,
+      "effects": [
+        {
+          "type": "skill_proficiency",
+          "skill": "frosthain:survival"
+        }
+      ],
+      "icon": "frosthain:icon/mountain"
+    }
+  ]
+}
